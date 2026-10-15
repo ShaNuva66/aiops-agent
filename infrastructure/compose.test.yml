@@ -1,0 +1,7 @@
+# Integration tests opt in to lab writes; base configuration remains read-only.
+services:
+  backend:
+    environment:
+      ENABLE_LAB_EXECUTION: "true"
+      MONITOR_INTERVAL: "2"
+      FAILURE_THRESHOLD: "2"

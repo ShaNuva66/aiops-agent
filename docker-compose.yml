@@ -1,0 +1,112 @@
+name: aiops-agent
+services:
+  control-db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: aiops
+      POSTGRES_DB: aiops
+      POSTGRES_PASSWORD: ${CONTROL_DB_PASSWORD:?Run scripts/init_env.py}
+    volumes:
+      - control-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U aiops -d aiops"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 384m
+    restart: unless-stopped
+
+  lab-db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_DB: airport
+      POSTGRES_PASSWORD: ${LAB_DB_PASSWORD:?Run scripts/init_env.py}
+    volumes:
+      - lab-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U lab -d airport"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 256m
+    restart: unless-stopped
+
+  lab-api:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile
+    image: aiops-agent-backend:local
+    command: [uvicorn, infrastructure.lab.app:app, --host, 0.0.0.0, --port, "8100"]
+    environment:
+      LAB_DATABASE_URL: postgresql+psycopg://lab:${LAB_DB_PASSWORD}@lab-db:5432/airport
+      LAB_TOKEN: ${LAB_TOKEN}
+    depends_on:
+      lab-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8100:8100"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8100/health/live')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 384m
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: infrastructure/Dockerfile
+    image: aiops-agent-backend:local
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://aiops:${CONTROL_DB_PASSWORD}@control-db:5432/aiops
+      LAB_URL: http://lab-api:8100
+    depends_on:
+      control-db:
+        condition: service_healthy
+      lab-api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/ready')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 768m
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    mem_limit: 128m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    profiles: [knowledge]
+    volumes:
+      - qdrant-data:/qdrant/storage
+    mem_limit: 512m
+    restart: unless-stopped
+
+volumes:
+  control-data:
+  lab-data:
+  qdrant-data:
