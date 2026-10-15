@@ -21,7 +21,7 @@ are documented under Learning interface.
 | TypeScript + Vite production build | Passed on host and Linux build container |
 | Prettier formatting | Passed |
 | npm audit | Zero reported vulnerabilities at check time |
-| GitHub Actions | Workflow supplied; not yet executed on GitHub |
+| GitHub Actions | Initial run started after publication; result pending at handoff ([run](https://github.com/ShaNuva66/aiops-agent/actions/runs/38816622611)) |
 
 Frozen resolved versions are recorded in uv.lock and frontend/package-lock.json; examples
 from this session: Python 3.12, FastAPI 0.143.2, SQLAlchemy 2.1.4, Alembic 1.20.0,

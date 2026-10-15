@@ -15,7 +15,7 @@ Last implementation session: 2026-10-16, Europe/Istanbul.
 - Exact-scope expiring approval, rejection, single-attempt execution and pre/post checks.
 - React console: overview, inventory, incidents, evidence, knowledge, approvals and audit.
 - Real Docker outage/recovery tests, browser workflow checks and portfolio/demo drafts.
-- Public GitHub repository: https://github.com/ShaNuva66/aiops-agent. Initial publication prepared on 2026-10-16; GitHub Actions results are separate from local verification.
+- Published public GitHub repository: https://github.com/ShaNuva66/aiops-agent on 2026-10-16. Initial GitHub Actions run started; its results are separate from local verification.
 - Normal username/password dashboard login, first-account creation and remember-me sessions.
 - Hashed passwords, revocable HttpOnly cookies, CSRF/origin checks and login throttling.
 - Turkish explanations on every operations screen, a glossary, four-step navigation and readable evidence summaries.
