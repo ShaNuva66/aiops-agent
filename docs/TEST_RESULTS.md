@@ -5,14 +5,14 @@ This report records local verification, not a production certification or live L
 
 ## Automated checks
 
-The backend/security/real-outage results below are retained from the preceding verification.
-The subsequent learning-interface change modifies only the frontend; its separate checks
-are documented under Learning interface.
+The real-outage results below are retained from the preceding verification.
+The current pytest run includes the incident-story read API checks. Learning interface
+and visual walkthrough checks are documented separately below.
 
 | Check | Result |
 |---|---|
-| pytest API/logic/security/SDK/retrieval/auth/lab | 44 passed |
-| Backend statement coverage | 92% displayed (887 statements, 69 not exercised by pytest) |
+| pytest API/logic/security/SDK/retrieval/auth/lab | 46 passed |
+| Backend statement coverage | 92% displayed (901 statements, 69 not exercised by pytest) |
 | Account/session module coverage | 97% displayed |
 | Real Docker acceptance suite | 27 checks passed |
 | Qdrant 1.19.1 actual server write/query | Passed |
@@ -97,6 +97,26 @@ recovery and disk-threshold events. Service observations came from a read-only l
 They do not represent new real outage experiments or live AI evaluation and did not reset the
 operator's account/data. Reviewed screenshots: [desktop](images/learning-overview.png),
 [mobile](images/learning-mobile.png). The frontend container was rebuilt for local deployment.
+
+## Visual walkthrough and incident story — 2026-10-16
+
+46 pytest tests passed in 83.13s with 92.34% coverage (901 statements, 69 missed).
+New API checks verify prior observations, out-of-order recovery, manual versus monitored
+closure, authentication, real/simulation isolation and incident-scoped approval/audit records.
+Ruff check/format, Prettier and TypeScript/Vite host/container builds passed.
+
+Playwright CLI exercised all six HTTP and database stages, restart, playback and pause.
+Changing node states and response labels were inspected on desktop and at 390px with no
+document overflow. A request listener observed no write requests from the educational player.
+An isolated simulation incident displayed its monitored recovery and chronological audit.
+Private fixture login produced expected unauthenticated 401s and a missing favicon 404;
+no runtime UI errors were observed after login. These fixtures are not real fault tests.
+Docker Desktop was initially stopped; it was started and the updated backend/frontend were
+rebuilt. Ten existing Docker incident stories were checked read-only for incident/recovery
+and approval isolation; API readiness and frontend returned HTTP 200. No new real faults
+were injected and the prior 27 acceptance results are retained, not counted again.
+Reviewed screenshots: [player](images/story-player.png), [recorded incident](images/story-incident.png),
+[mobile](images/story-mobile.png). The incident screenshot contains explicitly simulated data.
 
 ## Problems found and corrected
 - Browser route registration and Vite origin forwarding were caught by auth API/browser tests.

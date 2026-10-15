@@ -1,0 +1,436 @@
+.screen-help {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+.screen-help > summary {
+  color: #496775;
+  font-size: 12px;
+  padding: 10px 0;
+}
+.screen-help[open] > summary {
+  margin-bottom: 12px;
+}
+.fault-player {
+  margin-bottom: 24px;
+  border-top: 3px solid #138b76;
+}
+.fault-player .panel-heading h2,
+.incident-story .panel-heading h2 {
+  font-size: 20px;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.demo-label {
+  color: #78591b;
+  background: #fff6df;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.demo-boundary {
+  font-size: 12px;
+  color: #627588;
+  line-height: 1.7;
+}
+.scenario-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 23px 0 15px;
+}
+.scenario-tabs button {
+  background: #f3f6f8;
+  border: 1px solid #dbe3e9;
+  border-radius: 7px;
+  padding: 10px 16px;
+  color: #52677a;
+  font-size: 12px;
+}
+.scenario-tabs button[aria-pressed="true"] {
+  background: #e9f6f0;
+  border-color: #138b76;
+  color: #166b58;
+}
+.system-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 50px minmax(0, 1fr) 50px minmax(0, 1fr);
+  align-items: center;
+  background: #f6f9fb;
+  border: 1px solid #e2eaf0;
+  border-radius: 10px;
+  padding: 30px 24px;
+}
+.flow-node {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #cbe4d9;
+  border-radius: 10px;
+  background: #eff9f4;
+  color: #236c51;
+  padding: 24px 12px;
+  text-align: center;
+  min-width: 0;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+}
+.flow-node > svg {
+  width: 30px;
+  height: 30px;
+}
+.flow-node strong {
+  font-size: 14px;
+}
+.flow-node small {
+  font-size: 11px;
+  line-height: 1.6;
+}
+.flow-node.bad {
+  color: #a73b3b;
+  background: #fff0ef;
+  border-color: #e9b5b1;
+}
+.flow-node.warn,
+.flow-node.wait {
+  color: #86641d;
+  background: #fff8e7;
+  border-color: #e8d69f;
+}
+.flow-link {
+  display: flex;
+  align-items: center;
+  color: #299e7d;
+  overflow: hidden;
+}
+.flow-link span {
+  height: 3px;
+  flex: 1;
+  background: repeating-linear-gradient(
+    to right,
+    #299e7d 0,
+    #299e7d 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  animation: flow-dash 1s linear infinite;
+}
+.flow-link.bad {
+  color: #d36c65;
+}
+.flow-link.bad span {
+  background: repeating-linear-gradient(
+    to right,
+    #d36c65 0,
+    #d36c65 4px,
+    transparent 4px,
+    transparent 10px
+  );
+  animation: none;
+}
+.flow-link.warn,
+.flow-link.wait {
+  color: #b39039;
+}
+.flow-link.warn span,
+.flow-link.wait span {
+  background: #d2b66c;
+  animation: none;
+}
+@keyframes flow-dash {
+  to {
+    background-position: 12px 0;
+  }
+}
+.response-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 13px 16px;
+  background: #edf8f1;
+  color: #28664e;
+  border-radius: 7px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.response-strip.bad {
+  background: #fff0ef;
+  color: #a04740;
+}
+.response-strip.warn {
+  background: #fff7e5;
+  color: #84621d;
+}
+.response-strip span {
+  margin-left: auto;
+  font-size: 11px;
+}
+.scenario-steps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  list-style: none;
+  padding: 0;
+  margin: 23px 0 16px;
+}
+.scenario-steps button {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 11px 9px;
+  border: 1px solid #dfe7ee;
+  border-radius: 7px;
+  background: white;
+  color: #617588;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.scenario-steps button > span {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  color: #8b9caa;
+}
+.scenario-steps button[aria-current="step"] {
+  border-color: #138b76;
+  background: #edf8f2;
+  color: #216951;
+  box-shadow: 0 0 0 1px #138b76;
+}
+.scenario-steps button.passed {
+  color: #377b64;
+  background: #f6fbf8;
+}
+.scenario-caption {
+  background: #f7f9fb;
+  border-left: 3px solid #138b76;
+  padding: 19px 21px;
+  min-height: 175px;
+  border-radius: 0 7px 7px 0;
+}
+.scenario-caption > span {
+  color: #527f6e;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+.scenario-caption h3 {
+  font-size: 18px;
+  margin: 9px 0;
+  color: #254c40;
+}
+.scenario-caption p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #405c6a;
+  margin: 0 0 14px;
+}
+.scenario-caption > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #6b7e8b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.scenario-caption svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.player-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+.player-controls .primary {
+  margin-left: auto;
+}
+.incident-story {
+  margin: 20px 0;
+}
+.record-track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+.record-point {
+  text-align: left;
+  border: 1px solid #e0e6ec;
+  border-top: 3px solid #a6b6c4;
+  background: #fafcfd;
+  border-radius: 7px;
+  padding: 15px;
+  color: #526779;
+}
+.record-point.ok {
+  border-top-color: #329c76;
+}
+.record-point.bad {
+  border-top-color: #d27369;
+}
+.record-point.warn {
+  border-top-color: #d5b15c;
+}
+.record-point[aria-pressed="true"] {
+  outline: 2px solid #246f5a;
+  outline-offset: 2px;
+}
+.record-point > span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e8edf1;
+  font-size: 11px;
+  margin-bottom: 13px;
+}
+.record-point small {
+  display: block;
+  color: #758897;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.record-point strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.record-focus {
+  padding: 20px;
+  margin: 16px 0;
+  background: #f1f7f4;
+  border-radius: 7px;
+}
+.record-focus h3 {
+  margin: 0 0 8px;
+  color: #294c40;
+  font-size: 17px;
+}
+.record-focus p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #426154;
+}
+.record-focus a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #176a51;
+  margin-top: 14px;
+}
+.record-events summary {
+  font-size: 12px;
+  color: #486475;
+}
+.record-events ol {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0 0 0 15px;
+  border-left: 2px solid #d7e6df;
+}
+.record-events li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 15px;
+  padding: 12px 0;
+  font-size: 12px;
+}
+.record-events li::before {
+  position: absolute;
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #56a58b;
+  left: -20px;
+}
+.record-events time {
+  color: #6c8293;
+  font-size: 11px;
+}
+.record-events strong {
+  color: #3c5e50;
+}
+.record-events span,
+.record-events small {
+  color: #6f8291;
+}
+@media (max-width: 1100px) {
+  .scenario-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .record-track {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .fault-player {
+    padding: 16px;
+  }
+  .fault-player .panel-heading,
+  .incident-story .panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fault-player .panel-heading h2,
+  .incident-story .panel-heading h2 {
+    font-size: 18px;
+  }
+  .system-flow {
+    grid-template-columns: 1fr;
+    padding: 18px;
+    gap: 0;
+  }
+  .flow-node {
+    padding: 14px 10px;
+    gap: 7px;
+  }
+  .flow-link {
+    transform: rotate(90deg);
+    width: 35px;
+    height: 42px;
+    justify-self: center;
+  }
+  .scenario-steps,
+  .record-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .player-controls > button {
+    flex: 1 1 40%;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .player-controls .primary {
+    margin-left: 0;
+  }
+  .scenario-caption {
+    padding: 15px;
+  }
+  .scenario-caption p,
+  .record-focus p {
+    font-size: 13px;
+  }
+  .response-strip span {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-link span {
+    animation: none;
+  }
+  .flow-node {
+    transition: none;
+  }
+}

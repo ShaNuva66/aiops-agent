@@ -31,7 +31,9 @@ import type {
   Source,
 } from "./types";
 import "./style.css";
+import "./story.css";
 import { ApiError, request } from "./api";
+import { FaultWalkthrough, IncidentStory } from "./story";
 import {
   auditLabel,
   explainEvidence,
@@ -556,10 +558,11 @@ function App() {
             </div>
           )}
           {learning && (
-            <>
+            <details className="screen-help">
+              <summary>Bu ekranı ve teknik terimleri açıkla</summary>
               <PageGuide page={selected ? "Detail" : tab} />
               <Glossary />
-            </>
+            </details>
           )}
           {selected ? (
             <>
@@ -639,6 +642,7 @@ function App() {
                   )}
                 </div>
               </section>
+              <IncidentStory incident={selected} />
               <div className="detail-grid">
                 <section className="panel">
                   <div className="panel-heading">
@@ -846,6 +850,7 @@ function App() {
             <>
               {tab === "Overview" && (
                 <>
+                  <FaultWalkthrough />
                   <div className="stats">
                     {[
                       [

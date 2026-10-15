@@ -31,6 +31,14 @@ export type Incident = {
   created_at: string;
   last_seen_at: string;
   resolution_note: string | null;
+  resolved_at?: string | null;
+  story?: {
+    previous: { observed_at: string; payload: unknown } | null;
+    recovery: { observed_at: string; payload: unknown } | null;
+    approvals: Approval[];
+    actions: Audit[];
+    actions_limit: number;
+  };
   evidence?: Evidence[];
   diagnoses?: Diagnosis[];
 };

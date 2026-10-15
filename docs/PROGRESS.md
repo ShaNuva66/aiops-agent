@@ -20,9 +20,11 @@ Last implementation session: 2026-10-16, Europe/Istanbul.
 - Hashed passwords, revocable HttpOnly cookies, CSRF/origin checks and login throttling.
 - Turkish explanations on every operations screen, a glossary, four-step navigation and readable evidence summaries.
 - Optional learning explanations, preserved original technical data and common Turkish knowledge-search keywords.
+- Interactive HTTP/database fault walkthrough with changing topology and playback; explicitly educational and without backend writes.
+- Incident story from prior observations, evidence, scoped approvals/audit and verified recovery, separating manual closure from monitored recovery.
 
 ## Last test results
-- 44 pytest tests passed; backend statement coverage displayed as 92%.
+- 46 pytest tests passed; backend statement coverage displayed as 92%.
 - 27 real Docker acceptance checks passed in the final run.
 - Actual Qdrant 1.19.1 server storage/query check passed.
 - TypeScript/Vite production build, Prettier, Ruff and Alembic drift checks passed.

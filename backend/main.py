@@ -4,6 +4,7 @@ import hmac
 import logging
 import threading
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
@@ -24,6 +25,7 @@ from backend.models import (
     DiagnosisRun,
     Evidence,
     Incident,
+    MonitoringEvent,
     Service,
     now,
 )
@@ -272,6 +274,54 @@ def create_app(settings: Settings | None = None, factory=None) -> FastAPI:
                 .order_by(DiagnosisRun.created_at.desc()),
             )
         ]
+        incident = required(session, Incident, ident)
+        # Initial evidence keeps the actual event timestamp, including delayed ingestion.
+        initial = next((e["data"] for e in item["evidence"] if "observed_at" in e["data"]), None)
+        key = f"{incident.source_kind}:{incident.asset_id}:{incident.service_id}:{incident.check}"
+        previous = None
+        if initial:
+            previous = session.scalar(
+                select(MonitoringEvent)
+                .where(
+                    MonitoringEvent.correlation_key == key,
+                    MonitoringEvent.state == "recovery",
+                    MonitoringEvent.incident_id.is_distinct_from(ident),
+                    MonitoringEvent.observed_at < datetime.fromisoformat(initial["observed_at"]),
+                )
+                .order_by(MonitoringEvent.observed_at.desc())
+                .limit(1)
+            )
+        approvals = list(session.scalars(select(Approval).where(Approval.incident_id == ident)))
+        actions = list(
+            session.scalars(
+                select(AuditEvent)
+                .where(AuditEvent.target.in_([ident, *(a.id for a in approvals)]))
+                .order_by(AuditEvent.created_at.desc(), AuditEvent.id)
+                .limit(200)
+            )
+        )
+        monitoring_closed = any(
+            a.action == "incident.resolved" and a.actor == "monitoring" for a in actions
+        )
+        recovery = None
+        if monitoring_closed:
+            recovery = session.scalar(
+                select(MonitoringEvent)
+                .where(
+                    MonitoringEvent.incident_id == ident,
+                    MonitoringEvent.state == "recovery",
+                    MonitoringEvent.observed_at > incident.last_seen_at,
+                )
+                .order_by(MonitoringEvent.observed_at)
+                .limit(1)
+            )
+        item["story"] = {
+            "previous": record(previous) if previous else None,
+            "recovery": record(recovery) if recovery else None,
+            "approvals": [record(a) for a in approvals],
+            "actions": [record(a) for a in reversed(actions)],
+            "actions_limit": 200,
+        }
         return item
 
     @app.patch("/api/incidents/{ident}", dependencies=protected)

@@ -36,6 +36,13 @@ than browser-readable stored API keys. Do not share `.env` or browser authentica
 Screens: [first account](docs/images/account-setup.png) · [sign in](docs/images/login.png).
 
 The dashboard uses Turkish labels and opens with **Açıklamaları göster** enabled.
+The overview starts with a visual **Bir arıza nasıl oluşur, nasıl çözülür?** player.
+Choose the HTTP failure or database-stop scenario, then use **Oynat** or **Sonraki adım**
+to follow the changing service diagram, response and operator action. It is an explicitly
+labelled educational simulation and sends no fault or recovery commands.
+Actual incident pages separately show **Önce → Hata → Tespit → İşlem → Sonuç** from
+stored observations and scoped audit records. Manual closure is distinguished from monitored
+recovery; a missing root cause or intervention record is left unknown.
 Each screen explains what is checked, why it matters and how to read the result.
 Start with **Genel durum → Servisi kontrol et**, then follow an incident and its evidence.
 **Bu terimler ne demek?** explains terms such as API, PostgreSQL, logs and health checks.

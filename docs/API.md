@@ -29,7 +29,7 @@ and use a browser-session cookie. Account creation is disabled after bootstrap.
 | GET /api/assets, /api/services | API_TOKEN | Allowlisted inventory and scoped observations |
 | POST /api/monitoring/events | INGEST_TOKEN | Idempotent problem/recovery ingestion |
 | GET /api/incidents | API_TOKEN | Latest incidents, optional status/limit/offset |
-| GET /api/incidents/{id} | API_TOKEN | Incident, evidence and diagnosis history |
+| GET /api/incidents/{id} | API_TOKEN | Incident, evidence, diagnoses and story observations/scoped audit |
 | PATCH /api/incidents/{id} | API_TOKEN | Investigate or resolve with a required note |
 | POST /api/incidents/{id}/diagnoses | API_TOKEN | Queue one diagnosis; 202 accepted |
 | POST /api/operations/cycle | API_TOKEN | Run an authenticated operations cycle |
@@ -56,7 +56,17 @@ active state. Resolved records cannot reopen through PATCH. A recurrence produce
 incident ID. Resolution notes describe observed recovery or the operator's stated result,
 not necessarily a proven root cause.
 
+## Incident story
+
+Incident detail includes `story.previous` (nearest earlier successful-state observation in
+the same correlation, excluding this incident), `story.recovery` (a linked observation after
+the last problem, only when monitoring closed the incident), related `approvals`, and the
+latest 200 scoped `actions` in chronological order. Null observations indicate missing data.
+Manual closure is not presented as monitored health verification. Audit timestamps record
+processing time; observation timestamps record measurement time and can precede ingestion.
+
 ## Approval
+
 Request: incident_id, runbook=clear-http-fault:v1, target=sample-api, parameters={}.
 Eligible only for a real active sample-api availability incident. Default expiry 300s.
 Decision payload: {"decision":"approve"} or {"decision":"reject"}.

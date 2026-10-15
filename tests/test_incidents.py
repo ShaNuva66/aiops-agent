@@ -60,6 +60,65 @@ def test_recovery_and_recurrence(client, operator, ingester):
     assert "incident:" + first in {s["id"] for s in sources}
 
 
+def test_story_separates_prior_observation_recovery_and_manual_closure(client, operator, ingester):
+    stamp = now() - timedelta(minutes=3)
+    post(client, ingester, state="recovery", observed_at=stamp.isoformat())
+    ident = post(client, ingester, observed_at=(stamp + timedelta(seconds=1)).isoformat()).json()[
+        "incident_id"
+    ]
+    # Old delivery is stored but must never be presented as this incident's recovery.
+    post(client, ingester, state="recovery", observed_at=(stamp - timedelta(seconds=1)).isoformat())
+    response = client.get("/api/incidents/" + ident, headers=operator)
+    assert response.json()["story"]["previous"]["incident_id"] is None
+    assert response.json()["story"]["recovery"] is None
+    assert client.get("/api/incidents/" + ident).status_code == 401
+    post(client, ingester, state="recovery")
+    story = client.get("/api/incidents/" + ident, headers=operator).json()["story"]
+    assert story["recovery"]["incident_id"] == ident
+    assert story["actions"][-1]["action"] == "incident.resolved"
+    other = post(client, ingester).json()["incident_id"]
+    client.patch(
+        "/api/incidents/" + other,
+        headers=operator,
+        json={"status": "resolved", "note": "Closed manually without observation"},
+    )
+    manual = client.get("/api/incidents/" + other, headers=operator).json()["story"]
+    assert manual["recovery"] is None
+    assert manual["actions"][-1]["actor"] == "operator"
+
+
+def test_story_keeps_simulations_and_other_approval_actions_separate(client, operator, ingester):
+    post(
+        client,
+        ingester,
+        source="collector",
+        source_kind="real",
+        state="recovery",
+        service_id="sample-api",
+    )
+    simulated = post(client, ingester, service_id="sample-api").json()["incident_id"]
+    real = post(
+        client, ingester, source="collector", source_kind="real", service_id="sample-api"
+    ).json()["incident_id"]
+    approval = client.post(
+        "/api/approvals",
+        headers=operator,
+        json={
+            "incident_id": real,
+            "runbook": "clear-http-fault:v1",
+            "target": "sample-api",
+            "parameters": {},
+        },
+    ).json()
+    real_story = client.get("/api/incidents/" + real, headers=operator).json()["story"]
+    sim_story = client.get("/api/incidents/" + simulated, headers=operator).json()["story"]
+    assert real_story["previous"] is not None and sim_story["previous"] is None
+    assert real_story["approvals"][0]["id"] == approval["id"]
+    assert any(a["action"] == "approval.requested" for a in real_story["actions"])
+    assert sim_story["approvals"] == []
+    assert not any(a["action"] == "approval.requested" for a in sim_story["actions"])
+
+
 def test_event_id_cannot_be_reused_for_another_payload(client, ingester):
     payload = event()
     assert client.post("/api/monitoring/events", headers=ingester, json=payload).status_code == 200
