@@ -8,7 +8,23 @@ outages, incident persistence and approved HTTP fault recovery use real services
 
 **Status:** working local MVP. Default diagnosis is deterministic (`rules`), explicitly
 labelled as **not AI inference**. An optional OpenAI Agents SDK adapter is included;
-live model quality has not been evaluated without an API key. See [test results](docs/TEST_RESULTS.md).
+one live HTTP-fault case has been completed with gpt-4o-mini, while broad model quality
+remains unverified. See [test results](docs/TEST_RESULTS.md).
+
+## See an actual AI-assisted case
+
+Open **http://127.0.0.1:8080/?case=1** after starting the frontend. This read-only page
+shows the recorded real HTTP 500 → model tools/findings → operator-authorized fixed
+recovery → HTTP 200 → monitored closure. It requires no login or new model call.
+The case ran on Windows with isolated SQLite storage, not Docker/PostgreSQL. The model
+recommended checks; an explicitly user-authorized test harness approved and executed the
+fixed runbook. It was not autonomous model authorization or a general repair agent.
+To explicitly repeat this paid API experiment: `.venv/Scripts/python -m scripts.live_ai_case`.
+The script uses private .env credentials and exports only the redacted successful case.
+For a standalone local case preview without Docker: run `npm run build` and
+`npm exec -- vite preview --host 127.0.0.1 --port 8080` inside `frontend/`, then open
+`http://127.0.0.1:8080/?case=1`. This serves the recorded case only; authenticated live
+operations still require the backend/lab deployment.
 
 ## Quick start — Windows PowerShell
 

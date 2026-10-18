@@ -1,0 +1,356 @@
+{
+  "model": "gpt-4o-mini",
+  "scope": "Windows host / SQLite; real HTTP fault and live OpenAI inference. Not a Docker/PostgreSQL test.",
+  "approval_actor": "User-authorized demonstration harness, using operator API approval; not autonomous model authorization.",
+  "checks": [
+    "initial HTTP 200",
+    "real injected HTTP 500",
+    "live model report completed",
+    "agent inspected evidence",
+    "model returned findings and recommendations",
+    "approved fixed runbook succeeded",
+    "post-action HTTP 200",
+    "monitoring closed incident with recovery"
+  ],
+  "incident": {
+    "id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+    "asset_id": "lab-node",
+    "service_id": "sample-api",
+    "check": "availability",
+    "title": "sample-api: availability alert",
+    "severity": "critical",
+    "status": "resolved",
+    "active_key": null,
+    "source_kind": "real",
+    "alert_count": 1,
+    "created_at": "2026-10-18T21:57:38.486414",
+    "last_seen_at": "2026-10-18T21:57:38.483782",
+    "resolved_at": "2026-10-18T21:57:47.987784",
+    "resolution_note": "Recovery observed by monitoring",
+    "evidence": [
+      {
+        "id": "69de3907-8bcf-4a75-8dfe-3daec4607913",
+        "incident_id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+        "source": "collector",
+        "collected_at": "2026-10-18T21:57:38.488059",
+        "data": {
+          "source": "collector",
+          "event_id": "74bb2af2-74f7-48d8-b80a-28896118cb2d",
+          "asset_id": "lab-node",
+          "service_id": "sample-api",
+          "check": "availability",
+          "state": "problem",
+          "severity": "critical",
+          "source_kind": "real",
+          "observed_at": "2026-10-18T21:57:38.483782Z",
+          "data": {
+            "observation": {
+              "healthy": false,
+              "fault": "http500"
+            },
+            "metrics": {
+              "cpu": 0.0,
+              "memory": 67.8,
+              "disk": 94.6
+            },
+            "logs": [
+              {
+                "at": "2026-10-18T21:57:38.155575+00:00",
+                "message": "Operator set fault to http500"
+              },
+              {
+                "at": "2026-10-18T21:57:38.157614+00:00",
+                "message": "Injected HTTP 500 fault is active"
+              }
+            ],
+            "scope": "Windows host process lab; SQLite target; not Docker/PostgreSQL",
+            "source_kind": "real"
+          }
+        }
+      },
+      {
+        "id": "0809774d-aac4-412f-a14c-e350486b72aa",
+        "incident_id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+        "source": "lab-telemetry",
+        "collected_at": "2026-10-18T21:57:38.706314",
+        "data": {
+          "observed_at": "2026-10-18T21:57:38.601378+00:00",
+          "scope": "Windows host process lab; SQLite target; not Docker/PostgreSQL",
+          "api": {
+            "healthy": false,
+            "fault": "http500"
+          },
+          "database": {
+            "healthy": true
+          },
+          "metrics": {
+            "cpu": 0.0,
+            "memory": 67.8,
+            "disk": 94.6
+          },
+          "logs": [
+            {
+              "at": "2026-10-18T21:57:38.155575+00:00",
+              "message": "Operator set fault to http500"
+            },
+            {
+              "at": "2026-10-18T21:57:38.157614+00:00",
+              "message": "Injected HTTP 500 fault is active"
+            }
+          ]
+        }
+      }
+    ],
+    "diagnoses": [
+      {
+        "id": "f992d38e-dc25-406e-9613-3cb87b87c94a",
+        "incident_id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+        "status": "completed",
+        "provider": "openai",
+        "created_at": "2026-10-18T21:57:38.487437",
+        "finished_at": "2026-10-18T21:57:47.603532",
+        "report": {
+          "summary": "Bu olay, sample-api servisinde yaşanan bir erişilebilirlik sorununu içermektedir. Sorun, HTTP 500 hatası olarak belirtilmiştir ve kritik seviyede bir sorun yaşandığı tespit edilmiştir.",
+          "findings": [
+            {
+              "statement": "HTTP 500 hatası nedeniyle sample-api servisi sorunlu durumda.",
+              "evidence_ids": [
+                "69de3907-8bcf-4a75-8dfe-3daec4607913",
+                "0809774d-aac4-412f-a14c-e350486b72aa"
+              ],
+              "confidence": "high"
+            }
+          ],
+          "unknowns": [],
+          "recommendations": [
+            "HTTP 500 hatasını gidermek için 'runbook:http500' kontrol edin.",
+            "Veritabanın erişilebilirliğini teyit edin.",
+            "Doğru hata tespiti için sistem sağlık durumu kontrol edin."
+          ],
+          "source_ids": ["runbook:http500"]
+        },
+        "error": null
+      }
+    ],
+    "story": {
+      "previous": {
+        "id": "8e559034-bb2e-46f0-af75-0c47d8f04b83",
+        "source": "collector",
+        "event_id": "850537d6-d34d-425b-8000-971b9c58e632",
+        "correlation_key": "real:lab-node:sample-api:availability",
+        "incident_id": null,
+        "observed_at": "2026-10-18T21:57:38.082966",
+        "state": "recovery",
+        "payload": {
+          "source": "collector",
+          "event_id": "850537d6-d34d-425b-8000-971b9c58e632",
+          "asset_id": "lab-node",
+          "service_id": "sample-api",
+          "check": "availability",
+          "state": "recovery",
+          "severity": "critical",
+          "source_kind": "real",
+          "observed_at": "2026-10-18T21:57:38.082966Z",
+          "data": {
+            "observation": {
+              "healthy": true,
+              "fault": "none"
+            },
+            "metrics": {
+              "cpu": 0.0,
+              "memory": 67.8,
+              "disk": 94.6
+            },
+            "logs": [],
+            "scope": "Windows host process lab; SQLite target; not Docker/PostgreSQL",
+            "source_kind": "real"
+          }
+        }
+      },
+      "recovery": {
+        "id": "a53153a8-8dbd-4afb-883e-8fe588b2c6b3",
+        "source": "collector",
+        "event_id": "e5590cec-1948-4e60-981d-93d3b8e90bd5",
+        "correlation_key": "real:lab-node:sample-api:availability",
+        "incident_id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+        "observed_at": "2026-10-18T21:57:47.984730",
+        "state": "recovery",
+        "payload": {
+          "source": "collector",
+          "event_id": "e5590cec-1948-4e60-981d-93d3b8e90bd5",
+          "asset_id": "lab-node",
+          "service_id": "sample-api",
+          "check": "availability",
+          "state": "recovery",
+          "severity": "critical",
+          "source_kind": "real",
+          "observed_at": "2026-10-18T21:57:47.984730Z",
+          "data": {
+            "observation": {
+              "healthy": true,
+              "fault": "none"
+            },
+            "metrics": {
+              "cpu": 0.0,
+              "memory": 68.0,
+              "disk": 94.6
+            },
+            "logs": [
+              {
+                "at": "2026-10-18T21:57:38.155575+00:00",
+                "message": "Operator set fault to http500"
+              },
+              {
+                "at": "2026-10-18T21:57:38.157614+00:00",
+                "message": "Injected HTTP 500 fault is active"
+              },
+              {
+                "at": "2026-10-18T21:57:47.820142+00:00",
+                "message": "Approved runbook cleared HTTP fault"
+              }
+            ],
+            "scope": "Windows host process lab; SQLite target; not Docker/PostgreSQL",
+            "source_kind": "real"
+          }
+        }
+      },
+      "approvals": [
+        {
+          "id": "c909e3c5-6240-4f99-b1c7-141a0fea852b",
+          "incident_id": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "runbook": "clear-http-fault:v1",
+          "target": "sample-api",
+          "parameters": {},
+          "fingerprint": "317f37c0887b0ffd9cc1a2e3b08b4707ccb31c23f889572f569d9d8066586bbc",
+          "status": "succeeded",
+          "created_at": "2026-10-18T21:57:47.637142",
+          "expires_at": "2026-10-18T22:02:47.635498",
+          "decided_by": "operator",
+          "result": {
+            "before": {
+              "api": {
+                "healthy": false,
+                "fault": "http500"
+              },
+              "database": {
+                "healthy": true
+              }
+            },
+            "after": {
+              "http_status": 200
+            }
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "3d536f24-c08b-4129-b78c-580db6f807c7",
+          "created_at": "2026-10-18T21:57:38.487437",
+          "actor": "monitoring",
+          "action": "incident.created",
+          "target": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "details": {}
+        },
+        {
+          "id": "81aca453-75ec-4487-a6c5-0b79b84c3014",
+          "created_at": "2026-10-18T21:57:38.703589",
+          "actor": "diagnosis-agent",
+          "action": "tool.collect_telemetry",
+          "target": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "details": {}
+        },
+        {
+          "id": "d067429b-7a34-4c19-aa8c-ed15ea2e27ba",
+          "created_at": "2026-10-18T21:57:47.604640",
+          "actor": "diagnosis-agent",
+          "action": "tool.get_incident_evidence",
+          "target": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "details": {
+            "run_id": "f992d38e-dc25-406e-9613-3cb87b87c94a"
+          }
+        },
+        {
+          "id": "be3b6609-eed3-4e35-98b2-627efff8fe47",
+          "created_at": "2026-10-18T21:57:47.604640",
+          "actor": "diagnosis-agent",
+          "action": "diagnosis.completed",
+          "target": "f992d38e-dc25-406e-9613-3cb87b87c94a",
+          "details": {
+            "provider": "openai",
+            "evidence_count": 2,
+            "model": "gpt-4o-mini"
+          }
+        },
+        {
+          "id": "84c43377-98d9-46aa-a1c2-d84bcdf66fed",
+          "created_at": "2026-10-18T21:57:47.604640",
+          "actor": "diagnosis-agent",
+          "action": "tool.search_knowledge_base",
+          "target": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "details": {
+            "run_id": "f992d38e-dc25-406e-9613-3cb87b87c94a"
+          }
+        },
+        {
+          "id": "522800d2-8b7f-4e90-937d-c99cde2b39fc",
+          "created_at": "2026-10-18T21:57:47.638652",
+          "actor": "operator",
+          "action": "approval.requested",
+          "target": "c909e3c5-6240-4f99-b1c7-141a0fea852b",
+          "details": {
+            "runbook": "clear-http-fault:v1",
+            "target": "sample-api"
+          }
+        },
+        {
+          "id": "fb35ca7e-7329-4931-95cd-a501541106a0",
+          "created_at": "2026-10-18T21:57:47.657326",
+          "actor": "operator",
+          "action": "approval.approved",
+          "target": "c909e3c5-6240-4f99-b1c7-141a0fea852b",
+          "details": {}
+        },
+        {
+          "id": "a55ce3ad-24e3-4767-b187-859f87c4ce9c",
+          "created_at": "2026-10-18T21:57:47.675702",
+          "actor": "executor",
+          "action": "runbook.started",
+          "target": "c909e3c5-6240-4f99-b1c7-141a0fea852b",
+          "details": {}
+        },
+        {
+          "id": "cd3a2cca-497b-4142-8a39-1484d5459e93",
+          "created_at": "2026-10-18T21:57:47.826065",
+          "actor": "executor",
+          "action": "runbook.succeeded",
+          "target": "c909e3c5-6240-4f99-b1c7-141a0fea852b",
+          "details": {
+            "before": {
+              "api": {
+                "healthy": false,
+                "fault": "http500"
+              },
+              "database": {
+                "healthy": true
+              }
+            },
+            "after": {
+              "http_status": 200
+            }
+          }
+        },
+        {
+          "id": "c3d64334-58c2-4d59-ae4f-9294ddd6987b",
+          "created_at": "2026-10-18T21:57:47.989566",
+          "actor": "monitoring",
+          "action": "incident.resolved",
+          "target": "bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc",
+          "details": {
+            "note": "Recovery observed by monitoring"
+          }
+        }
+      ],
+      "actions_limit": 200
+    }
+  }
+}

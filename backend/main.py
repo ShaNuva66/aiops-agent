@@ -295,7 +295,11 @@ def create_app(settings: Settings | None = None, factory=None) -> FastAPI:
         actions = list(
             session.scalars(
                 select(AuditEvent)
-                .where(AuditEvent.target.in_([ident, *(a.id for a in approvals)]))
+                .where(
+                    AuditEvent.target.in_(
+                        [ident, *(a.id for a in approvals), *(d["id"] for d in item["diagnoses"])]
+                    )
+                )
                 .order_by(AuditEvent.created_at.desc(), AuditEvent.id)
                 .limit(200)
             )

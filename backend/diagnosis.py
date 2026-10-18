@@ -66,7 +66,9 @@ def rules_report(incident, evidence, sources) -> DiagnosisReport:
     )
 
 
-async def llm_report(session, incident, evidence, sources, settings) -> DiagnosisReport:
+async def llm_report(
+    session, incident, evidence, sources, settings, run_id=None
+) -> DiagnosisReport:
     from agents import Agent, OpenAIProvider, RunConfig, Runner, function_tool
     from openai import AsyncOpenAI
 
@@ -88,7 +90,7 @@ async def llm_report(session, incident, evidence, sources, settings) -> Diagnosi
         if tool_calls > 8:
             raise ValueError("Tool call budget exceeded")
         tools_used.add(name)
-        audit(session, "diagnosis-agent", "tool." + name, incident.id)
+        audit(session, "diagnosis-agent", "tool." + name, incident.id, {"run_id": run_id})
 
     @function_tool
     async def get_incident_evidence() -> str:
@@ -134,7 +136,15 @@ async def llm_report(session, incident, evidence, sources, settings) -> Diagnosi
             "Cite existing evidence IDs for every finding, and existing document IDs for sources. "
             "Distinguish current health from health at the event time. Availability failures do "
             "not prove disk exhaustion. State uncertainty and missing evidence. Recommend only "
-            "read-only checks or a human-reviewed predefined runbook. No shell commands."
+            "read-only checks or a human-reviewed predefined runbook. No shell commands. "
+            "Write summary, findings, unknowns and recommendations in plain Turkish. "
+            "Explain the user impact, the evidence and the proposed next step separately. "
+            "IMPORTANT: findings[].evidence_ids contains ONLY IDs returned by "
+            "get_incident_evidence. source_ids is a DIFFERENT list: it contains ONLY "
+            "knowledge document IDs returned by search_knowledge_base (for example "
+            "runbook:http500). NEVER put evidence UUIDs in source_ids. Call "
+            "search_knowledge_base before citing any source; if none was used, "
+            "return source_ids=[]. Do not invent IDs."
         ),
         tools=[get_incident_evidence, search_knowledge_base, get_service_status],
         output_type=DiagnosisReport,
@@ -156,13 +166,11 @@ async def llm_report(session, incident, evidence, sources, settings) -> Diagnosi
     return result.final_output
 
 
-def process_one(session, settings) -> bool:
-    job = session.scalar(
-        select(DiagnosisRun)
-        .where(DiagnosisRun.status == "queued")
-        .order_by(DiagnosisRun.created_at)
-        .limit(1)
-    )
+def process_one(session, settings, incident_id=None) -> bool:
+    query = select(DiagnosisRun).where(DiagnosisRun.status == "queued")
+    if incident_id is not None:
+        query = query.where(DiagnosisRun.incident_id == incident_id)
+    job = session.scalar(query.order_by(DiagnosisRun.created_at).limit(1))
     if not job:
         return False
     claimed = session.execute(
@@ -210,7 +218,7 @@ def process_one(session, settings) -> bool:
         report = (
             rules_report(incident, evidence, sources)
             if job.provider == "rules"
-            else (asyncio.run(llm_report(session, incident, evidence, sources, settings)))
+            else (asyncio.run(llm_report(session, incident, evidence, sources, settings, job.id)))
         )
         validate_report(report, {item.id for item in evidence}, {s["id"] for s in sources})
         job.report = redact(report.model_dump())
@@ -220,7 +228,11 @@ def process_one(session, settings) -> bool:
             "diagnosis-agent",
             "diagnosis.completed",
             job.id,
-            {"provider": job.provider, "evidence_count": len(evidence)},
+            {
+                "provider": job.provider,
+                "evidence_count": len(evidence),
+                "model": settings.openai_model if job.provider == "openai" else None,
+            },
         )
     except Exception as exc:
         job.status = "failed"

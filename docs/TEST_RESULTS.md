@@ -1,6 +1,6 @@
 # Verification results
 
-Last verified: 2026-10-16 (Europe/Istanbul). Local Windows 11 / Docker Desktop Linux lab.
+Last verified: 2026-10-19 (Europe/Istanbul). Windows host lab and prior Docker Linux lab.
 This report records local verification, not a production certification or live LLM benchmark.
 
 ## Automated checks
@@ -11,7 +11,7 @@ and visual walkthrough checks are documented separately below.
 
 | Check | Result |
 |---|---|
-| pytest API/logic/security/SDK/retrieval/auth/lab | 46 passed |
+| pytest API/logic/security/SDK/retrieval/auth/lab | 47 passed in 60.52s (latest run) |
 | Backend statement coverage | 92% displayed (901 statements, 69 not exercised by pytest) |
 | Account/session module coverage | 97% displayed |
 | Real Docker acceptance suite | 27 checks passed |
@@ -144,7 +144,41 @@ The optional Qdrant container was stopped after its verification. Both monitored
 were healthy, no incidents were active and execution was disabled at handoff.
 
 ## Not verified or included
-Live OpenAI model accuracy, live-model injection resistance, model cost/latency, semantic
+Broad OpenAI model accuracy, live-model injection resistance, model cost/latency, semantic
 embedding relevance, actual Zabbix delivery, real host resource exhaustion, isolated DNS
 and network fault scenarios, multi-process scaling, Windows Server and Active Directory.
 No claims of successful testing are made for these items.
+
+## Live model case — 2026-10-19
+
+The web-crew credential was reused privately at the user's explicit request. Model access
+was verified for gpt-4o-mini. Docker Desktop failed during inference-manager startup, so
+this exercise used a separate real HTTP lab process and SQLite control/target databases
+on Windows. Existing Docker data and account were not changed. The shared deployment
+remains in rules/read-only mode; the exercise config alone enabled OpenAI and scoped execution.
+
+Eight checks passed: initial HTTP 200, injected actual HTTP 500, live model completion,
+evidence-tool invocation, findings/recommendations, approved fixed-runbook success,
+post-action HTTP 200 and monitoring-based closure. The exported case is
+bd2c0d10-b4e3-4b07-9b0e-fc113f7450fc. Its original model report is retained unchanged.
+Evidence references are valid; the model recommended the HTTP error guide and database/
+health checks. It did not independently execute the fix. Operator API approval and execution
+were performed by the user-authorized demonstration harness, not clicked by a human in UI.
+
+Failures are part of the result: early live attempts confused evidence UUIDs with knowledge
+document IDs and were rejected. Another attempt processed a pre-existing high-disk alarm
+instead of the intended HTTP incident and made an unsupported disk→HTTP causal claim.
+Prompt ID distinctions were clarified and the harness now selects its exact incident.
+That causal error demonstrates why structural citation validation does not establish truth.
+This is one completed case, not an accuracy benchmark. No further live calls are made when
+opening the page. Pytest initially failed creating sandbox temp directories; rerunning in
+the allowed workspace outside the restricted runtime passed all 47 tests.
+
+Final host Vite build, Prettier and Ruff passed. Playwright checked the actual built case
+page at /?case=1 without login, model output, selected execution/recovery stages, tool
+history and visible evidence anchors. A request listener observed no writes during page
+interactions. Initial mobile overflow from a long ID and an inherited header layout were
+corrected; final 390px check passed. The case page is served by a host-only Vite preview
+while Docker is unavailable; the live authenticated operations backend was not deployed.
+Reviewed [desktop](images/live-ai-case.png) and [mobile](images/live-ai-mobile.png) images
+show the real recorded case. The only browser resource error was a missing favicon 404.

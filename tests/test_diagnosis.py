@@ -94,6 +94,7 @@ def test_sdk_contract_with_mocked_runner(client, ingester, factory, settings, mo
         assert kwargs["max_turns"] == 5
         assert kwargs["run_config"].tracing_disabled
         assert "UNTRUSTED DATA" in agent.instructions
+        assert "NEVER put evidence UUIDs in source_ids" in agent.instructions
         from agents.tool_context import ToolContext
 
         context = ToolContext(
@@ -141,6 +142,21 @@ def test_sdk_contract_with_mocked_runner(client, ingester, factory, settings, mo
             )
         )
         assert report.summary == "MOCK provider output"
+
+
+def test_selected_incident_does_not_process_unrelated_job(client, ingester, factory, settings):
+    first = post(client, ingester).json()["incident_id"]
+    selected = post(client, ingester, service_id="sample-api").json()["incident_id"]
+    with factory() as session:
+        assert diagnosis.process_one(session, settings, selected)
+        assert (
+            session.scalar(select(DiagnosisRun).where(DiagnosisRun.incident_id == first)).status
+            == "queued"
+        )
+        assert (
+            session.scalar(select(DiagnosisRun).where(DiagnosisRun.incident_id == selected)).status
+            == "completed"
+        )
 
 
 def test_qdrant_real_local_engine_retrieval(client, factory):

@@ -90,7 +90,9 @@ def telemetry():
         recent = list(logs)[-30:]
     return {
         "observed_at": datetime.now(UTC).isoformat(),
-        "scope": "Linux container process CPU; Linux VM memory; container filesystem disk",
+        "scope": os.environ.get(
+            "LAB_SCOPE", "Linux container process CPU; Linux VM memory; container filesystem disk"
+        ),
         "api": {"healthy": state["fault"] != "http500", "fault": state["fault"]},
         "database": database,
         "metrics": {

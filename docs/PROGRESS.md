@@ -22,9 +22,10 @@ Last implementation session: 2026-10-16, Europe/Istanbul.
 - Optional learning explanations, preserved original technical data and common Turkish knowledge-search keywords.
 - Interactive HTTP/database fault walkthrough with changing topology and playback; explicitly educational and without backend writes.
 - Incident story from prior observations, evidence, scoped approvals/audit and verified recovery, separating manual closure from monitored recovery.
+- 2026-10-19: one completed live gpt-4o-mini HTTP-fault case in an isolated Windows/SQLite lab; public read-only case page at /?case=1 with model findings, tools, scoped approval, HTTP 200 verification and recovery.
 
 ## Last test results
-- 46 pytest tests passed; backend statement coverage displayed as 92%.
+- 47 pytest tests passed in the latest run; previous measured backend coverage was 92%.
 - 27 real Docker acceptance checks passed in the final run.
 - Actual Qdrant 1.19.1 server storage/query check passed.
 - TypeScript/Vite production build, Prettier, Ruff and Alembic drift checks passed.
@@ -34,12 +35,13 @@ Last implementation session: 2026-10-16, Europe/Istanbul.
 - See TEST_RESULTS.md for measured timings and verification boundaries.
 
 ## In progress / next task
-Configure an owner-selected model and API key privately, then run a live diagnosis evaluation
-against labelled faults. Do not count mock/rules results as AI diagnosis accuracy.
+Extend live-model evaluation across labelled faults. One HTTP case completed; early runs
+exposed invalid knowledge references and unsupported causality on an unrelated disk case.
+Do not treat a single successful case as diagnosis accuracy or production reliability.
 After evaluation, integrate and test a real Zabbix deployment using the existing ingestion contract.
 
 ## Known limitations
-- Live OpenAI inference and semantic retrieval quality have not been tested.
+- Live OpenAI inference was exercised for one successful HTTP case, with failures documented; broad accuracy and semantic retrieval quality remain unverified.
 - No Zabbix deployment, Windows Server or Active Directory integration yet.
 - One local operator account; email recovery and public multi-user registration are not implemented.
 - Single API process; slow probes/diagnosis delay the next monitoring cycle.

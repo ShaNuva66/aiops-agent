@@ -34,6 +34,8 @@ import "./style.css";
 import "./story.css";
 import { ApiError, request } from "./api";
 import { FaultWalkthrough, IncidentStory } from "./story";
+import { AgentContribution } from "./contribution";
+import { CasePage, LiveCaseStudy } from "./case-study";
 import {
   auditLabel,
   explainEvidence,
@@ -643,6 +645,7 @@ function App() {
                 </div>
               </section>
               <IncidentStory incident={selected} />
+              <AgentContribution incident={selected} />
               <div className="detail-grid">
                 <section className="panel">
                   <div className="panel-heading">
@@ -850,6 +853,7 @@ function App() {
             <>
               {tab === "Overview" && (
                 <>
+                  <LiveCaseStudy />
                   <FaultWalkthrough />
                   <div className="stats">
                     {[
@@ -1425,6 +1429,10 @@ function App() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    {new URLSearchParams(window.location.search).get("case") === "1" ? (
+      <CasePage />
+    ) : (
+      <App />
+    )}
   </StrictMode>,
 );

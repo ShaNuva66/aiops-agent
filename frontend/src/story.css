@@ -1,7 +1,124 @@
+.case-page {
+  overflow-wrap: anywhere;
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 24px;
+}
+.case-page .evidence-card > code {
+  display: block;
+  margin-top: 8px;
+}
+.case-page > header {
+  display: block;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  position: static;
+  margin-bottom: 30px;
+  max-width: 850px;
+}
+.case-page h1 {
+  font-size: 32px;
+  line-height: 1.5;
+  color: #264c40;
+}
+.case-page > header p {
+  font-size: 16px;
+  line-height: 1.9;
+  color: #526c78;
+}
+.case-page > footer {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #657b89;
+  padding: 20px 0;
+}
+.live-case {
+  border-top: 3px solid #217f67;
+}
+.live-case h2 {
+  font-size: 24px;
+  line-height: 1.5;
+  color: #254c40;
+}
+.live-case > p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: #4b6575;
+}
+.case-outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 13px;
+  padding: 20px;
+  border: 1px solid #d7e5de;
+  background: #f0f8f3;
+  border-radius: 8px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.case-outcome strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #26734e;
+}
 .screen-help {
   margin: 0 0 20px;
   padding: 0;
   border: 0;
+}
+.agent-contribution {
+  margin: 20px 0;
+  border-top: 3px solid #6687c4;
+}
+.agent-contribution .panel-heading h2 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.agent-contribution p,
+.agent-contribution li {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #405b70;
+}
+.agent-contribution .agent-summary {
+  font-size: 15px;
+  color: #314e62;
+}
+.agent-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+.agent-columns h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.agent-columns article {
+  border-left: 3px solid #a3b8d9;
+  padding: 1px 14px 12px;
+  margin: 12px 0;
+  background: #f7f9fc;
+}
+.agent-columns a {
+  color: #236d60;
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .agent-columns {
+    grid-template-columns: 1fr;
+  }
+  .agent-contribution .panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 .screen-help > summary {
   color: #496775;
