@@ -3,6 +3,7 @@
 ## Current milestone
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
 Last implementation session: 2026-10-25, Europe/Istanbul.
+Presentation restored to the pre-3D Observatory version at the user's request.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.
@@ -24,7 +25,6 @@ Last implementation session: 2026-10-25, Europe/Istanbul.
 - Incident story from prior observations, evidence, scoped approvals/audit and verified recovery, separating manual closure from monitored recovery.
 - 2026-10-19: one completed live gpt-4o-mini HTTP-fault case in an isolated Windows/SQLite lab; public read-only case page at /?case=1 with model findings, tools, scoped approval, HTTP 200 verification and recovery.
 - 2026-10-25: Observatory presentation with animated topology, six-stage replay, plain/technical views, role boundaries, original AI report, evidence navigation and case download; default public route, operations retained at /?dashboard=1.
-- Readability/3D follow-up: 18px desktop/17px phone narrative, larger labels/controls, native horizontal scene deck with mouse drag/touch/keyboard, scroll-linked 3D turning and pointer-tilted hero; reduced motion remains supported.
 
 ## Last test results
 - 47 pytest tests passed in the latest run; previous measured backend coverage was 92%.

@@ -19,8 +19,10 @@ import {
   LayoutDashboard,
   LockKeyhole,
   Menu,
+  Monitor,
   Pause,
   Play,
+  Radio,
   RotateCcw,
   ScanLine,
   Server,
@@ -30,6 +32,7 @@ import {
   Workflow,
   X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import caseData from "./live-case.json";
 import {
   caseIncident,
@@ -44,9 +47,6 @@ import {
 } from "./observatory-data";
 import { auditLabel, explainEvidence } from "./learning";
 import "./observatory.css";
-import "./observatory-readability.css";
-import "./observatory-scenes.css";
-import { SceneDeck } from "./scene-deck";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -151,6 +151,29 @@ function OrbitalSystem({ motion }: { motion: boolean }) {
   );
 }
 
+function SystemNode({
+  icon: Icon,
+  name,
+  text,
+  state,
+}: {
+  icon: LucideIcon;
+  name: string;
+  text: string;
+  state: string;
+}) {
+  return (
+    <div className={`obs-system-node ${state}`}>
+      <div className="obs-node-icon">
+        <Icon size={26} />
+        <i />
+      </div>
+      <strong>{name}</strong>
+      <span className="obs-node-status">{text}</span>
+    </div>
+  );
+}
+
 export function Observatory() {
   const [active, setActive] = useState("overview");
   const [step, setStep] = useState(0);
@@ -162,6 +185,7 @@ export function Observatory() {
   );
   const [focusEvidence, setFocusEvidence] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const phase = casePhases[step];
   const lastStep = casePhases.length - 1;
   const navigate = (id: string) => {
     setActive(id);
@@ -178,7 +202,7 @@ export function Observatory() {
         setStep(lastStep);
         setPlaying(false);
       } else setStep((value) => value + 1);
-    }, 8000);
+    }, 5500);
     return () => clearTimeout(timerRef.current);
   }, [playing, step, lastStep]);
   useEffect(() => {
@@ -392,25 +416,7 @@ export function Observatory() {
                 Sisteme müdahale etmez.
               </p>
             </div>
-            <div
-              className="obs-hero-visual"
-              onPointerMove={(event) => {
-                if (!motion || event.pointerType !== "mouse") return;
-                const box = event.currentTarget.getBoundingClientRect();
-                event.currentTarget.style.setProperty(
-                  "--orbit-tilt-x",
-                  `${(0.5 - (event.clientY - box.top) / box.height) * 20}deg`,
-                );
-                event.currentTarget.style.setProperty(
-                  "--orbit-tilt-y",
-                  `${((event.clientX - box.left) / box.width - 0.5) * 28}deg`,
-                );
-              }}
-              onPointerLeave={(event) => {
-                event.currentTarget.style.removeProperty("--orbit-tilt-x");
-                event.currentTarget.style.removeProperty("--orbit-tilt-y");
-              }}
-            >
+            <div className="obs-hero-visual">
               <div className="obs-visual-label">
                 <span>OPERASYONUN GÖRÜNMEYEN TARAFI</span>
                 <span>01 / 01</span>
@@ -598,14 +604,134 @@ export function Observatory() {
                   </li>
                 ))}
               </ol>
-              <SceneDeck
-                active={step}
-                motion={motion}
-                technical={technical}
-                onSelect={selectStep}
-                onPause={() => setPlaying(false)}
-                onProof={showProof}
-              />
+              <div className="obs-stage-body">
+                <div className="obs-topology">
+                  <div className="obs-topology-header">
+                    <span>
+                      <Radio size={14} /> O ADIMDA SİSTEMİN DURUMU
+                    </span>
+                    <small>Görsel tekrar</small>
+                  </div>
+                  <div className="obs-network">
+                    <SystemNode
+                      icon={Monitor}
+                      name="Çalışan"
+                      text={
+                        phase.app === "fault"
+                          ? "İşlemi tamamlayamıyor"
+                          : "Uygulamayı kullanıyor"
+                      }
+                      state="healthy"
+                    />
+                    <div className={`obs-connector ${phase.app}`}>
+                      <span />
+                      <ArrowRight size={16} />
+                    </div>
+                    <SystemNode
+                      icon={Server}
+                      name="İş uygulaması"
+                      text={
+                        phase.app === "fault"
+                          ? "Hata veriyor"
+                          : phase.app === "checking"
+                            ? "Kontrol ediliyor"
+                            : "Yanıt veriyor"
+                      }
+                      state={phase.app}
+                    />
+                    <div className={`obs-connector ${phase.database}`}>
+                      <span />
+                      <ArrowRight size={16} />
+                    </div>
+                    <SystemNode
+                      icon={Database}
+                      name="Veritabanı"
+                      text={
+                        phase.database === "healthy"
+                          ? "Bağlantı sağlıklı"
+                          : "Kontrol ediliyor"
+                      }
+                      state={phase.database}
+                    />
+                  </div>
+                  <div className="obs-http-result" data-tone={phase.tone}>
+                    <span>
+                      {phase.tone === "fault" ? (
+                        <Activity size={16} />
+                      ) : (
+                        <CheckCircle2 size={16} />
+                      )}
+                      <strong>{phase.response}</strong>
+                    </span>
+                    <small>
+                      {phase.app === "fault"
+                        ? "Kullanıcının isteği başarısız"
+                        : "Kontrol sonucuna göre"}
+                    </small>
+                  </div>
+                  <div className="obs-topology-legend">
+                    <span>
+                      <i /> Sağlıklı yanıt
+                    </span>
+                    <span>
+                      <i /> Hata gözlemi
+                    </span>
+                    <span>Veritabanı bu vakada durmadı.</span>
+                  </div>
+                </div>
+                <div
+                  className="obs-event-explanation"
+                  key={phase.id}
+                  aria-live="polite"
+                >
+                  <div className="obs-step-meta">
+                    <span className="obs-step-number">
+                      {String(step + 1).padStart(2, "0")}
+                    </span>
+                    <span className="obs-role-tag">{phase.actor}</span>
+                  </div>
+                  <h3>{phase.heading}</h3>
+                  <p className="obs-stage-description">{phase.description}</p>
+                  <div className="obs-human-impact">
+                    <span>
+                      <Monitor size={14} /> ÇALIŞAN İÇİN ANLAMI
+                    </span>
+                    <p>{phase.impact}</p>
+                  </div>
+                  {technical && (
+                    <div className="obs-step-technical">
+                      <code>{phase.response}</code>
+                      <small>
+                        Kayıt zamanı:{" "}
+                        {phase.at
+                          ? formatRecordTime(phase.at)
+                          : "Bu adım için ayrı zaman kaydı yok"}
+                      </small>
+                      <small>{phase.proof}</small>
+                    </div>
+                  )}
+                  <button
+                    className="obs-proof-link"
+                    onClick={() => showProof(phase.evidenceIds[0])}
+                  >
+                    <Fingerprint size={15} /> Bu adımın kanıtını gör{" "}
+                    <ArrowUpRight size={15} />
+                  </button>
+                  <div className="obs-next-hint">
+                    {step < lastStep ? (
+                      <button onClick={() => selectStep(step + 1)}>
+                        Sırada: {casePhases[step + 1].title}{" "}
+                        <ArrowRight size={15} />
+                      </button>
+                    ) : (
+                      <span>
+                        <CheckCheck size={16} /> Olay, sağlıklı kontrolle
+                        kapandı.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="obs-case-footnote">
                 <LockKeyhole size={13} />
                 <span>
