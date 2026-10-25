@@ -1,0 +1,234 @@
+.observatory .obs-cinematic-deck {
+  position: relative;
+  background: #15231c;
+}
+.observatory .obs-scene-instructions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 20px 26px;
+  color: #d7e3d6;
+  border-bottom: 1px solid #35473a;
+}
+.observatory .obs-scene-instructions > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e4c993;
+}
+.observatory .obs-scene-instructions > span:last-child {
+  font-size: 14px;
+}
+.observatory .obs-scene-rail {
+  display: flex;
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #bea36c #263a2c;
+  perspective: 1500px;
+  cursor: grab;
+  scroll-behavior: smooth;
+  touch-action: pan-x pan-y;
+}
+.observatory .obs-scene-rail:focus-visible {
+  outline: 3px solid #d2b073;
+  outline-offset: -4px;
+}
+.observatory .obs-scene-rail.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+  scroll-behavior: auto;
+}
+.observatory .obs-scene-rail.is-dragging * {
+  user-select: none;
+  cursor: grabbing;
+}
+.observatory .obs-scene-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 30px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: stretch;
+  perspective: 1500px;
+}
+.observatory .obs-scene-surface {
+  width: 100%;
+  border: 1px solid #b9c3ad;
+  border-radius: 16px;
+  background: #fcfcf6;
+  overflow: hidden;
+  box-shadow:
+    0 18px 55px #0005,
+    0 1px 0 #eff4d72b;
+  transform-origin: 50% 50%;
+  transform: translateZ(var(--scene-depth, 0px))
+    rotateY(var(--scene-angle, 0deg)) scale(var(--scene-scale, 1));
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.observatory .obs-scene-chapter {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  border-bottom: 1px solid #dde3d5;
+  background: #edf0e5;
+  color: #65754f;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+.observatory .obs-scene-chapter b {
+  font-size: 25px;
+  font-weight: 500;
+  color: #465b31;
+  letter-spacing: -0.04em;
+}
+.observatory .obs-scene-chapter > span {
+  margin-left: auto;
+  color: #48573c;
+  letter-spacing: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.observatory .obs-scene-surface .obs-stage-body {
+  height: calc(100% - 76px);
+  min-height: 510px;
+}
+.observatory .obs-scene-surface .obs-topology {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.observatory .obs-scene-surface .obs-topology-header {
+  margin-bottom: 30px;
+}
+.observatory .obs-scene-surface .obs-network {
+  margin: 0 0 30px;
+}
+.observatory .obs-scene-surface .obs-event-explanation {
+  animation: none;
+}
+.observatory .obs-scene-announcement {
+  padding: 14px 24px;
+  color: #cdd9c7;
+  font-size: 15px;
+  border-top: 1px solid #35473a;
+}
+.observatory .obs-hero-visual {
+  perspective: 1100px;
+}
+.observatory .obs-hero-visual .obs-orbit {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--orbit-tilt-x, -8deg))
+    rotateY(var(--orbit-tilt-y, -14deg));
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.observatory .obs-hero-visual .obs-orbit-core {
+  transform-style: preserve-3d;
+  transform: translateZ(42px) rotateY(-12deg) rotateX(12deg) rotateZ(-5deg);
+}
+.observatory .obs-hero-visual .obs-orbit-core::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: #233427;
+  border: 1px solid #b7ad70;
+  transform: translateZ(-20px);
+  box-shadow: 12px 14px 0 #0d1a1377;
+}
+.observatory .obs-hero-visual .obs-orbit-core::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(140deg, #ffe4a711, transparent 55%);
+  border: 1px solid #f5dc9622;
+  transform: translateZ(6px);
+}
+.observatory .obs-hero-visual .obs-orbit-satellite {
+  transform: translateZ(25px);
+}
+.observatory .obs-hero-visual .obs-orbit-ring {
+  transform-style: preserve-3d;
+}
+.observatory[data-motion="off"] .obs-scene-surface,
+.observatory[data-motion="off"] .obs-hero-visual .obs-orbit,
+.observatory[data-motion="off"] .obs-hero-visual .obs-orbit-core {
+  transform: none !important;
+  will-change: auto;
+}
+.observatory[data-motion="off"] .obs-scene-rail {
+  scroll-behavior: auto;
+}
+.observatory[data-motion="off"] .obs-orbit-core::before,
+.observatory[data-motion="off"] .obs-orbit-core::after {
+  transform: none !important;
+}
+@media (max-width: 1100px) {
+  .observatory .obs-scene-slide {
+    padding: 22px;
+  }
+  .observatory .obs-scene-surface .obs-stage-body {
+    min-height: 0;
+  }
+}
+@media (max-width: 760px) {
+  .observatory .obs-scene-instructions {
+    padding: 18px;
+    gap: 8px;
+  }
+  .observatory .obs-scene-instructions > span:last-child {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .observatory .obs-scene-slide {
+    padding: 16px;
+  }
+  .observatory .obs-scene-chapter {
+    padding: 15px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .observatory .obs-scene-chapter > span {
+    font-size: 15px;
+  }
+  .observatory .obs-scene-surface .obs-stage-body {
+    height: auto;
+  }
+  .observatory .obs-scene-surface .obs-topology {
+    padding: 22px 16px;
+  }
+  .observatory .obs-scene-surface .obs-network {
+    margin-bottom: 22px;
+  }
+  .observatory .obs-scene-announcement {
+    padding: 14px 18px;
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .observatory .obs-scene-surface,
+  .observatory .obs-hero-visual .obs-orbit,
+  .observatory .obs-hero-visual .obs-orbit-core {
+    transform: none !important;
+    will-change: auto;
+  }
+  .observatory .obs-scene-rail {
+    scroll-behavior: auto;
+  }
+  .observatory .obs-orbit-core::before,
+  .observatory .obs-orbit-core::after {
+    transform: none !important;
+  }
+}

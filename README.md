@@ -19,6 +19,11 @@ separate monitoring/AI/operator responsibilities, the original AI report and evi
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
 to control animation, and **Vaka kaydını indir** to download the original sanitized case.
 Reduced-motion preferences are respected. Playback never sends a command or model request.
+The incident story uses native horizontal scroll-snap with 3D turning surfaces. Drag the
+scene with a mouse, swipe on a phone, use horizontal/Shift-wheel scrolling or the arrow
+controls. Normal vertical page scrolling remains available. Main descriptions are 18px
+on desktop and 17px on phones; reduced motion removes 3D transforms. Autoplay allows
+eight seconds per scene and pauses when the scene receives focus.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
 Preview: [Observatory desktop](docs/images/observatory-desktop.png) ·

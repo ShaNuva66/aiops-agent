@@ -212,3 +212,29 @@ disconnect errors when switching to the built preview; these were absent on a cl
 Final built preview is served only on 127.0.0.1:8080. This task did not redeploy or reverify the
 Docker backend. Reviewed [desktop](images/observatory-desktop.png),
 [incident replay](images/observatory-story.png) and [phone](images/observatory-mobile.png) screenshots.
+
+## Larger text and 3D scene deck — 2026-10-25
+
+Frontend-only follow-up to the readability review. Main descriptions measured 18px on
+1512px desktop and 17px on a 390px phone. Headings, controls and metadata were enlarged.
+The story is now a native horizontal scroll-snap deck with inner surfaces turned by CSS
+rotateY/translateZ based on actual scroll position. The hero also responds to pointer tilt.
+Flat outer slides preserve snap geometry. Inactive scenes are inert and aria-hidden;
+one separate status announces the selected scene. No backend/model behavior changed.
+
+TypeScript/Vite build and Prettier passed. Browser checks confirmed:
+- Arrow buttons, mouse drag and keyboard arrows update the same active scene.
+- Mid-drag computed transforms are actual matrix3d values; a turning frame was captured.
+- Native browser touch events advanced the carousel on the phone layout.
+- All six autoplay scenes completed, then stopped; inactive slide count was five.
+- Motion-off/reduced-motion produced transform:none and zero running animations.
+- Phone normal and technical views had no document overflow; font sizes were measured.
+- A vertical wheel event scrolled the page 400px and changed horizontal position by 0px.
+- A request listener recorded no backend write requests during scene interaction.
+
+A bulk fake-clock advance initially timed out waiting for the final React render. Repeating
+the check with a render boundary after each scene verified the full sequence and final state.
+The case remains the same recorded real test, not a new AI run. Previous backend/Docker
+results are retained, not rerun for this visual change.
+Reviewed [desktop](images/scene3d-desktop.png), [scene](images/scene3d-story.png),
+[turning transition](images/scene3d-turn.png) and [phone](images/scene3d-mobile.png) screenshots.
