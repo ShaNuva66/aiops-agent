@@ -1,6 +1,6 @@
 # Verification results
 
-Last verified: 2026-10-19 (Europe/Istanbul). Windows host lab and prior Docker Linux lab.
+Last verified: 2026-10-25 (Europe/Istanbul). Frontend replay verified; prior host/Docker results retained.
 This report records local verification, not a production certification or live LLM benchmark.
 
 ## Automated checks
@@ -182,3 +182,33 @@ corrected; final 390px check passed. The case page is served by a host-only Vite
 while Docker is unavailable; the live authenticated operations backend was not deployed.
 Reviewed [desktop](images/live-ai-case.png) and [mobile](images/live-ai-mobile.png) images
 show the real recorded case. The only browser resource error was a missing favicon 404.
+
+## Observatory redesign — 2026-10-25
+
+Frontend-only presentation changes. The default route and /?case=1 now render the visual
+Observatory; the existing authenticated App remains at /?dashboard=1. No monitoring,
+authorization, execution policy, private configuration or recorded model output changed.
+The live-case.json fixture is a retained real run, not a newly executed fault or model call.
+Prior 47 pytest results and 27 Docker checks are historical; they were not rerun for styling.
+
+TypeScript/Vite production build and Prettier passed. Playwright exercised actual localhost
+pages: six replay stages, pause/resume, automatic completion, restart, manual stage selection,
+plain/technical mode, evidence selection and the original JSON case download. A request
+listener observed zero POST/PATCH/PUT/DELETE requests during replay interactions. Model tool
+count is two; orchestration collection is not counted as a model tool. Dates use Europe/Istanbul.
+
+Desktop 1512px, tablet 920px and phone 390px layouts were checked without document overflow,
+including expanded technical data. Mobile navigation opens, closes after selection and on
+Escape; hidden navigation is removed from focus order. First keyboard Tab reaches the skip
+link. OS reduced-motion and the explicit motion toggle resulted in zero running animations.
+The production page loaded without console errors in the clean final session.
+
+Issues corrected during browser review: inherited global aside styling created an unintended
+fixed panel; role/report markup needed scoped styles; the focused skip link overlapped the
+mobile menu; immediate Escape after menu opening did not bubble to the sidebar. All were
+repaired and relevant interactions rechecked. The earlier dev browser logged expected HMR
+disconnect errors when switching to the built preview; these were absent on a clean load.
+
+Final built preview is served only on 127.0.0.1:8080. This task did not redeploy or reverify the
+Docker backend. Reviewed [desktop](images/observatory-desktop.png),
+[incident replay](images/observatory-story.png) and [phone](images/observatory-mobile.png) screenshots.

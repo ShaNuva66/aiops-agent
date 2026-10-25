@@ -2,7 +2,7 @@
 
 ## Current milestone
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
-Last implementation session: 2026-10-16, Europe/Istanbul.
+Last implementation session: 2026-10-25, Europe/Istanbul.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.
@@ -23,6 +23,7 @@ Last implementation session: 2026-10-16, Europe/Istanbul.
 - Interactive HTTP/database fault walkthrough with changing topology and playback; explicitly educational and without backend writes.
 - Incident story from prior observations, evidence, scoped approvals/audit and verified recovery, separating manual closure from monitored recovery.
 - 2026-10-19: one completed live gpt-4o-mini HTTP-fault case in an isolated Windows/SQLite lab; public read-only case page at /?case=1 with model findings, tools, scoped approval, HTTP 200 verification and recovery.
+- 2026-10-25: Observatory presentation with animated topology, six-stage replay, plain/technical views, role boundaries, original AI report, evidence navigation and case download; default public route, operations retained at /?dashboard=1.
 
 ## Last test results
 - 47 pytest tests passed in the latest run; previous measured backend coverage was 92%.
@@ -57,7 +58,8 @@ from control storage, and label all simulation/mock/lexical behavior explicitly.
 records: DECISIONS.md. Full master-project scope remains tracked in ROADMAP.md.
 
 ## Local handoff
-Dashboard: http://127.0.0.1:8080; API docs: http://127.0.0.1:8000/api/docs.
+Public Observatory: http://127.0.0.1:8080 (also /?case=1).
+Authenticated dashboard: http://127.0.0.1:8080/?dashboard=1; API docs: http://127.0.0.1:8000/api/docs.
 Create your account in the browser on first use; then sign in with username/password.
 No dashboard API token is needed. Machine integrations still use their separate .env tokens.
 Test-created incident/audit history is retained.

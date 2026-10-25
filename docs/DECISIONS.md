@@ -19,3 +19,10 @@
 | ADR-015 | Turkish learning explanations alongside original technical records | Novice operators can understand each check and follow its evidence; source IDs, timestamps, simulation labels and original data remain visible or expandable. Common Turkish search terms map to fixed lexical keywords, not model inference. |
 
 These decisions are current implementation choices, not promises of production readiness.
+
+ADR-016 (2026-10-25): The public default route is a read-only visual replay of a recorded
+real lab case. Authenticated operations use `?dashboard=1`. Replay states, model-tool counts
+and timestamps are derived from the sanitized record; decorative motion is not live telemetry.
+Keep original AI output and evidence accessible, distinguish orchestration from model calls,
+and support reduced motion and a plain-language reading mode. No backend action is bound
+to the public replay controls.

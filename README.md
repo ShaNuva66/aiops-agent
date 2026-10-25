@@ -13,6 +13,17 @@ remains unverified. See [test results](docs/TEST_RESULTS.md).
 
 ## See an actual AI-assisted case
 
+The default homepage is **AIOps Observatory**, a read-only visual operations story.
+It combines an animated system map, six-stage incident replay, employee impact,
+separate monitoring/AI/operator responsibilities, the original AI report and evidence.
+Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
+to control animation, and **Vaka kaydını indir** to download the original sanitized case.
+Reduced-motion preferences are respected. Playback never sends a command or model request.
+
+The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
+Preview: [Observatory desktop](docs/images/observatory-desktop.png) ·
+[incident replay](docs/images/observatory-story.png) · [phone](docs/images/observatory-mobile.png).
+
 Open **http://127.0.0.1:8080/?case=1** after starting the frontend. This read-only page
 shows the recorded real HTTP 500 → model tools/findings → operator-authorized fixed
 recovery → HTTP 200 → monitored closure. It requires no login or new model call.
@@ -39,7 +50,8 @@ uv run python scripts/init_env.py
 docker compose up -d --build --wait
 ```
 
-Open **http://127.0.0.1:8080**. On the first visit, create your username and password
+Open **http://127.0.0.1:8080** for the visual presentation, or
+**http://127.0.0.1:8080/?dashboard=1** for operations. On the first operator visit, create your username and password
 (at least 8 characters) using **Hesap oluştur ve giriş yap**. Later visits show the normal
 **Giriş yap** screen. Select **Beni hatırla** to keep the session for up to 30 days;
 otherwise the browser cookie is session-only and server access expires after 8 hours.
