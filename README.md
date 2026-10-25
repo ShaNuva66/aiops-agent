@@ -19,13 +19,19 @@ separate monitoring/AI/operator responsibilities, the original AI report and evi
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
 to control animation, and **Vaka kaydını indir** to download the original sanitized case.
 Reduced-motion preferences are respected. Playback never sends a command or model request.
-The background uses slow, low-contrast sage/gold light fields. Card entrances play once;
-reading text and orbit labels remain stationary. The motion control stops the effects and
-keeps all content visible, including when the operating system requests reduced motion.
+The shared palette combines navy, pearl, cyan, blue and amber across the presentation,
+sign-in screen and operations console. Slow ambient light, one-time card entrances and
+button feedback complement a soft mouse halo and local card spotlight. The native cursor
+is retained; the halo hides over form fields, during keyboard navigation and on touch devices.
+Reading text and orbit labels remain stationary. The motion preference persists across
+reloads and routes; disabling it stops effects and keeps every section visible. Operating
+system reduced-motion preferences also disable effects and pause presentation playback.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
-Preview: [Observatory desktop](docs/images/observatory-desktop.png) ·
-[incident replay](docs/images/observatory-story.png) · [phone](docs/images/observatory-mobile.png).
+Preview: [desktop](docs/images/spectrum-desktop.png) ·
+[AI report](docs/images/spectrum-ai.png) · [phone](docs/images/spectrum-mobile.png) ·
+[sign-in](docs/images/spectrum-login.png) · [operations console](docs/images/spectrum-operator.png).
+The console preview uses a separate private test fixture with labelled simulation incidents.
 
 Open **http://127.0.0.1:8080/?case=1** after starting the frontend. This read-only page
 shows the recorded real HTTP 500 → model tools/findings → operator-authorized fixed

@@ -1,0 +1,134 @@
+.visual-experience {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+  background: #f5f7fb;
+}
+.visual-experience .ve-pointer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 240px;
+  pointer-events: none !important;
+  z-index: 9999;
+  opacity: 0;
+  will-change: transform;
+  transition: opacity 0.25s ease;
+}
+.visual-experience .ve-pointer * {
+  pointer-events: none !important;
+}
+.visual-experience .ve-pointer-aura {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #67bbc21a 0%,
+    #6d94d90c 36%,
+    #e7ad6a06 58%,
+    transparent 70%
+  );
+}
+.visual-experience .ve-pointer-ring {
+  position: absolute;
+  left: 100px;
+  top: 100px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #528eb654;
+  border-radius: 50%;
+  box-shadow: 0 0 16px #87c9d71c;
+  transition:
+    transform 0.28s ease,
+    border-color 0.28s ease,
+    background-color 0.28s ease;
+}
+.visual-experience .ve-pointer[data-interactive="true"] .ve-pointer-ring {
+  transform: scale(1.35);
+  border-color: #d6a36088;
+  background: #e7c59009;
+}
+.visual-experience .ve-spot-surface {
+  position: relative;
+}
+.visual-experience .ve-spot-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none !important;
+  background: radial-gradient(
+    350px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    #63aeda0d,
+    transparent 70%
+  );
+}
+.visual-experience .ve-controls {
+  position: fixed;
+  right: 20px;
+  bottom: 18px;
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+.visual-experience .ve-controls :is(a, button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  min-height: 42px;
+  color: #284761;
+  background: #fffffff5;
+  border: 1px solid #d4e1ec;
+  border-radius: 8px;
+  box-shadow: 0 6px 22px #162e4b12;
+  font:
+    500 13px "DM Sans",
+    sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+.visual-experience .ve-controls :is(a, button):focus-visible {
+  outline: 3px solid #4b83b7;
+  outline-offset: 3px;
+}
+.visual-experience[data-motion="off"] *,
+.visual-experience[data-motion="off"] *::before,
+.visual-experience[data-motion="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.visual-experience[data-motion="off"] .ve-pointer {
+  display: none;
+}
+@media (hover: none), (pointer: coarse) {
+  .visual-experience .ve-pointer {
+    display: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .visual-experience *,
+  .visual-experience *::before,
+  .visual-experience *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .visual-experience .ve-pointer {
+    display: none !important;
+  }
+}
+@media (max-width: 760px) {
+  .visual-experience .ve-controls {
+    bottom: 12px;
+    right: 12px;
+    gap: 6px;
+  }
+  .visual-experience .ve-controls :is(a, button) {
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+}

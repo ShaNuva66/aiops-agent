@@ -1,0 +1,578 @@
+/* One visual language, distinct accents for monitoring, AI, actions and evidence. */
+.observatory {
+  --obs-ink: #1e2e45;
+  --obs-muted: #68788c;
+  --obs-paper: #f5f7fb;
+  --obs-line: #dce3ed;
+  --obs-green: #257b83;
+  --obs-gold: #dcb47b;
+  background: var(--obs-paper);
+  color: var(--obs-ink);
+}
+.observatory .obs-atmosphere-sage {
+  background: radial-gradient(
+    ellipse,
+    #bedfed75,
+    #dce9f43d 38%,
+    transparent 70%
+  );
+}
+.observatory .obs-atmosphere-gold {
+  background: radial-gradient(
+    ellipse,
+    #f0d0b37c,
+    #f5e4d43b 38%,
+    transparent 70%
+  );
+}
+.observatory .obs-atmosphere-pearl {
+  background: radial-gradient(
+    ellipse,
+    #d6dcf47a,
+    #fffdf64d 42%,
+    transparent 70%
+  );
+}
+.observatory .obs-sidebar {
+  background: linear-gradient(165deg, #121f33, #101927 72%);
+  border-right-color: #293c53;
+  box-shadow: 6px 0 25px #102a4010;
+}
+.observatory .obs-brand {
+  color: #f3f5fc;
+}
+.observatory .obs-brand-sub {
+  color: #8daac4;
+}
+.observatory .obs-logo-mark {
+  background: linear-gradient(140deg, #2b4860, #183044);
+  color: #a9d9e4;
+  border-color: #65869d;
+}
+.observatory .obs-workspace {
+  border-color: #3b4c62;
+  background: #22324950;
+}
+.observatory .obs-workspace-icon {
+  color: #dceef3;
+  background: #2b4658;
+  border-color: #557786;
+}
+.observatory .obs-workspace strong {
+  color: #e8edf6;
+}
+.observatory .obs-workspace small {
+  color: #9db2c7;
+}
+.observatory .obs-nav-label {
+  color: #9bb0c8;
+}
+.observatory .obs-nav button {
+  color: #b0c2d7;
+}
+.observatory .obs-nav button:hover {
+  background: #263e594d;
+  color: #eff6ff;
+}
+.observatory .obs-nav button[data-active="true"] {
+  color: #f1d5ae;
+  background: linear-gradient(100deg, #2b425a, #24374e);
+  border-color: #60788e70;
+}
+.observatory .obs-nav button[data-active="true"]::after {
+  background: #e4b77b;
+}
+.observatory .obs-sidebar-explainer {
+  background: linear-gradient(135deg, #24334a, #1b2a3e);
+  border-color: #3d526c;
+}
+.observatory .obs-sidebar-explainer > span {
+  color: #edc791;
+}
+.observatory .obs-sidebar-explainer p {
+  color: #bac8da;
+}
+.observatory .obs-sidebar-explainer button {
+  color: #edc791;
+}
+.observatory .obs-sidebar-foot {
+  border-color: #334258;
+}
+.observatory .obs-sidebar-foot :is(small, a, .obs-side-status) {
+  color: #a8bad0;
+}
+.observatory .obs-side-status > i {
+  background: #70c4c1;
+}
+.observatory .obs-topbar {
+  background: #fbfcffed;
+  border-color: #dce5f0;
+  box-shadow: 0 4px 20px #31445d04;
+}
+.observatory .obs-breadcrumb {
+  color: #728197;
+}
+.observatory .obs-breadcrumb strong {
+  color: #223750;
+}
+.observatory .obs-recorded-pill {
+  background: #edf4fa;
+  border-color: #d5e3ed;
+  color: #42718a;
+}
+.observatory .obs-recorded-pill::before {
+  background: #58a4ac;
+}
+.observatory .obs-motion-toggle {
+  color: #597a94;
+}
+.observatory .obs-avatar {
+  background: #e5edf7;
+  border-color: #d2dfef;
+  color: #547392;
+}
+.observatory .obs-hero {
+  color: #f6f3e9;
+  background: linear-gradient(115deg, #101b2c, #14263b 60%, #193549);
+  border-color: #405b72;
+  box-shadow:
+    0 22px 55px #203b5a16,
+    inset 0 1px 0 #f3f5ff0b;
+}
+.observatory .obs-hero::before {
+  background-image:
+    radial-gradient(ellipse at 80% 45%, #6db7d01f, transparent 60%),
+    radial-gradient(
+      ellipse at 85% 40%,
+      transparent 41%,
+      #addbec0b 41.4%,
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 85% 40%,
+      transparent 58%,
+      #addbec08 58.4%,
+      transparent 59%
+    );
+  background-size: auto;
+  mask-image: none;
+}
+.observatory .obs-hero h1 em {
+  color: #e6bb87;
+}
+.observatory .obs-hero .obs-eyebrow {
+  color: #a9cedd;
+}
+.observatory .obs-hero .obs-hero-description {
+  color: #cad6e5;
+}
+.observatory .obs-hero .obs-hero-note {
+  color: #b0c3d7;
+}
+.observatory .obs-hero-atmosphere > span {
+  background: radial-gradient(
+    ellipse,
+    #68c0d32f,
+    #467ea116 40%,
+    transparent 70%
+  );
+}
+.observatory .obs-hero-atmosphere > span + span {
+  background: radial-gradient(
+    ellipse,
+    #e8ad7840,
+    #b08c5b0b 42%,
+    transparent 72%
+  );
+}
+.observatory .obs-visual-label {
+  color: #a2bed5;
+}
+.observatory .obs-orbit-ring {
+  border-color: #8cc6dd45;
+}
+.observatory .obs-orbit-ring:nth-child(2) {
+  border-color: #bd9e7636;
+}
+.observatory .obs-orbit-ring:nth-child(3) {
+  border-color: #81bac72b;
+}
+.observatory .obs-orbit-path path {
+  stroke: #90d0e16e;
+}
+.observatory .obs-orbit-core {
+  color: #f2d4a7;
+  background: radial-gradient(circle at 20% 20%, #44677b, #233e57 72%);
+  border-color: #a7bdc79e;
+  box-shadow:
+    0 0 0 10px #8cc5da07,
+    0 0 70px #63c3d51f,
+    inset 0 1px 0 #ffffff22;
+}
+.observatory .obs-orbit-satellite {
+  color: #d6e3ed;
+  background: #263e53f5;
+  border-color: #6b97b57a;
+  box-shadow: 0 8px 24px #06132955;
+}
+.observatory .obs-orbit-satellite svg {
+  color: #e0b982;
+}
+.observatory .obs-orbit-satellite > i {
+  background: #80ccc5;
+}
+.observatory .obs-orbit-caption {
+  color: #9fbfd3;
+}
+.observatory .obs-hero-outcome {
+  background: linear-gradient(120deg, #28465878, #233f4670);
+  border-color: #5e9d9d66;
+}
+.observatory .obs-hero-outcome strong {
+  color: #e5f1ef;
+}
+.observatory .obs-hero-outcome small {
+  color: #b0cccf;
+}
+.observatory .obs-outcome-arrow {
+  color: #e0bd8a;
+  border-color: #9a9b7863;
+}
+.observatory .obs-button.primary {
+  color: #302b29;
+  background: linear-gradient(120deg, #f0cd9c, #dfa975);
+  border-color: #e4ba88;
+  box-shadow:
+    0 5px 18px #c68b4422,
+    inset 0 1px 0 #fff7;
+}
+.observatory .obs-button.primary:hover {
+  background: linear-gradient(120deg, #f5d8af, #eab987);
+}
+.observatory .obs-button.secondary {
+  color: #d9e6f3;
+  background: #2c49623d;
+  border-color: #698caa8a;
+}
+.observatory .obs-button.secondary:hover {
+  background: #3d608554;
+  border-color: #9ac5df;
+}
+.observatory .obs-button.outline {
+  color: #344f70;
+  background: #fffdf9;
+  border-color: #c6d7e6;
+}
+.observatory .obs-summary-strip {
+  border-color: #dce3ed;
+}
+.observatory .obs-summary-item > div > small {
+  color: #65778c;
+}
+.observatory .obs-summary-number {
+  color: #26374d;
+}
+.observatory .obs-summary-number > span {
+  color: #617186;
+}
+.observatory .obs-summary-item:nth-child(1) .obs-summary-icon {
+  background: #fff0e8;
+  border-color: #f0d0bd;
+  color: #b36b4b;
+}
+.observatory .obs-summary-item:nth-child(2) .obs-summary-icon {
+  background: #eaf0ff;
+  border-color: #cad9fa;
+  color: #5c7bb6;
+}
+.observatory .obs-summary-item:nth-child(3) .obs-summary-icon {
+  background: #fff5df;
+  border-color: #eddab3;
+  color: #a17a35;
+}
+.observatory .obs-summary-item:nth-child(4) .obs-summary-icon {
+  background: #e6f6f1;
+  border-color: #c5e1d7;
+  color: #378a7d;
+}
+.observatory .obs-section-kicker {
+  color: #6b7e9d;
+}
+.observatory
+  :is(
+    .obs-section-heading p,
+    .obs-human-impact > p,
+    .obs-role-card p,
+    .obs-ai-summary,
+    .obs-finding p,
+    .obs-ai-recommendations li,
+    .obs-evidence-card > p,
+    .obs-verification-grid p
+  ) {
+  color: #465b72;
+}
+.observatory
+  :is(.obs-event-explanation h3, .obs-role-card h3, .obs-evidence-card h3) {
+  color: #243b55;
+}
+.observatory .obs-stage-description {
+  color: #526b82;
+}
+.observatory .obs-playback-bar > div:first-child strong {
+  color: #365f7b;
+}
+.observatory .obs-playback-bar > div:first-child small {
+  color: #6e8197;
+}
+.observatory .obs-view-toggle {
+  background: #eaf0f7;
+  border-color: #d5e0ed;
+}
+.observatory .obs-view-toggle button {
+  color: #60738d;
+}
+.observatory .obs-view-toggle button[aria-pressed="true"] {
+  background: #fff;
+  color: #315c7e;
+  box-shadow: 0 2px 7px #35516e0b;
+}
+.observatory .obs-case-panel {
+  background: #fff;
+  border-color: #d5e0eb;
+  box-shadow: 0 12px 35px #1f3f6309;
+}
+.observatory .obs-case-symbol {
+  background: #e9f4f5;
+  border-color: #c9e1e4;
+  color: #3d7b87;
+}
+.observatory .obs-stage-tabs {
+  background: #eef3f9;
+  border-color: #d9e3ef;
+}
+.observatory .obs-stage-tabs > li > button {
+  color: #63758b;
+}
+.observatory .obs-stage-tabs > li > button.active {
+  color: #2b6b81;
+  background: #f2fafb;
+}
+.observatory .obs-stage-tabs > li > button.active::after {
+  background: #4b98a6;
+}
+.observatory .obs-stage-tabs > li > button.active > span {
+  background: #3d8797;
+  border-color: #3d8797;
+  color: #fff;
+}
+.observatory .obs-topology {
+  background-color: #f7fbfd;
+  background-image: radial-gradient(#b6c8d733 0.8px, transparent 0.8px);
+}
+.observatory .obs-system-node.healthy {
+  background: #f0faf7;
+  border-color: #c3dfd7;
+}
+.observatory .obs-system-node.healthy .obs-node-icon {
+  background: #e2f3ee;
+  border-color: #c1dfd6;
+  color: #4b8b80;
+}
+.observatory .obs-system-node.healthy .obs-node-status::before {
+  background: #4eaa96;
+}
+.observatory .obs-system-node.fault {
+  background: #fff3ed;
+  border-color: #e6ac98;
+}
+.observatory .obs-system-node.checking {
+  background: #fff7e4;
+  border-color: #dac389;
+}
+.observatory .obs-role-icon {
+  background: #e8f4f5;
+  border-color: #cbe1e3;
+  color: #3a7d88;
+}
+.observatory .obs-playback-controls .obs-play-button {
+  background: #3c738b;
+  color: #fff;
+}
+.observatory .obs-playback-controls .obs-play-button:hover {
+  background: #2d627a;
+}
+.observatory .obs-role-tag {
+  background: #edf2fa;
+  border-color: #d8e1ef;
+  color: #536f9d;
+}
+.observatory .obs-human-impact {
+  background: #eef4fa;
+  border-left-color: #6a94b4;
+}
+.observatory .obs-proof-link {
+  color: #326d8b;
+}
+.observatory .obs-case-footnote {
+  background: #f4f7fb;
+  border-color: #dce5ef;
+  color: #617c93;
+}
+.observatory .obs-role-card {
+  border-radius: 13px;
+  border-color: #d7e4e8;
+  background: #fff;
+  overflow: hidden;
+}
+.observatory .obs-role-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #67aeb3;
+}
+.observatory .obs-role-card:nth-child(1) {
+  background: linear-gradient(150deg, #f2fbf8, #fff 72%);
+}
+.observatory .obs-role-card:nth-child(2) {
+  background: linear-gradient(150deg, #eef3ff, #fff 72%);
+  border-color: #d4dff2;
+}
+.observatory .obs-role-card:nth-child(2)::before {
+  background: #7b95cf;
+}
+.observatory .obs-role-card:nth-child(2) .obs-role-icon {
+  background: #e6edfc;
+  border-color: #cbd8f0;
+  color: #5e7bb6;
+}
+.observatory .obs-role-card:nth-child(3) {
+  background: linear-gradient(150deg, #fff6e9, #fff 72%);
+  border-color: #eadcc6;
+}
+.observatory .obs-role-card:nth-child(3)::before {
+  background: #d7a469;
+}
+.observatory .obs-role-card:nth-child(3) .obs-role-icon {
+  background: #fbecd8;
+  border-color: #ead2af;
+  color: #a37a45;
+}
+.observatory .obs-role-tags {
+  border-color: #e0e7f0;
+}
+.observatory .obs-ai-section .obs-section-kicker {
+  color: #6485b3;
+}
+.observatory .obs-model-label {
+  color: #5177a5;
+  background: #eaf1fc;
+  border-color: #d0dff5;
+}
+.observatory .obs-ai-report {
+  background: linear-gradient(145deg, #fff, #f5f8ff);
+  border-color: #d5e0f3;
+}
+.observatory .obs-report-title .obs-role-icon {
+  color: #6387bd;
+  background: #e9f0fc;
+  border-color: #cdddf2;
+}
+.observatory .obs-finding {
+  background: #eef4fc;
+  border-left-color: #82a8d7;
+}
+.observatory .obs-finding button {
+  color: #476f9c;
+}
+.observatory .obs-ai-section .obs-tool-list {
+  background: linear-gradient(155deg, #1c304c, #1c3a4a);
+  border-color: #365471;
+  color: #e2edf8;
+}
+.observatory .obs-ai-section .obs-tool-list :is(h3, h4) {
+  color: #e5edf7;
+}
+.observatory .obs-ai-section .obs-tool-list p {
+  color: #becfdf;
+}
+.observatory .obs-ai-section .obs-tool-row {
+  border-color: #476080;
+}
+.observatory .obs-ai-section .obs-tool-icon {
+  background: #2b4b67;
+  border-color: #567e9c;
+  color: #b4deea;
+}
+.observatory .obs-ai-section .obs-tool-row > div > span {
+  color: #a7d4cc;
+}
+.observatory .obs-ai-section .obs-tool-footnote {
+  color: #9db4ce;
+}
+.observatory .obs-ai-section .obs-tool-boundary {
+  background: #28445b;
+  border-color: #476680;
+  color: #cae0ef;
+}
+.observatory .obs-ai-section .obs-tool-boundary svg {
+  color: #dfbd8b;
+}
+.observatory .obs-evidence-section .obs-section-kicker {
+  color: #a27b52;
+}
+.observatory .obs-evidence-card {
+  background: #fff;
+  border-color: #d7e3ed;
+}
+.observatory .obs-evidence-card:nth-child(2) {
+  background: linear-gradient(140deg, #fffaf3, #fff);
+  border-color: #e9dccb;
+}
+.observatory .obs-evidence-card.highlighted {
+  border-color: #639dbd;
+  box-shadow:
+    0 0 0 3px #9ac8df38,
+    0 12px 30px #254d7510;
+}
+.observatory .obs-evidence-top {
+  color: #487798;
+}
+.observatory .obs-evidence-card:nth-child(2) .obs-evidence-top {
+  color: #ad814c;
+}
+.observatory .obs-evidence-meta {
+  border-color: #e2e9f2;
+}
+.observatory .obs-audit-panel {
+  background: #fffdfb;
+  border-color: #e5ded4;
+}
+.observatory .obs-raw-data pre {
+  background: #edf2f8;
+  color: #354d66;
+}
+.observatory .obs-reading-progress > span {
+  background: linear-gradient(90deg, #5facc0, #6b89c4, #dcac74);
+}
+.observatory .obs-footer {
+  border-color: #dae2ec;
+}
+.observatory .obs-footer strong {
+  color: #233d5d;
+}
+.observatory .obs-footer > div > span {
+  color: #63798f;
+}
+@media (max-width: 760px) {
+  .observatory .obs-sidebar.is-open {
+    background: linear-gradient(160deg, #15243a, #111d30);
+  }
+  .observatory .obs-mobile-menu {
+    background: #e9eff7;
+    color: #426d8f;
+  }
+  .observatory .obs-topbar {
+    background: #f9fbfff2;
+  }
+}

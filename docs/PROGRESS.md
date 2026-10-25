@@ -2,10 +2,10 @@
 
 ## Current milestone
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
-Last implementation session: 2026-10-25, Europe/Istanbul.
+Last implementation session: 2026-10-26, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
 Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
-Calm visual polish: sage/gold ambient background, steady reading surfaces, slow hero light, one-time card entrances and a subtle reading-progress line; no 3D scene redesign.
+Whole-site visual pass: navy/pearl surfaces, cyan monitoring, blue AI and amber action accents across the presentation, sign-in and operations console. Shared decorative mouse halo/card spotlight, persistent motion preference, slow ambient light, card entrances and button feedback. The readable layout and typography are retained.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.
@@ -27,6 +27,7 @@ Calm visual polish: sage/gold ambient background, steady reading surfaces, slow 
 - Incident story from prior observations, evidence, scoped approvals/audit and verified recovery, separating manual closure from monitored recovery.
 - 2026-10-19: one completed live gpt-4o-mini HTTP-fault case in an isolated Windows/SQLite lab; public read-only case page at /?case=1 with model findings, tools, scoped approval, HTTP 200 verification and recovery.
 - 2026-10-25: Observatory presentation with animated topology, six-stage replay, plain/technical views, role boundaries, original AI report, evidence navigation and case download; default public route, operations retained at /?dashboard=1.
+- 2026-10-26: shared multi-accent palette and motion controls across public/authenticated routes; fine-pointer halo, local card lighting, no input/click interception, touch and reduced-motion fallbacks. Production build, formatting, Ruff and browser checks passed; console inspected against a disposable SQLite fixture, not the user's account.
 
 ## Last test results
 - 47 pytest tests passed in the latest run; previous measured backend coverage was 92%.

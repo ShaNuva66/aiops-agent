@@ -51,6 +51,8 @@ import "./observatory-type.css";
 import "./observatory-polish.css";
 import "./observatory-entrances.css";
 import { useGentleMotion } from "./observatory-motion";
+import { useVisualMotion } from "./visual-experience";
+import "./observatory-spectrum.css";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -184,15 +186,16 @@ export function Observatory() {
   const [playing, setPlaying] = useState(false);
   const [technical, setTechnical] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [motion, setMotion] = useState(
-    () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-  );
+  const { motion, setMotion } = useVisualMotion();
   const surfaceRef = useRef<HTMLDivElement>(null);
   useGentleMotion(surfaceRef, motion);
   const [focusEvidence, setFocusEvidence] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const phase = casePhases[step];
   const lastStep = casePhases.length - 1;
+  useEffect(() => {
+    if (!motion) setPlaying(false);
+  }, [motion]);
   const navigate = (id: string) => {
     setActive(id);
     setMobileMenu(false);
@@ -211,17 +214,6 @@ export function Observatory() {
     }, 5500);
     return () => clearTimeout(timerRef.current);
   }, [playing, step, lastStep]);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const changed = () => {
-      if (media.matches) {
-        setMotion(false);
-        setPlaying(false);
-      }
-    };
-    media.addEventListener("change", changed);
-    return () => media.removeEventListener("change", changed);
-  }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

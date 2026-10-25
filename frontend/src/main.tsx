@@ -37,6 +37,8 @@ import { FaultWalkthrough, IncidentStory } from "./story";
 import { AgentContribution } from "./contribution";
 import { LiveCaseStudy } from "./case-study";
 import { Observatory } from "./observatory";
+import { VisualExperience } from "./visual-experience";
+import "./app-spectrum.css";
 import {
   auditLabel,
   explainEvidence,
@@ -1430,10 +1432,12 @@ function App() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {new URLSearchParams(window.location.search).get("dashboard") === "1" ? (
-      <App />
-    ) : (
-      <Observatory />
-    )}
+    <VisualExperience>
+      {new URLSearchParams(window.location.search).get("dashboard") === "1" ? (
+        <App />
+      ) : (
+        <Observatory />
+      )}
+    </VisualExperience>
   </StrictMode>,
 );

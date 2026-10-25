@@ -225,3 +225,38 @@ disconnect errors when switching to the built preview; these were absent on a cl
 Final built preview is served only on 127.0.0.1:8080. This task did not redeploy or reverify the
 Docker backend. Reviewed [desktop](images/observatory-desktop.png),
 [incident replay](images/observatory-story.png) and [phone](images/observatory-mobile.png) screenshots.
+
+## Whole-site color and motion pass — 2026-10-26
+
+Frontend presentation changes only: multi-accent navy/pearl/cyan/blue/amber surfaces across
+Observatory, sign-in and operations; shared fine-pointer halo and local card spotlight;
+persisted motion preference; panel entrances and button feedback. No new fault injection,
+model call, backend policy change or deployment was performed. The 47 pytest tests and 27
+Docker checks above remain historical and were not rerun for this UI change.
+
+Final TypeScript/Vite production build, frontend Prettier check, Ruff and Git whitespace
+check passed. Playwright checked the built public page at 1512px and a separate 390px
+touch context. Main copy remains 18px desktop/17px phone; technical view produced no
+horizontal document overflow. The touch context reported a coarse pointer and no halo.
+
+The desktop halo appeared over buttons, stayed pointer-events:none, and did not prevent
+navigation. Card hover set local spotlight coordinates and leaving cleared the active
+spotlight. Form hover and keyboard Tab hid the halo after its short opacity transition.
+Disabling motion produced zero running CSS/Web Animations, zero SVG animateMotion nodes,
+zero pending hidden reveals and no pointer. The choice survived reload; an OS reduced-motion
+change also stopped effects and paused replay. Public replay/navigation/technical-view
+interactions produced zero POST/PUT/PATCH/DELETE requests and zero JavaScript page errors.
+
+Sign-in/logout and the overview, systems, knowledge, approvals and audit views were checked
+against a temporary API on 8021 with a disposable SQLite database and random test password,
+through a separate frontend preview on 8081. No user account was modified. Test records were
+explicitly labelled simulations; missing live lab telemetry was not treated as healthy.
+Desktop routes and the 390px systems view had no horizontal document overflow. Shared
+operator motion-off produced zero running animations. No JavaScript page errors occurred;
+the unauthenticated session lookup returned the expected 401 before sign-in.
+
+Reviewed screenshots: [desktop](images/spectrum-desktop.png), [AI report](images/spectrum-ai.png),
+[phone](images/spectrum-mobile.png), [sign-in](images/spectrum-login.png) and
+[operations](images/spectrum-operator.png). The public preview on 8080 serves the saved case;
+the authenticated Docker/PostgreSQL deployment remains unverified in this session. Private
+test services were stopped and their temporary password file removed after inspection.
