@@ -19,6 +19,9 @@ separate monitoring/AI/operator responsibilities, the original AI report and evi
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
 to control animation, and **Vaka kaydını indir** to download the original sanitized case.
 Reduced-motion preferences are respected. Playback never sends a command or model request.
+The background uses slow, low-contrast sage/gold light fields. Card entrances play once;
+reading text and orbit labels remain stationary. The motion control stops the effects and
+keeps all content visible, including when the operating system requests reduced motion.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
 Preview: [Observatory desktop](docs/images/observatory-desktop.png) ·

@@ -48,6 +48,9 @@ import {
 import { auditLabel, explainEvidence } from "./learning";
 import "./observatory.css";
 import "./observatory-type.css";
+import "./observatory-polish.css";
+import "./observatory-entrances.css";
+import { useGentleMotion } from "./observatory-motion";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -184,6 +187,8 @@ export function Observatory() {
   const [motion, setMotion] = useState(
     () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  useGentleMotion(surfaceRef, motion);
   const [focusEvidence, setFocusEvidence] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const phase = casePhases[step];
@@ -268,8 +273,14 @@ export function Observatory() {
   };
   return (
     <div
+      ref={surfaceRef}
       className="observatory"
       data-motion={motion ? "on" : "off"}
+      onFocusCapture={(event) => {
+        (event.target as HTMLElement)
+          .closest<HTMLElement>("[data-reveal]")
+          ?.setAttribute("data-reveal", "visible");
+      }}
       onKeyDown={(event) => {
         if (event.key === "Escape") {
           setMobileMenu(false);
@@ -279,6 +290,14 @@ export function Observatory() {
         }
       }}
     >
+      <div className="obs-atmosphere" aria-hidden="true">
+        <span className="obs-atmosphere-sage" />
+        <span className="obs-atmosphere-gold" />
+        <span className="obs-atmosphere-pearl" />
+      </div>
+      <div className="obs-reading-progress" aria-hidden="true">
+        <span />
+      </div>
       <a className="obs-skip-link" href="#obs-overview">
         İçeriğe geç
       </a>
@@ -384,6 +403,10 @@ export function Observatory() {
             className="obs-hero"
             aria-labelledby="obs-main-title"
           >
+            <div className="obs-hero-atmosphere" aria-hidden="true">
+              <span />
+              <span />
+            </div>
             <div className="obs-hero-copy">
               <span className="obs-eyebrow">
                 <span /> TEKNOLOJİYİ ANLAŞILIR KIL

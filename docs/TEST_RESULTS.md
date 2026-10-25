@@ -6,6 +6,14 @@ TypeScript/Vite build passed; Prettier passed after whitespace formatting. Backe
 Subsequent typography-only update passed the frontend build and Prettier. Browser measurements
 confirmed 18px main copy at 1512px and 17px at 390px, with no document overflow including
 phone technical view. Existing layout/animation and backend behavior were preserved.
+
+Latest calm-polish pass: frontend build and Prettier passed. Desktop browser measurement
+confirmed 18px hero text with identical bounding box across an 800ms sample while background
+animations ran. Motion-off stopped all CSS animations, removed SVG animateMotion and left
+zero pending reveal cards. OS reduced-motion also stopped movement; all cards remained visible.
+The 390px phone view retained 17px text without document overflow and mobile navigation worked.
+The interaction request listener recorded zero writes. These are visual checks; backend/model
+tests were not rerun. Reviewed desktop/phone images: images/calm-desktop.png, images/calm-mobile.png.
 This report records local verification, not a production certification or live LLM benchmark.
 
 ## Automated checks

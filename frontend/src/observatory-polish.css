@@ -1,0 +1,397 @@
+/* Quiet atmosphere and surface polish. Reading layout and type stay unchanged. */
+.observatory {
+  --obs-paper: #f4f5ee;
+  --obs-line: #dce2d4;
+  background: var(--obs-paper);
+  position: relative;
+}
+.observatory .obs-atmosphere {
+  position: fixed;
+  inset: 0 0 0 220px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.observatory .obs-atmosphere > span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+.observatory .obs-atmosphere-sage {
+  width: min(1250px, 105vw);
+  height: min(1050px, 115vh);
+  top: -30%;
+  left: -30%;
+  background: radial-gradient(
+    ellipse,
+    #bdd2b76e 0%,
+    #cddbc438 36%,
+    transparent 69%
+  );
+  animation: obs-polish-sage 43s ease-in-out infinite alternate;
+}
+.observatory .obs-atmosphere-gold {
+  width: min(1100px, 96vw);
+  height: min(1000px, 105vh);
+  right: -30%;
+  bottom: -26%;
+  background: radial-gradient(
+    ellipse,
+    #ead4a269 0%,
+    #e9dfbd35 35%,
+    transparent 69%
+  );
+  animation: obs-polish-gold 49s ease-in-out infinite alternate;
+}
+.observatory .obs-atmosphere-pearl {
+  width: min(1000px, 90vw);
+  height: min(900px, 100vh);
+  top: 18%;
+  left: 17%;
+  background: radial-gradient(
+    ellipse,
+    #fffffbab 0%,
+    #fffffb3d 40%,
+    transparent 70%
+  );
+  animation: obs-polish-pearl 37s ease-in-out infinite alternate;
+}
+.observatory .obs-shell {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+.observatory .obs-sidebar {
+  background: linear-gradient(170deg, #142019, #101914 72%);
+  border-right-color: #344234;
+  box-shadow: 8px 0 32px #18271b08;
+}
+.observatory .obs-topbar {
+  background: #fbfcf6ed;
+  border-bottom-color: #dce3d5;
+  box-shadow: 0 3px 16px #233b1a03;
+}
+.observatory .obs-hero {
+  background: linear-gradient(125deg, #14231b, #15291e 68%, #1a2e20);
+  border-color: #43563b;
+  box-shadow:
+    0 18px 46px #273f1e13,
+    inset 0 1px 0 #e8edcf0c;
+}
+.observatory .obs-hero-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.observatory .obs-hero-atmosphere > span {
+  display: block;
+  position: absolute;
+  width: 76%;
+  height: 145%;
+  right: -18%;
+  top: -24%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    #c0d18823,
+    #91b47410 38%,
+    transparent 68%
+  );
+  animation: obs-polish-hero-light 31s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.observatory .obs-hero-atmosphere > span + span {
+  width: 58%;
+  height: 114%;
+  right: -9%;
+  top: 5%;
+  background: radial-gradient(
+    ellipse,
+    #efd59b18,
+    #c7b66c07 42%,
+    transparent 70%
+  );
+  animation-duration: 39s;
+  animation-delay: -17s;
+}
+.observatory .obs-hero-copy,
+.observatory .obs-hero-visual {
+  position: relative;
+  z-index: 2;
+}
+.observatory .obs-orbit-satellite {
+  animation: none;
+  transform: none;
+  background: #243a2bf5;
+  border-color: #71875a70;
+  box-shadow:
+    0 8px 24px #07150c40,
+    inset 0 1px 0 #d0dab40a;
+}
+.observatory .obs-orbit-ring {
+  animation-duration: 17s;
+}
+.observatory .obs-orbit-ring:nth-child(2) {
+  animation-duration: 21s;
+}
+.observatory .obs-orbit-ring:nth-child(3) {
+  animation-duration: 25s;
+}
+.observatory .obs-orbit-path path {
+  animation-duration: 24s;
+}
+.observatory .obs-orbit-core {
+  box-shadow:
+    inset 0 0 24px #e7e0b10c,
+    0 0 0 11px #b5c68c08,
+    0 0 75px #b0c57c1a;
+}
+.observatory .obs-hero-outcome {
+  background: #24382470;
+  border-color: #63724b50;
+}
+.observatory .obs-nav button {
+  transition:
+    background-color 280ms ease,
+    border-color 280ms ease,
+    color 280ms ease;
+}
+.observatory .obs-nav button[data-active="true"] {
+  background: linear-gradient(100deg, #2e432f, #283b2b);
+  border-color: #5b6e4a66;
+  box-shadow: inset 0 1px 0 #cddba40a;
+}
+.observatory .obs-nav button[data-active="true"]::after {
+  animation: obs-polish-nav-dot 5.5s ease-in-out infinite;
+}
+.observatory .obs-case-panel,
+.observatory .obs-ai-report,
+.observatory .obs-audit-panel {
+  background: #fffefaf5;
+  border-color: #d7dfcd;
+  box-shadow:
+    0 2px 5px #23371a03,
+    0 14px 38px #29421f07;
+}
+.observatory .obs-role-card,
+.observatory .obs-evidence-card {
+  background: #fffefaf5;
+  border-color: #d7dfcd;
+  box-shadow:
+    0 3px 8px #253b1b03,
+    0 12px 32px #253b1b04;
+  transition:
+    transform 350ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 350ms ease,
+    border-color 350ms ease,
+    background-color 350ms ease;
+}
+.observatory .obs-role-card:hover {
+  transform: none;
+}
+.observatory .obs-role-icon,
+.observatory .obs-node-icon {
+  border-color: #d4dfc5;
+  background: linear-gradient(140deg, #f0f5e8, #e9efdf);
+  box-shadow: inset 0 1px 0 #fff9;
+}
+.observatory .obs-stage-tabs {
+  background: #f0f4e9;
+  border-bottom-color: #dae2cf;
+}
+.observatory .obs-stage-tabs > li > button.active {
+  background: #fafff1;
+}
+.observatory .obs-human-impact {
+  background: #f1f4e9;
+  border-left-color: #b8a363;
+}
+.observatory .obs-tool-list {
+  background: #eef3e6;
+  border-color: #d7e0c9;
+}
+.observatory .obs-evidence-card.highlighted,
+.observatory .obs-evidence-card:target {
+  border-color: #8aab70;
+  box-shadow:
+    0 0 0 3px #b9ce9c30,
+    0 12px 34px #3450200a;
+}
+.observatory .obs-button {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    transform 300ms ease;
+}
+.observatory .obs-button.primary {
+  background: linear-gradient(135deg, #dfc58d, #d4b577);
+  border-color: #d3b371;
+  box-shadow:
+    inset 0 1px 0 #fff4,
+    0 5px 14px #b99a5220;
+}
+.observatory .obs-button.secondary {
+  background: #23362938;
+  border-color: #77866876;
+}
+.observatory .obs-button svg {
+  transition: transform 300ms ease;
+}
+.observatory .obs-raw-data summary,
+.observatory .obs-audit-panel summary {
+  transition:
+    color 250ms ease,
+    background-color 250ms ease;
+}
+.observatory .obs-summary-strip {
+  border-bottom-color: #d7dfce;
+}
+.observatory .obs-summary-icon {
+  box-shadow: inset 0 1px 0 #fff9;
+}
+@media (hover: hover) and (pointer: fine) {
+  .observatory .obs-role-card:hover,
+  .observatory .obs-evidence-card:hover {
+    transform: translateY(-2px);
+    border-color: #b6c6a4;
+    box-shadow:
+      0 5px 12px #263c1d05,
+      0 20px 42px #2c472310;
+  }
+  .observatory .obs-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px #27391813;
+  }
+  .observatory .obs-button.primary:hover {
+    background: linear-gradient(135deg, #e6cd99, #dac087);
+  }
+  .observatory .obs-button.secondary:hover {
+    background: #38503a55;
+    border-color: #9aac817e;
+  }
+  .observatory .obs-button:hover > svg:last-child {
+    transform: translateX(2px);
+  }
+  .observatory .obs-raw-data summary:hover,
+  .observatory .obs-audit-panel summary:hover {
+    color: #35592f;
+  }
+}
+@keyframes obs-polish-sage {
+  from {
+    transform: translate(-3%, -2%) scale(0.96);
+  }
+  to {
+    transform: translate(8%, 7%) scale(1.04);
+  }
+}
+@keyframes obs-polish-gold {
+  from {
+    transform: translate(4%, 3%) scale(1);
+  }
+  to {
+    transform: translate(-8%, -7%) scale(1.07);
+  }
+}
+@keyframes obs-polish-pearl {
+  from {
+    transform: translate(-5%, 4%) scale(0.96);
+    opacity: 0.72;
+  }
+  to {
+    transform: translate(5%, -6%) scale(1.04);
+    opacity: 0.94;
+  }
+}
+@keyframes obs-polish-hero-light {
+  from {
+    transform: translate(3%, -3%) scale(0.97);
+  }
+  to {
+    transform: translate(-6%, 5%) scale(1.06);
+  }
+}
+@keyframes obs-polish-nav-dot {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (max-width: 1100px) {
+  .observatory .obs-atmosphere {
+    left: 72px;
+  }
+}
+@media (max-width: 760px) {
+  .observatory .obs-atmosphere {
+    left: 0;
+  }
+  .observatory .obs-atmosphere > span {
+    opacity: 0.6;
+  }
+  .observatory .obs-atmosphere-sage {
+    width: 140vw;
+    height: 90vh;
+    top: -18%;
+    left: -70%;
+  }
+  .observatory .obs-atmosphere-gold {
+    width: 150vw;
+    height: 90vh;
+    right: -90%;
+    bottom: -20%;
+  }
+  .observatory .obs-atmosphere-pearl {
+    display: none;
+  }
+  .observatory .obs-hero-atmosphere > span {
+    opacity: 0.65;
+    width: 130%;
+    right: -55%;
+  }
+  .observatory .obs-hero-atmosphere > span + span {
+    display: none;
+  }
+  .observatory .obs-role-card,
+  .observatory .obs-evidence-card,
+  .observatory .obs-case-panel,
+  .observatory .obs-ai-report,
+  .observatory .obs-audit-panel {
+    box-shadow: 0 5px 20px #2c472306;
+  }
+}
+.observatory[data-motion="off"] .obs-atmosphere > span,
+.observatory[data-motion="off"] .obs-hero-atmosphere > span,
+.observatory[data-motion="off"] .obs-nav button[data-active="true"]::after {
+  animation: none !important;
+  will-change: auto;
+}
+.observatory[data-motion="off"] .obs-role-card:hover,
+.observatory[data-motion="off"] .obs-evidence-card:hover,
+.observatory[data-motion="off"] .obs-button:hover,
+.observatory[data-motion="off"] .obs-button:hover > svg:last-child {
+  transform: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .observatory .obs-atmosphere > span,
+  .observatory .obs-hero-atmosphere > span,
+  .observatory .obs-nav button[data-active="true"]::after {
+    animation: none !important;
+    will-change: auto;
+  }
+  .observatory .obs-role-card:hover,
+  .observatory .obs-evidence-card:hover,
+  .observatory .obs-button:hover,
+  .observatory .obs-button:hover > svg:last-child {
+    transform: none !important;
+  }
+}

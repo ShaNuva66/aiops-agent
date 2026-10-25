@@ -5,6 +5,7 @@ Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux en
 Last implementation session: 2026-10-25, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
 Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
+Calm visual polish: sage/gold ambient background, steady reading surfaces, slow hero light, one-time card entrances and a subtle reading-progress line; no 3D scene redesign.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.
