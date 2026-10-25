@@ -1,0 +1,178 @@
+/* Readability only: preserve the restored layout, colors and motion. */
+.observatory {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.observatory
+  :is(
+    .obs-section-heading p,
+    .obs-human-impact > p,
+    .obs-role-card p,
+    .obs-ai-summary,
+    .obs-finding p,
+    .obs-ai-recommendations li,
+    .obs-tool-list > p,
+    .obs-tool-row p,
+    .obs-tool-boundary p,
+    .obs-evidence-card > p,
+    .obs-verification-grid p
+  ) {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #465b4a;
+}
+.observatory .obs-hero-description {
+  font-size: 18px;
+  color: #c4d0bf;
+}
+.observatory .obs-stage-description {
+  font-size: 18px;
+}
+.observatory .obs-section-heading h2 {
+  font-size: 30px;
+  line-height: 1.35;
+}
+.observatory .obs-event-explanation h3 {
+  font-size: 27px;
+  line-height: 1.4;
+}
+.observatory :is(.obs-role-card h3, .obs-evidence-card h3) {
+  font-size: 23px;
+  line-height: 1.45;
+}
+.observatory
+  :is(
+    .obs-button,
+    .obs-nav button,
+    .obs-view-toggle button,
+    .obs-proof-link,
+    .obs-next-hint button,
+    .obs-finding button,
+    .obs-sidebar-explainer button
+  ) {
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 44px;
+}
+.observatory .obs-stage-tabs > li > button {
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 70px;
+}
+.observatory .obs-playback-controls > button {
+  width: 42px;
+  height: 42px;
+}
+.observatory
+  :is(
+    .obs-workspace strong,
+    .obs-sidebar-explainer p,
+    .obs-workspace small,
+    .obs-sidebar-explainer > span
+  ) {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.observatory
+  :is(
+    .obs-eyebrow,
+    .obs-section-kicker,
+    .obs-topology-header,
+    .obs-topology-header small,
+    .obs-topology-legend,
+    .obs-node-status,
+    .obs-hero-note,
+    .obs-summary-item > div > small,
+    .obs-summary-number > span,
+    .obs-playback-bar small,
+    .obs-playback-controls > span,
+    .obs-step-meta .obs-role-tag,
+    .obs-human-impact > span,
+    .obs-role-card > small,
+    .obs-role-tags > small,
+    .obs-report-title small,
+    .obs-tool-row > div > span,
+    .obs-model-label > span,
+    .obs-evidence-meta,
+    .obs-evidence-meta code,
+    .obs-case-footnote > span,
+    .obs-side-status,
+    .obs-sidebar-foot > small,
+    .obs-sidebar-foot > a
+  ) {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.observatory .obs-summary-number > span {
+  font-size: 14px;
+}
+.observatory
+  :is(
+    .obs-system-node strong,
+    .obs-http-result strong,
+    .obs-report-title strong,
+    .obs-tool-row h4,
+    .obs-ai-recommendations h3
+  ) {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.observatory
+  :is(
+    .obs-confidence-note,
+    .obs-caveat,
+    .obs-tool-footnote,
+    .obs-case-footnote,
+    .obs-raw-data summary,
+    .obs-audit-panel summary,
+    .obs-audit-row,
+    .obs-breadcrumb,
+    .obs-motion-toggle
+  ) {
+  font-size: 14px;
+  line-height: 1.75;
+}
+.observatory .obs-raw-data pre {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.observatory .obs-topbar {
+  height: auto;
+  min-height: 72px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.observatory .obs-sidebar {
+  overflow-y: auto;
+}
+@media (max-width: 760px) {
+  .observatory .obs-section-heading h2 {
+    font-size: 27px;
+  }
+  .observatory .obs-event-explanation h3 {
+    font-size: 25px;
+  }
+  .observatory .obs-hero-description,
+  .observatory .obs-stage-description {
+    font-size: 17px;
+  }
+  .observatory .obs-topbar {
+    gap: 10px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .observatory .obs-topbar-right {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .observatory .obs-recorded-pill {
+    font-size: 11px;
+  }
+  .observatory .obs-model-label {
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+  .observatory .obs-view-toggle {
+    flex-wrap: wrap;
+  }
+}

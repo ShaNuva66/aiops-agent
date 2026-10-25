@@ -47,6 +47,7 @@ import {
 } from "./observatory-data";
 import { auditLabel, explainEvidence } from "./learning";
 import "./observatory.css";
+import "./observatory-type.css";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },

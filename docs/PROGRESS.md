@@ -4,6 +4,7 @@
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
 Last implementation session: 2026-10-25, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
+Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.

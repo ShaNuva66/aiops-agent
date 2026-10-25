@@ -3,6 +3,9 @@
 Last verified: 2026-10-25 (Europe/Istanbul). Frontend replay verified; prior host/Docker results retained.
 Latest rollback: restored the pre-3D Observatory presentation (3275644 equivalent frontend).
 TypeScript/Vite build passed; Prettier passed after whitespace formatting. Backend unchanged.
+Subsequent typography-only update passed the frontend build and Prettier. Browser measurements
+confirmed 18px main copy at 1512px and 17px at 390px, with no document overflow including
+phone technical view. Existing layout/animation and backend behavior were preserved.
 This report records local verification, not a production certification or live LLM benchmark.
 
 ## Automated checks
