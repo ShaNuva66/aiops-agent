@@ -5,7 +5,7 @@ Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux en
 Last implementation session: 2026-10-26, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
 Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
-Whole-site visual pass: navy/pearl surfaces, cyan monitoring, blue AI and amber action accents across the presentation, sign-in and operations console. Shared decorative mouse halo/card spotlight, persistent motion preference, slow ambient light, card entrances and button feedback. The readable layout and typography are retained.
+Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and amber action accents across the presentation, sign-in and operations console. White page/card backgrounds removed at the user's request, including expanded technical data and native dark controls. Shared decorative mouse halo/card spotlight, persistent motion preference, slow ambient light, card entrances and button feedback. The readable layout and typography are retained.
 
 ## Completed
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.

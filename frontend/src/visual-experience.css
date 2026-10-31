@@ -1,8 +1,21 @@
 .visual-experience {
+  --ve-bg: #111b29;
+  --ve-surface: #1b2939;
+  --ve-raised: #223448;
+  --ve-line: #34485d;
+  --ve-text: #e5edf6;
+  --ve-muted: #a6b9cb;
+  --ve-cyan: #8fd4d5;
+  --ve-blue: #9abcf0;
+  --ve-amber: #e8c18a;
+  --ve-green: #90d4bc;
+  --ve-coral: #f2aa98;
   min-height: 100vh;
   position: relative;
   isolation: isolate;
-  background: #f5f7fb;
+  background: var(--ve-bg);
+  color: var(--ve-text);
+  color-scheme: dark;
 }
 .visual-experience .ve-pointer {
   position: fixed;
@@ -37,7 +50,7 @@
   top: 100px;
   width: 40px;
   height: 40px;
-  border: 1px solid #528eb654;
+  border: 1px solid #8bc4e680;
   border-radius: 50%;
   box-shadow: 0 0 16px #87c9d71c;
   transition:
@@ -79,11 +92,11 @@
   gap: 8px;
   padding: 10px 14px;
   min-height: 42px;
-  color: #284761;
-  background: #fffffff5;
-  border: 1px solid #d4e1ec;
+  color: var(--ve-text);
+  background: #223448f5;
+  border: 1px solid var(--ve-line);
   border-radius: 8px;
-  box-shadow: 0 6px 22px #162e4b12;
+  box-shadow: 0 6px 22px #060e1a40;
   font:
     500 13px "DM Sans",
     sans-serif;

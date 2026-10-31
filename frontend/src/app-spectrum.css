@@ -1,8 +1,10 @@
 .visual-experience .shell {
   background:
-    radial-gradient(ellipse at 90% 10%, #e2eafa88, transparent 50%),
-    radial-gradient(ellipse at 15% 80%, #f4e6d888, transparent 45%), #f5f7fb;
-  color: #2a3c52;
+    radial-gradient(ellipse at 90% 10%, #325b7c26, transparent 50%),
+    radial-gradient(ellipse at 15% 80%, #9d73411a, transparent 45%),
+    var(--ve-bg);
+  color: var(--ve-text);
+  color-scheme: dark;
 }
 .visual-experience .shell > aside {
   background: linear-gradient(165deg, #131f33, #111a2a);
@@ -36,13 +38,13 @@
   background: #28425b;
 }
 .visual-experience .shell header {
-  background: #fbfcfff2;
-  border-color: #dce6f1;
+  background: #152131f2;
+  border-color: var(--ve-line);
 }
 .visual-experience .shell :is(.panel, .stat, .service-card) {
-  background: #fffffff5;
-  border-color: #d9e3ee;
-  box-shadow: 0 8px 28px #28456507;
+  background: var(--ve-surface);
+  border-color: var(--ve-line);
+  box-shadow: 0 8px 28px #050b141a;
 }
 .visual-experience .shell .stat:nth-child(2) {
   border-top: 2px solid #d9977c;
@@ -53,8 +55,8 @@
     box-shadow 250ms ease;
 }
 .visual-experience .shell :is(.panel, .stat, .service-card):hover {
-  border-color: #b3ccdf;
-  box-shadow: 0 10px 28px #2845650c;
+  border-color: #526c85;
+  box-shadow: 0 10px 28px #050b142e;
 }
 .visual-experience .shell .content > section,
 .visual-experience .shell .stats > .stat,
@@ -92,40 +94,40 @@
   border-top: 2px solid #d6b16f;
 }
 .visual-experience .shell .learning-panel {
-  background: linear-gradient(130deg, #edf5fc, #f5f9fd);
-  border-color: #d2e3ef;
+  background: linear-gradient(130deg, #1c3245, #1b2939);
+  border-color: #3b586f;
 }
 .visual-experience .shell .learning-panel :is(h2, h3) {
-  color: #315c80;
+  color: #c6e1f4;
 }
 .visual-experience .shell .learning-panel p {
-  color: #4c6b84;
+  color: #b1c7d9;
 }
 .visual-experience .shell .mode-strip {
-  background: #eaf2fb;
-  color: #4a7099;
-  border-color: #cfdff1;
+  background: #1d3044;
+  color: var(--ve-blue);
+  border-color: #3a536d;
 }
 .visual-experience .shell .callout {
-  background: #fff6e7;
-  border-color: #ead6af;
-  color: #82673e;
+  background: #342f28;
+  border-color: #65543b;
+  color: var(--ve-amber);
 }
 .visual-experience .shell .finding {
-  background: #eef4fd;
+  background: #23374d;
   border-left-color: #7295c3;
 }
 .visual-experience .shell .source-card {
-  background: #f9fbff;
-  border-color: #d9e4f1;
+  background: #1c2d40;
+  border-color: var(--ve-line);
 }
 .visual-experience .shell .evidence-card {
-  background: #f6faff;
-  border-color: #d7e5f1;
+  background: #1b3041;
+  border-color: #3c586c;
 }
 .visual-experience .shell .metric {
-  background: #f2f6fc;
-  border-color: #dbe5f1;
+  background: #223448;
+  border-color: #3a526b;
 }
 .visual-experience .shell .primary,
 .visual-experience .login .primary {
@@ -135,17 +137,17 @@
   box-shadow: 0 4px 12px #2d65951a;
 }
 .visual-experience .shell .secondary {
-  background: #fff;
-  border-color: #c6d6e6;
-  color: #3c607f;
+  background: var(--ve-raised);
+  border-color: #4b647e;
+  color: #d6e6f3;
 }
 .visual-experience .shell .primary:hover,
 .visual-experience .login .primary:hover {
   background: linear-gradient(115deg, #397ba6, #418da5);
 }
 .visual-experience .shell .secondary:hover {
-  background: #f1f6fc;
-  border-color: #91adc9;
+  background: #2d455d;
+  border-color: #7093b3;
 }
 .visual-experience
   .shell
@@ -159,35 +161,37 @@
   line-height: 1.8;
 }
 .visual-experience .shell .notice {
-  background: #eef8f6;
-  border-color: #c4dfd7;
-  color: #3d7a6d;
+  background: #1d3736;
+  border-color: #3c685f;
+  color: var(--ve-green);
 }
-.visual-experience .shell .error {
-  background: #fff1ec;
-  border-color: #e6c2b4;
-  color: #9d5945;
+.visual-experience :is(.shell, .login) .error {
+  background: #3c2c2c;
+  border-color: #795148;
+  color: var(--ve-coral);
 }
 .visual-experience .login {
   background:
-    radial-gradient(ellipse at 0% 0%, #e5eefc, transparent 52%),
-    radial-gradient(ellipse at 70% 90%, #f6e9d7, transparent 45%), #f9fbff;
+    radial-gradient(ellipse at 0% 0%, #365a7b33, transparent 52%),
+    radial-gradient(ellipse at 70% 90%, #9e75411a, transparent 45%),
+    var(--ve-bg);
+  color-scheme: dark;
 }
 .visual-experience .login-card {
-  background: #fcfdff;
-  color: #2e4258;
+  background: #192737d9;
+  color: var(--ve-text);
 }
 .visual-experience .login-card h1 {
-  color: #213c59;
+  color: var(--ve-text);
 }
 .visual-experience .login-card p {
-  color: #657c93;
+  color: var(--ve-muted);
   line-height: 1.8;
 }
 .visual-experience .login-card input {
-  background: #f7faff;
-  border-color: #cedeed;
-  color: #2b435d;
+  background: #111e2e;
+  border-color: #455e77;
+  color: var(--ve-text);
 }
 .visual-experience .login-card input:focus {
   border-color: #578db3;
@@ -198,7 +202,7 @@
   accent-color: #397b9f;
 }
 .visual-experience .login-card .eyebrow {
-  color: #688db0;
+  color: var(--ve-blue);
 }
 .visual-experience .login-art {
   position: relative;
@@ -237,12 +241,256 @@
   color: #d4e1ef;
 }
 .visual-experience .auth-loading {
-  background: linear-gradient(120deg, #f0f5fd, #fff9f0);
-  color: #436c90;
+  background: linear-gradient(120deg, #111b29, #1a2a3a);
+  color: var(--ve-muted);
 }
 .visual-experience :is(.shell, .login) button:focus-visible {
   outline: 3px solid #7aa6c6;
   outline-offset: 3px;
+}
+/* Keep legacy console widgets readable on the shared dark surfaces. */
+.visual-experience .shell :is(h1, h2, h3, h4),
+.visual-experience
+  .shell
+  :is(
+    .stat strong,
+    .finding strong,
+    .workflow-steps strong,
+    .empty strong,
+    .incident-link
+  ),
+.visual-experience .login-card .brand {
+  color: var(--ve-text);
+}
+.visual-experience
+  .shell
+  :is(
+    p,
+    li,
+    dd,
+    .muted,
+    .breadcrumb,
+    .header-status,
+    .header-username,
+    .page-heading p,
+    .learning-toggle,
+    .service-footer,
+    .service-footer span:last-child,
+    .stat > div,
+    .stat small,
+    .detail-grid li,
+    .job,
+    .finding small,
+    .metric span,
+    .metric small,
+    .source-id,
+    .empty,
+    .audit-code,
+    .panel-footer,
+    .evidence-card > div,
+    .evidence-card > small,
+    .incident-link small,
+    .workflow-guide .section-heading > span
+  ),
+.visual-experience .login-card :is(label, .login-foot, .remember-row span) {
+  color: var(--ve-muted);
+}
+.visual-experience
+  .shell
+  :is(
+    a,
+    summary,
+    .text-button,
+    .glossary dt,
+    .service-explanation summary,
+    .screen-help > summary,
+    .record-events summary,
+    .record-focus a
+  ),
+.visual-experience .login-card .brand-icon {
+  color: var(--ve-cyan);
+}
+.visual-experience
+  .shell
+  :is(
+    .service-explanation p,
+    .workflow-steps p,
+    .evidence-card p,
+    .metric p,
+    .agent-contribution p,
+    .agent-contribution li,
+    .agent-contribution .agent-summary,
+    .scenario-caption p,
+    .record-focus p,
+    .live-case > p
+  ) {
+  color: #bbccdc;
+}
+.visual-experience
+  .shell
+  :is(.divider, .count, .service-icon, .learning-icon, .step-number, .avatar) {
+  background: var(--ve-raised);
+  color: var(--ve-cyan);
+  border-color: var(--ve-line);
+}
+.visual-experience
+  .shell
+  :is(
+    .glossary,
+    .workflow-steps > button,
+    .execution-explanation,
+    .segmented,
+    .agent-columns article,
+    .system-flow,
+    .scenario-tabs button,
+    .scenario-steps button,
+    .scenario-caption,
+    .record-point,
+    .record-focus
+  ) {
+  background: #1b2d3e;
+  border-color: var(--ve-line);
+  color: var(--ve-muted);
+}
+.visual-experience
+  .shell
+  :is(
+    .workflow-steps > button:hover,
+    .segmented button.selected,
+    .scenario-tabs button[aria-pressed="true"],
+    .scenario-steps button[aria-current="step"]
+  ) {
+  background: #284859;
+  border-color: #679caa;
+  color: #d3ebef;
+}
+.visual-experience .shell .scenario-steps button.passed {
+  background: #223c3c;
+  color: var(--ve-green);
+}
+.visual-experience .shell .segmented button,
+.visual-experience .shell .scenario-steps button > span,
+.visual-experience .shell .record-point small,
+.visual-experience .shell .record-events :is(time, span, small) {
+  color: var(--ve-muted);
+}
+.visual-experience .shell :is(.record-point > span, .record-events ol) {
+  background: #243b4d;
+  border-color: #4b6b76;
+}
+.visual-experience .shell .record-events ol {
+  background: transparent;
+}
+.visual-experience .shell .record-events strong {
+  color: var(--ve-green);
+}
+.visual-experience .shell :is(.flow-node, .response-strip, .case-outcome) {
+  background: #1f3938;
+  border-color: #426d62;
+  color: var(--ve-green);
+}
+.visual-experience .shell .case-outcome strong {
+  color: var(--ve-green);
+}
+.visual-experience .shell :is(.flow-node.bad, .response-strip.bad) {
+  background: #3e2d30;
+  border-color: #845851;
+  color: var(--ve-coral);
+}
+.visual-experience
+  .shell
+  :is(.flow-node.warn, .flow-node.wait, .response-strip.warn, .demo-label) {
+  background: #3c3428;
+  border-color: #776140;
+  color: var(--ve-amber);
+}
+.visual-experience .shell :is(.scenario-caption > span, .record-focus a) {
+  color: var(--ve-cyan);
+}
+.visual-experience
+  .shell
+  :is(.scenario-caption > div, .demo-boundary, .screen-help summary) {
+  color: var(--ve-muted);
+}
+.visual-experience
+  .shell
+  :is(
+    th,
+    td,
+    details,
+    .service-footer,
+    .panel-footer,
+    .approval-card,
+    .search-form,
+    .source-card
+  ) {
+  border-color: var(--ve-line);
+}
+.visual-experience .shell th {
+  background: #162334;
+  color: var(--ve-muted);
+}
+.visual-experience .shell td {
+  color: #c1d0df;
+}
+.visual-experience .shell tbody tr:hover {
+  background: #25394d;
+}
+.visual-experience .shell :is(pre, .search-form) {
+  background: #121f2e;
+  border-color: var(--ve-line);
+  color: #c3d5e6;
+}
+.visual-experience .shell .search-form input {
+  color: var(--ve-text);
+}
+.visual-experience :is(.shell, .login) input::placeholder {
+  color: #9bb0c4;
+  opacity: 1;
+}
+.visual-experience .shell .badge {
+  background: #27384b;
+  border-color: #4a6077;
+  color: #bdcfe2;
+}
+.visual-experience
+  .shell
+  .badge:is(.healthy, .resolved, .completed, .succeeded) {
+  background: #203c36;
+  border-color: #3d6d5d;
+  color: var(--ve-green);
+}
+.visual-experience .shell .badge:is(.open, .down, .critical, .failed) {
+  background: #412f30;
+  border-color: #785249;
+  color: var(--ve-coral);
+}
+.visual-experience .shell .badge:is(.warning, .pending, .queued) {
+  background: #3a3325;
+  border-color: #78623b;
+  color: var(--ve-amber);
+}
+.visual-experience .shell .badge:is(.investigating, .approved, .real) {
+  background: #263c57;
+  border-color: #4d709a;
+  color: var(--ve-blue);
+}
+.visual-experience .shell .badge.simulation {
+  background: #382f49;
+  border-color: #6d5b8a;
+  color: #cdb4eb;
+}
+.visual-experience .shell :is(.danger, .error-inline) {
+  color: var(--ve-coral);
+}
+.visual-experience .shell .modal-backdrop {
+  background: #060e19bf;
+}
+.visual-experience .shell .modal {
+  background: var(--ve-surface);
+  border: 1px solid var(--ve-line);
+  color: var(--ve-text);
+  box-shadow: 0 20px 70px #0008;
 }
 @keyframes ve-login-light {
   from {

@@ -19,13 +19,15 @@ separate monitoring/AI/operator responsibilities, the original AI report and evi
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
 to control animation, and **Vaka kaydını indir** to download the original sanitized case.
 Reduced-motion preferences are respected. Playback never sends a command or model request.
-The shared palette combines navy, pearl, cyan, blue and amber across the presentation,
+The shared palette combines deep navy, slate, cyan, blue and amber across the presentation,
 sign-in screen and operations console. Slow ambient light, one-time card entrances and
 button feedback complement a soft mouse halo and local card spotlight. The native cursor
 is retained; the halo hides over form fields, during keyboard navigation and on touch devices.
 Reading text and orbit labels remain stationary. The motion preference persists across
 reloads and routes; disabling it stops effects and keeps every section visible. Operating
 system reduced-motion preferences also disable effects and pause presentation playback.
+Page backgrounds, cards, expanded evidence and native controls use coordinated dark surfaces
+with light copy; there is no white page canvas.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
 Preview: [desktop](docs/images/spectrum-desktop.png) ·

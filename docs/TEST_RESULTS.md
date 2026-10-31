@@ -260,3 +260,21 @@ Reviewed screenshots: [desktop](images/spectrum-desktop.png), [AI report](images
 [operations](images/spectrum-operator.png). The public preview on 8080 serves the saved case;
 the authenticated Docker/PostgreSQL deployment remains unverified in this session. Private
 test services were stopped and their temporary password file removed after inspection.
+
+### Dark background follow-up — 2026-10-26
+
+Replaced white canvas/cards with coordinated navy/slate surfaces, including login,
+operations tables, topology status panels, technical details and native dark controls.
+Light text and separate cyan/blue/amber/green/coral states retain readable hierarchy.
+Production build, Prettier and Ruff passed. Playwright checked all six replay stages,
+AI report, expanded evidence/audit, motion-off (zero running animations), and 390px
+touch/technical mode (17px main copy, no horizontal overflow, no pointer halo).
+Public interactions produced no write requests or JavaScript page errors. A scan of
+large solid backgrounds found no remaining pale surfaces in these public views.
+
+Sign-in/logout and five console views were checked against a disposable SQLite fixture;
+none had pale large backgrounds or horizontal overflow. The initial temporary preview
+process exited, producing fetch errors; after restarting it, the repeated console checks
+had no JavaScript page errors or visible network error. Updated preview images show the
+final theme. Temporary API/preview processes and password artifacts were removed afterward.
+No backend behavior, model calls or Docker verification were part of this color change.
