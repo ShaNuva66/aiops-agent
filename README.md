@@ -18,6 +18,12 @@ It combines an animated system map, six-stage incident replay, employee impact,
 separate monitoring/AI/operator responsibilities, the original AI report and evidence.
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
 to control animation, and **Vaka kaydını indir** to download the original sanitized case.
+**Bu adımın kanıtını gör** opens the exact evidence or baseline/approval/recovery record,
+moves keyboard focus to it, and provides a return to the explanation. The AI report also
+shows its guide citations, clearly separating current project guide text from the absent
+historical document snapshot. **Olay özetini indir** exports a readable, self-contained
+Turkish HTML report with the outcome, original model report and proof; it works offline
+and can be printed. The JSON download remains available for technical review.
 Reduced-motion preferences are respected. Playback never sends a command or model request.
 The shared palette combines deep navy, slate, cyan, blue and amber across the presentation,
 sign-in screen and operations console. Slow ambient light, one-time card entrances and
@@ -43,15 +49,24 @@ recommended checks; an explicitly user-authorized test harness approved and exec
 fixed runbook. It was not autonomous model authorization or a general repair agent.
 To explicitly repeat this paid API experiment: `.venv/Scripts/python -m scripts.live_ai_case`.
 The script uses private .env credentials and exports only the redacted successful case.
-For a standalone local case preview without Docker: run `npm run build` and
+On Windows, double-click **Sunumu-ac.cmd** for the saved-case presentation (Node.js/npm
+required). It reuses an existing AIOps preview, or installs frozen dependencies if absent,
+builds and starts a hidden preview on 127.0.0.1:8080. It never changes credentials or starts
+a backend/model call. A different service on 8080 is left alone. For a terminal-only check:
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_presentation.ps1 -NoBrowser`.
+Alternatively, for a standalone local case preview without Docker: run `npm run build` and
 `npm exec -- vite preview --host 127.0.0.1 --port 8080` inside `frontend/`, then open
 `http://127.0.0.1:8080/?case=1`. This serves the recorded case only; authenticated live
 operations still require the backend/lab deployment.
+If the management API is unavailable, the console explains the connection issue and offers
+a retry or return to the recorded presentation. A disconnected console labels retained data
+as stale, shows the last successful refresh and disables intervention controls until fresh
+data returns. A failed or timed-out write is never retried automatically.
 
 ## Quick start — Windows PowerShell
 
 Prerequisites: Docker Desktop with a working Linux engine / WSL 2, Git, and Python 3.12+
-with [uv](https://docs.astral.sh/uv/). Node is only needed for frontend development.
+with [uv](https://docs.astral.sh/uv/). Node is needed for frontend development or the standalone presentation launcher.
 
 ```powershell
 git clone https://github.com/ShaNuva66/aiops-agent.git

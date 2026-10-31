@@ -1,0 +1,111 @@
+.visual-experience .operator-connection {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 22px 100px;
+  background:
+    radial-gradient(ellipse at 15% 15%, #21405760, transparent 65%),
+    var(--ve-bg);
+}
+.visual-experience .operator-connection-card {
+  max-width: 680px;
+  padding: clamp(26px, 5vw, 48px);
+  border: 1px solid var(--ve-line);
+  border-radius: 18px;
+  background: var(--ve-surface);
+  box-shadow: 0 18px 60px #060e1a35;
+}
+.visual-experience .operator-connection-card > svg {
+  color: var(--ve-amber);
+  margin-bottom: 20px;
+}
+.visual-experience .operator-connection-card .eyebrow {
+  display: block;
+  color: var(--ve-cyan);
+}
+.visual-experience .operator-connection-card h1 {
+  color: var(--ve-text);
+  margin: 15px 0 20px;
+  font-size: clamp(26px, 4vw, 34px);
+}
+.visual-experience .operator-connection-card p {
+  color: #c0cfdd;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.visual-experience .operator-connection-card small {
+  color: var(--ve-muted);
+  display: block;
+  line-height: 1.8;
+  margin-top: 20px;
+}
+.visual-experience .operator-connection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 27px;
+}
+.visual-experience .operator-connection-actions button {
+  min-height: 46px;
+  font-size: 14px;
+  background: #326b8c;
+  border-color: #5b96b1;
+  color: #fff;
+}
+.visual-experience .operator-connection-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ve-cyan);
+  font-size: 14px;
+}
+.visual-experience .operator-connection-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ve-green);
+}
+.visual-experience .operator-connection-dot.is-stale {
+  background: var(--ve-amber);
+}
+.visual-experience .shell .operator-stale-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #38372d;
+  border: 1px solid #776747;
+  border-radius: 10px;
+  color: var(--ve-amber);
+}
+.visual-experience .shell .operator-stale-banner > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.visual-experience .shell .operator-stale-banner strong {
+  color: #f0d19e;
+  font-size: 15px;
+}
+.visual-experience .shell .operator-stale-banner p {
+  color: #e1d4ba;
+  margin: 5px 0;
+  line-height: 1.7;
+}
+.visual-experience .shell .operator-stale-banner small {
+  color: #c7bda8;
+  line-height: 1.8;
+}
+.visual-experience .operator-stale-banner button {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+@media (max-width: 760px) {
+  .visual-experience .shell .operator-stale-banner {
+    flex-wrap: wrap;
+  }
+  .visual-experience .operator-stale-banner button {
+    margin-left: 34px;
+  }
+}

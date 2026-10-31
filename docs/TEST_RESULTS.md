@@ -278,3 +278,53 @@ process exited, producing fetch errors; after restarting it, the repeated consol
 had no JavaScript page errors or visible network error. Updated preview images show the
 final theme. Temporary API/preview processes and password artifacts were removed afterward.
 No backend behavior, model calls or Docker verification were part of this color change.
+
+## Evidence, connection and reliability pass — 2026-10-31
+
+Measured local results: 61 pytest tests passed in 59.52s with backend coverage 93.61%;
+53 frontend contract tests passed. Frontend production build, Prettier (including the new
+tests), Ruff lint/format and Git whitespace checks passed. The frontend tests are included
+in CI. No paid model call, user-account change or fault injection was performed.
+
+Presentation verification used the built page on 127.0.0.1:8080. Baseline, scoped approval
+and recovery proof buttons each opened the exact original record and focused its summary;
+return restored focus to the initiating explanation. Evidence links opened their raw record.
+The cited guide panel distinguishes the saved report source ID from the current project
+document, since historical retrieved content was not archived. Replay/proof/navigation
+produced zero write requests and zero JavaScript page errors. Desktop and 390px technical
+layouts had no horizontal overflow; reduced-motion produced zero running animations.
+Proof cards show readable target/action/result fields before optional raw JSON. Tablet
+navigation buttons now retain accessible names/tooltips when their labels collapse to icons;
+the 929px named-navigation check passed after this accessibility issue was corrected.
+
+The readable HTML download was opened from disk at desktop/390px widths without overflow,
+scripts or HTTP requests. It includes original evidence/approval/recovery/audit data and
+escapes all untrusted text. Contracts cover malicious markup, missing or unrelated proof,
+missing reports and unknown scope. Technical records are expandable; print styling exists.
+
+Operator network tests used mocked responses, not a real account: startup outage/retry,
+stale data warning and last-success time, disabled interventions during disconnect, recovery,
+session expiry and 390px layout passed. The API helper preserves cookies/CSRF, bounds requests
+to 15s, cancels superseded reads and never automatically repeats uncertain writes. A cancelled
+sent write still warns that server completion is unknown. Mock-browser checks observed no
+write requests or JavaScript page errors. Real authenticated lab deployment was not restarted.
+
+Windows PowerShell and CMD launcher reuse passed without rebuilding or killing the running
+preview. Root then stopped its own preview and verified the fresh-launch branch: build,
+hidden Node preview, HTTP readiness and no-browser mode succeeded on the Unicode repo path.
+Frozen dependency installation (node_modules absent) was not exercised. A mocked foreign
+service on 8080 was rejected; no unrelated process was terminated.
+
+Backend regressions reproduced two previous bugs before fixes: a current snapshot was omitted
+behind 60 historical rows, and concurrent retries could enqueue multiple jobs. The evidence
+fix reserves original/current IDs, caps context at 50, handles future-dated history and failed
+collection, and timestamps historical rules findings. The SQLite concurrency regression now
+returns one 202 and seven 409s for eight simultaneous requests, with one active job and audit.
+Malformed bearer bytes return 401 on API/ingestion/lab routes. No database migration was needed.
+
+Docker's Linux engine pipe was unavailable, so the historical 27 Docker acceptance checks were
+not rerun. PostgreSQL retry locking is implemented with FOR UPDATE but new live PostgreSQL
+concurrency remains unverified. Local concurrency results above are SQLite results.
+
+Reviewed previews: [proof cards](images/proof-ledger.png), [phone proof](images/proof-mobile.png),
+[stale connection](images/connection-stale.png), [portable summary](images/incident-summary.png).

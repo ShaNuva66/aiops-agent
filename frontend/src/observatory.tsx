@@ -15,6 +15,7 @@ import {
   Cpu,
   Database,
   Fingerprint,
+  FileText,
   GitBranch,
   LayoutDashboard,
   LockKeyhole,
@@ -53,6 +54,9 @@ import "./observatory-entrances.css";
 import { useGentleMotion } from "./observatory-motion";
 import { useVisualMotion } from "./visual-experience";
 import "./observatory-spectrum.css";
+import { CaseProofLedger, CitedGuides } from "./case-proof";
+import type { RecordProofKey } from "./case-proof";
+import { downloadRecordedSummary } from "./incident-export";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -190,6 +194,8 @@ export function Observatory() {
   const surfaceRef = useRef<HTMLDivElement>(null);
   useGentleMotion(surfaceRef, motion);
   const [focusEvidence, setFocusEvidence] = useState<string | null>(null);
+  const [openedProof, setOpenedProof] = useState<RecordProofKey | null>(null);
+  const proofOrigin = useRef<HTMLElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const phase = casePhases[step];
   const lastStep = casePhases.length - 1;
@@ -239,17 +245,46 @@ export function Observatory() {
     setPlaying(true);
     navigate("story");
   };
-  const showProof = (id?: string) => {
+  const showProof = (
+    id?: string,
+    record: RecordProofKey = "checks",
+    trigger?: HTMLElement,
+  ) => {
+    setPlaying(false);
+    proofOrigin.current =
+      trigger ??
+      (document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null);
     setFocusEvidence(id || null);
+    setOpenedProof(id ? null : record);
     navigate("evidence");
-    requestAnimationFrame(() =>
-      document
-        .getElementById(id ? `obs-evidence-${id}` : "obs-record-proof")
-        ?.scrollIntoView({
-          behavior: motion ? "smooth" : "instant",
-          block: "center",
-        }),
-    );
+    requestAnimationFrame(() => {
+      const element = document.getElementById(
+        id ? `obs-evidence-${id}` : `obs-proof-${record}`,
+      );
+      element
+        ?.querySelector<HTMLElement>("summary")
+        ?.focus({ preventScroll: true });
+      element?.scrollIntoView({
+        behavior: motion ? "smooth" : "instant",
+        block: "center",
+      });
+    });
+  };
+  const returnFromProof = () => {
+    setFocusEvidence(null);
+    setOpenedProof(null);
+    const origin = proofOrigin.current;
+    const section = origin?.closest("section")?.id.replace("obs-", "");
+    if (section) setActive(section);
+    if (origin?.isConnected) {
+      origin.focus({ preventScroll: true });
+      origin.scrollIntoView({
+        behavior: motion ? "smooth" : "instant",
+        block: "center",
+      });
+    }
   };
   const downloadCase = () => {
     const url = URL.createObjectURL(
@@ -315,6 +350,8 @@ export function Observatory() {
           {navigation.map(({ id, text, icon: Icon }) => (
             <button
               key={id}
+              aria-label={text}
+              title={text}
               data-active={active === id}
               aria-current={active === id ? "location" : undefined}
               onClick={() => navigate(id)}
@@ -442,8 +479,15 @@ export function Observatory() {
                 <div>
                   <CheckCheck size={20} />
                   <span>
-                    <strong>Toparlanma doğrulandı</strong>
-                    <small>Gerçek HTTP 500 → HTTP 200</small>
+                    <strong>
+                      {outcome.hasVerifiedRecovery
+                        ? "Toparlanma doğrulandı"
+                        : "Toparlanma doğrulanmadı"}
+                    </strong>
+                    <small>
+                      HTTP {outcome.beforeStatus ?? "?"} → HTTP{" "}
+                      {outcome.afterStatus ?? "?"}
+                    </small>
                   </span>
                 </div>
                 <span className="obs-outcome-arrow">
@@ -488,7 +532,8 @@ export function Observatory() {
               <div>
                 <small>MÜDAHALE</small>
                 <strong className="obs-summary-number">
-                  Onaylı<span>Tek hedef, tek işlem</span>
+                  {outcome.hasSuccessfulApproval ? "Onaylı" : "Doğrulanmadı"}
+                  <span>Tek hedef, tek işlem</span>
                 </strong>
               </div>
             </div>
@@ -500,7 +545,11 @@ export function Observatory() {
                 <small>İŞLEM SONRASI</small>
                 <strong className="obs-summary-number">
                   HTTP {outcome.afterStatus || "—"}
-                  <span>Başarılı yanıt doğrulandı</span>
+                  <span>
+                    {outcome.afterStatus === 200
+                      ? "Başarılı yanıt kayıtlı"
+                      : "Başarılı yanıt doğrulanmadı"}
+                  </span>
                 </strong>
               </div>
             </div>
@@ -728,7 +777,19 @@ export function Observatory() {
                   )}
                   <button
                     className="obs-proof-link"
-                    onClick={() => showProof(phase.evidenceIds[0])}
+                    onClick={(event) =>
+                      showProof(
+                        phase.evidenceIds[0],
+                        phase.id === "before"
+                          ? "previous"
+                          : phase.id === "action"
+                            ? "approval"
+                            : phase.id === "recovery"
+                              ? "recovery"
+                              : "checks",
+                        event.currentTarget,
+                      )
+                    }
                   >
                     <Fingerprint size={15} /> Bu adımın kanıtını gör{" "}
                     <ArrowUpRight size={15} />
@@ -741,8 +802,10 @@ export function Observatory() {
                       </button>
                     ) : (
                       <span>
-                        <CheckCheck size={16} /> Olay, sağlıklı kontrolle
-                        kapandı.
+                        <CheckCheck size={16} />{" "}
+                        {outcome.hasVerifiedRecovery
+                          ? "Olay, sağlıklı kontrolle kapandı."
+                          : "Sağlıklı toparlanma kaydı eksik."}
                       </span>
                     )}
                   </div>
@@ -815,7 +878,9 @@ export function Observatory() {
               <span className="obs-model-label">
                 <Sparkles size={16} />
                 {caseModel}
-                <span>GERÇEK MODEL YANITI</span>
+                <span>
+                  {caseReport ? "GERÇEK MODEL YANITI" : "MODEL RAPORU YOK"}
+                </span>
               </span>
             </div>
             <div className="obs-ai-layout">
@@ -829,7 +894,8 @@ export function Observatory() {
                     <small>Kaydedilmiş özgün model çıktısı</small>
                   </div>
                   <span className="obs-report-check">
-                    <Check size={14} /> Tamamlandı
+                    <Check size={14} />{" "}
+                    {caseReport ? "Tamamlandı" : "Rapor yok"}
                   </span>
                 </div>
                 <p className="obs-ai-summary">
@@ -846,7 +912,12 @@ export function Observatory() {
                       <p>{finding.statement}</p>
                       <div>
                         {finding.evidence_ids.map((id, n) => (
-                          <button key={id} onClick={() => showProof(id)}>
+                          <button
+                            key={id}
+                            onClick={(event) =>
+                              showProof(id, "checks", event.currentTarget)
+                            }
+                          >
                             Kanıt {String(n + 1).padStart(2, "0")}{" "}
                             <ArrowUpRight size={12} />
                           </button>
@@ -870,10 +941,13 @@ export function Observatory() {
                 </div>
                 <p className="obs-confidence-note">
                   <CircleHelp size={15} />
-                  {caseReport?.unknowns.length
-                    ? caseReport.unknowns.join(" ")
-                    : "Model belirsizlik belirtmedi. Bu, nedenin kesin olarak kanıtlandığı anlamına gelmez; öneri insan değerlendirmesi gerektirir."}
+                  {!caseReport
+                    ? "Tamamlanmış model raporu olmadığı için modelin belirsizlik değerlendirmesi gösterilemiyor."
+                    : caseReport.unknowns.length
+                      ? caseReport.unknowns.join(" ")
+                      : "Model belirsizlik belirtmedi. Bu, nedenin kesin olarak kanıtlandığı anlamına gelmez; öneri insan değerlendirmesi gerektirir."}
                 </p>
+                <CitedGuides sourceIds={caseReport?.source_ids ?? []} />
               </div>
               <aside className="obs-tool-list">
                 <div className="obs-tool-list-heading">
@@ -928,9 +1002,17 @@ export function Observatory() {
                   ihtiyaç duyduğunda burada.
                 </p>
               </div>
-              <button className="obs-button outline" onClick={downloadCase}>
-                <ArrowDownToLine size={16} /> Vaka kaydını indir
-              </button>
+              <div className="obs-export-actions">
+                <button
+                  className="obs-button outline"
+                  onClick={() => downloadRecordedSummary(caseData)}
+                >
+                  <FileText size={16} /> Olay özetini indir
+                </button>
+                <button className="obs-button outline" onClick={downloadCase}>
+                  <ArrowDownToLine size={16} /> Vaka kaydını indir
+                </button>
+              </div>
             </div>
             <div className="obs-evidence-grid">
               {caseIncident.evidence?.map((evidence, index) => (
@@ -958,12 +1040,30 @@ export function Observatory() {
                     <span>{formatRecordTime(evidence.collected_at)}</span>
                     <code>{evidence.id.slice(0, 8)}</code>
                   </div>
-                  <details className="obs-raw-data" open={technical}>
+                  <details
+                    className="obs-raw-data"
+                    open={technical || focusEvidence === evidence.id}
+                    onToggle={(event) => {
+                      if (
+                        !event.currentTarget.open &&
+                        focusEvidence === evidence.id
+                      )
+                        setFocusEvidence(null);
+                    }}
+                  >
                     <summary>
                       Ham teknik veriyi göster <ChevronRight size={14} />
                     </summary>
                     <pre>{JSON.stringify(evidence.data, null, 2)}</pre>
                   </details>
+                  {focusEvidence === evidence.id && (
+                    <button
+                      className="obs-proof-return"
+                      onClick={returnFromProof}
+                    >
+                      Anlatıma geri dön
+                    </button>
+                  )}
                 </article>
               ))}
             </div>
@@ -973,52 +1073,53 @@ export function Observatory() {
                   <ShieldCheck size={19} />
                   <h3>Başlangıçtan sonuca, doğrulama kayıtları.</h3>
                 </div>
-                <span>{outcome.checkCount} kontrol geçti</span>
+                <span>{outcome.checkCount} kayıtlı kontrol</span>
               </div>
               <div className="obs-verification-grid">
                 <div>
                   <small>İLK KONTROL</small>
-                  <strong>HTTP 200 → HTTP 500</strong>
+                  <strong>
+                    {outcome.hasInitialSuccess ? "HTTP 200" : "Başlangıç eksik"}{" "}
+                    → HTTP {outcome.beforeStatus ?? "?"}
+                  </strong>
                   <p>
-                    Başarılı başlangıçtan sonra kontrollü test hatasının yanıtı
-                    doğrulandı.
+                    {outcome.hasInitialSuccess
+                      ? "Başarılı başlangıç kontrolü kayıtta bulunuyor."
+                      : "Başlangıç kontrolü doğrulanamadı; varsayım yapılmıyor."}
                   </p>
                 </div>
                 <div>
                   <small>UYGULANAN İŞLEM</small>
-                  <strong>clear-http-fault:v1</strong>
+                  <strong>
+                    {outcome.hasSuccessfulApproval
+                      ? "clear-http-fault:v1"
+                      : "Başarılı işlem doğrulanmadı"}
+                  </strong>
                   <p>
-                    İlgili arıza için onaylanan sabit işlem, test hatasını
-                    temizledi.
+                    {outcome.hasSuccessfulApproval
+                      ? "İlgili arıza için onaylanan sabit işlem, test hatasını temizledi."
+                      : "Öneri veya onay isteği, başarılı müdahale kanıtı değildir."}
                   </p>
                 </div>
                 <div>
                   <small>SON KONTROL</small>
-                  <strong>HTTP 200 · Başarılı</strong>
+                  <strong>
+                    {outcome.hasVerifiedRecovery
+                      ? "HTTP 200 · Başarılı"
+                      : "Toparlanma doğrulanmadı"}
+                  </strong>
                   <p>
-                    İşlemden sonra yanıt alındı; ayrı izleme gözlemi arızayı
-                    kapattı.
+                    {outcome.hasVerifiedRecovery
+                      ? "İşlemden sonra yanıt alındı; ayrı izleme gözlemi arızayı kapattı."
+                      : "Başarılı işlem kontrolü ve sağlıklı toparlanma gözlemi birlikte gerekir."}
                   </p>
                 </div>
               </div>
-              <details className="obs-raw-data">
-                <summary>
-                  Başlangıç, onay ve toparlanmanın özgün kayıtları{" "}
-                  <ChevronRight size={14} />
-                </summary>
-                <pre>
-                  {JSON.stringify(
-                    {
-                      previous: caseIncident.story?.previous,
-                      approvals: caseIncident.story?.approvals,
-                      recovery: caseIncident.story?.recovery,
-                      checks: caseData.checks,
-                    },
-                    null,
-                    2,
-                  )}
-                </pre>
-              </details>
+              <CaseProofLedger
+                activeProof={openedProof}
+                onOpen={setOpenedProof}
+                onReturn={returnFromProof}
+              />
             </div>
             <div className="obs-audit-panel" id="case-action-proof">
               <div className="obs-audit-heading">

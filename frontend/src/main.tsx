@@ -39,6 +39,7 @@ import { LiveCaseStudy } from "./case-study";
 import { Observatory } from "./observatory";
 import { VisualExperience } from "./visual-experience";
 import "./app-spectrum.css";
+import "./operator-connection.css";
 import {
   auditLabel,
   explainEvidence,
@@ -78,16 +79,69 @@ function Badge({ value }: { value: string }) {
   );
 }
 
+function ConnectionScreen({
+  title,
+  message,
+  checking,
+  onRetry,
+}: {
+  title: string;
+  message: string;
+  checking: boolean;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="operator-connection">
+      <section
+        className="operator-connection-card"
+        aria-labelledby="connection-title"
+      >
+        <Server size={32} aria-hidden="true" />
+        <span className="eyebrow">OPERASYON PANELİ · BAĞLANTI KONTROLÜ</span>
+        <h1 id="connection-title">{title}</h1>
+        <p role="status">{message}</p>
+        <p>
+          Bu, izlenen uygulamada arıza olduğunu göstermez. Şu anda yönetim
+          panelinden yeni veri alamıyoruz; servislerin durumunu
+          doğrulayamıyoruz.
+        </p>
+        <div className="operator-connection-actions">
+          <button className="primary" disabled={checking} onClick={onRetry}>
+            <RefreshCw size={17} aria-hidden="true" />
+            {checking
+              ? "Bağlantı kontrol ediliyor…"
+              : "Bağlantıyı tekrar kontrol et"}
+          </button>
+          <a href="?case=1">
+            Kayıtlı vaka sunumunu aç{" "}
+            <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
+        </div>
+        <small>
+          Kayıtlı vaka sunumu giriş gerektirmez ve sistemde işlem yapmaz.
+        </small>
+      </section>
+    </div>
+  );
+}
+
 function App() {
   const [account, setAccount] = useState<Account | null>(null);
   const accountRef = useRef<Account | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [authAttempt, setAuthAttempt] = useState(0);
   const [setupRequired, setSetupRequired] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationPassword, setConfirmationPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [connectionIssue, setConnectionIssue] = useState("");
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const refreshInFlight = useRef(false);
   const [tab, setTab] = useState("Overview");
   const [overview, setOverview] = useState<Overview | null>(null);
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -115,10 +169,16 @@ function App() {
       try {
         return await request<T>(path, method, body, account?.csrf_token);
       } catch (e) {
-        if (e instanceof ApiError && e.status === 401) {
+        if (
+          e instanceof ApiError &&
+          e.status === 401 &&
+          accountRef.current?.csrf_token === account?.csrf_token
+        ) {
           accountRef.current = null;
           setConnected(false);
           setAccount(null);
+          setError(e.message);
+          setConfirmation(null);
         }
         throw e;
       }
@@ -128,12 +188,18 @@ function App() {
 
   useEffect(() => {
     let live = true;
+    const restoreController = new AbortController();
     let retry: ReturnType<typeof setTimeout> | undefined;
     sessionStorage.removeItem("aiops-token");
     const restore = async () => {
+      if (live) setAuthChecking(true);
       try {
         const status = await request<{ setup_required: boolean }>(
           "/auth/status",
+          "GET",
+          undefined,
+          undefined,
+          restoreController.signal,
         );
         if (live) {
           setSetupRequired(status.setup_required);
@@ -141,7 +207,13 @@ function App() {
         }
         if (!status.setup_required) {
           try {
-            const user = await request<Account>("/auth/me");
+            const user = await request<Account>(
+              "/auth/me",
+              "GET",
+              undefined,
+              undefined,
+              restoreController.signal,
+            );
             if (live) {
               accountRef.current = user;
               setAccount(user);
@@ -150,21 +222,27 @@ function App() {
             if (!(e instanceof ApiError && e.status === 401)) throw e;
           }
         }
+        if (live) setAuthReady(true);
       } catch (e) {
         if (live) {
+          setAuthReady(false);
           setError((e as Error).message);
           retry = setTimeout(() => void restore(), 3000);
         }
       } finally {
-        if (live) setAuthLoading(false);
+        if (live) {
+          setAuthLoading(false);
+          setAuthChecking(false);
+        }
       }
     };
     void restore();
     return () => {
       live = false;
+      restoreController.abort();
       clearTimeout(retry);
     };
-  }, []);
+  }, [authAttempt]);
 
   async function signIn() {
     setError("");
@@ -185,6 +263,7 @@ function App() {
       );
       accountRef.current = user;
       setAccount(user);
+      setConnectionIssue("");
       setSetupRequired(false);
       setPassword("");
       setConfirmationPassword("");
@@ -203,6 +282,8 @@ function App() {
       accountRef.current = null;
       setAccount(null);
       setConnected(false);
+      setConnectionIssue("");
+      setLastUpdated(null);
       setSelected(null);
       setOverview(null);
       setIncidents([]);
@@ -219,7 +300,9 @@ function App() {
   }
 
   const refresh = useCallback(async () => {
-    if (!account) return;
+    if (!account || refreshInFlight.current) return;
+    refreshInFlight.current = true;
+    setRefreshing(true);
     try {
       const [o, i, s, a, logs] = await Promise.all([
         api<Overview>("/overview"),
@@ -235,16 +318,35 @@ function App() {
       setApprovals(a);
       setAudit(logs);
       setConnected(true);
-      setError("");
+      setConnectionIssue("");
+      setLastUpdated(new Date().toISOString());
     } catch (e) {
-      setError((e as Error).message);
+      if (accountRef.current?.csrf_token !== account.csrf_token) return;
+      setConnectionIssue((e as Error).message);
+      setConfirmation(null);
+    } finally {
+      refreshInFlight.current = false;
+      setRefreshing(false);
     }
   }, [api, account]);
 
   useEffect(() => {
     void refresh();
     const timer = setInterval(() => void refresh(), 5000);
-    return () => clearInterval(timer);
+    const online = () => void refresh();
+    const offline = () => {
+      setConnectionIssue(
+        "Bu cihaz çevrimdışı. Ağ bağlantısı yeniden kurulduğunda veriler tekrar kontrol edilecek.",
+      );
+      setConfirmation(null);
+    };
+    window.addEventListener("online", online);
+    window.addEventListener("offline", offline);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("online", online);
+      window.removeEventListener("offline", offline);
+    };
   }, [refresh]);
   useEffect(() => {
     if (!selected) return;
@@ -266,6 +368,12 @@ function App() {
   }, [selected?.id, api]);
 
   async function action(fn: () => Promise<unknown>, message: string) {
+    if (connectionIssue) {
+      setError(
+        "Güncel veriler alınamadığı için işlem başlatılmadı. Önce bağlantıyı kontrol et.",
+      );
+      return;
+    }
     setBusy(true);
     setError("");
     setNotice("");
@@ -298,15 +406,35 @@ function App() {
   );
   const report = completedDiagnosis?.report;
 
-  if (authLoading || (account && !connected && !error)) {
+  if (authLoading || (account && !connected && !connectionIssue)) {
     return (
       <div className="auth-loading" role="status">
-        Oturum kontrol ediliyor…
+        {account ? "Operasyon verileri alınıyor…" : "Oturum kontrol ediliyor…"}
       </div>
     );
   }
 
-  if (!connected)
+  if (!authReady)
+    return (
+      <ConnectionScreen
+        title="Yönetim paneline ulaşılamıyor."
+        message={error}
+        checking={authChecking}
+        onRetry={() => setAuthAttempt((attempt) => attempt + 1)}
+      />
+    );
+
+  if (account && !connected)
+    return (
+      <ConnectionScreen
+        title="Giriş yapıldı, veriler henüz alınamadı."
+        message={connectionIssue}
+        checking={refreshing}
+        onRetry={() => void refresh()}
+      />
+    );
+
+  if (!account)
     return (
       <div className="login">
         <div className="login-card">
@@ -415,7 +543,10 @@ function App() {
     );
 
   return (
-    <div className="shell">
+    <div
+      className="shell"
+      data-connection={connectionIssue ? "stale" : "ready"}
+    >
       <aside>
         <div className="brand">
           <span className="brand-icon">
@@ -487,7 +618,13 @@ function App() {
             )}
           </div>
           <div className="header-status">
-            <span className="live-dot" /> Yerel laboratuvar{" "}
+            <span
+              className={`operator-connection-dot${connectionIssue ? " is-stale" : ""}`}
+              aria-hidden="true"
+            />
+            {connectionIssue
+              ? "Veriler güncel değil"
+              : "Yönetim bağlantısı açık"}{" "}
             <span className="divider" />{" "}
             <span className="header-username">{account?.username}</span>
             <span className="avatar">
@@ -528,13 +665,40 @@ function App() {
               </label>
               <button
                 className="secondary"
-                disabled={busy}
+                disabled={busy || refreshing}
                 onClick={() => void refresh()}
               >
-                <RefreshCw size={15} /> Yenile
+                <RefreshCw size={15} /> {refreshing ? "Yenileniyor…" : "Yenile"}
               </button>
             </div>
           </div>
+          {connectionIssue && (
+            <section
+              className="operator-stale-banner"
+              aria-labelledby="stale-title"
+              role="status"
+            >
+              <TriangleAlert size={21} aria-hidden="true" />
+              <div>
+                <strong id="stale-title">Yeni veriler alınamıyor.</strong>
+                <p>{connectionIssue}</p>
+                <small>
+                  {lastUpdated
+                    ? `Ekranın son veri alımı: ${date(lastUpdated)}. `
+                    : ""}
+                  Görünen kayıtlar son başarılı bağlantıdan kalıyor. Yeni işlem
+                  başlatmadan önce bağlantı kurulmalı.
+                </small>
+              </div>
+              <button
+                className="secondary"
+                disabled={refreshing}
+                onClick={() => void refresh()}
+              >
+                <RefreshCw size={15} aria-hidden="true" /> Bağlantıyı kontrol et
+              </button>
+            </section>
+          )}
           {error && (
             <div className="error" role="alert">
               {error}
@@ -590,7 +754,7 @@ function App() {
                 </div>
                 <div className="detail-actions">
                   <button
-                    disabled={busy}
+                    disabled={busy || !!connectionIssue}
                     className="secondary"
                     onClick={() =>
                       void action(
@@ -607,7 +771,7 @@ function App() {
                   </button>
                   {selected.status === "open" && (
                     <button
-                      disabled={busy}
+                      disabled={busy || !!connectionIssue}
                       className="secondary"
                       onClick={() =>
                         void action(
@@ -625,7 +789,7 @@ function App() {
                   )}
                   {selected.status !== "resolved" && (
                     <button
-                      disabled={busy}
+                      disabled={busy || !!connectionIssue}
                       className="secondary"
                       onClick={() => {
                         const note = window.prompt(
@@ -767,6 +931,7 @@ function App() {
                     className="primary"
                     disabled={
                       busy ||
+                      !!connectionIssue ||
                       selected.status === "resolved" ||
                       selected.service_id !== "sample-api" ||
                       selected.check !== "availability" ||
@@ -1233,7 +1398,7 @@ function App() {
                         {a.status === "pending" && (
                           <>
                             <button
-                              disabled={busy}
+                              disabled={busy || !!connectionIssue}
                               className="secondary danger"
                               onClick={() =>
                                 void action(
@@ -1253,6 +1418,7 @@ function App() {
                             <button
                               disabled={
                                 busy ||
+                                !!connectionIssue ||
                                 new Date(a.expires_at).getTime() < Date.now()
                               }
                               className="primary"
@@ -1267,6 +1433,7 @@ function App() {
                           <button
                             disabled={
                               busy ||
+                              !!connectionIssue ||
                               !overview?.execution_enabled ||
                               new Date(a.expires_at).getTime() < Date.now()
                             }
@@ -1407,7 +1574,7 @@ function App() {
               </button>
               <button
                 className="primary"
-                disabled={busy}
+                disabled={busy || !!connectionIssue}
                 onClick={() => {
                   const a = confirmation;
                   setConfirmation(null);

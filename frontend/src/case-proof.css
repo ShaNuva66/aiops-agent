@@ -1,0 +1,191 @@
+.observatory .case-proof-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+.observatory .obs-export-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.observatory .case-proof-intro :is(p, button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ve-muted);
+  font-size: 15px;
+}
+.observatory .case-proof-intro button {
+  color: var(--ve-cyan);
+  background: var(--ve-raised);
+  border: 1px solid var(--ve-line);
+  padding: 9px 12px;
+  border-radius: 7px;
+  min-height: 44px;
+}
+.observatory .case-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.observatory .case-proof-record {
+  min-width: 0;
+  background: #172432;
+  border: 1px solid var(--ve-line);
+  border-radius: 9px;
+  scroll-margin-top: 100px;
+  align-self: start;
+}
+.observatory .case-proof-record[open] {
+  grid-column: 1 / -1;
+  border-color: #729fb7;
+  box-shadow: 0 0 0 3px #8fcbd515;
+}
+.observatory .case-proof-record > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  cursor: pointer;
+  list-style: none;
+  min-height: 76px;
+}
+.observatory .case-proof-record > summary::-webkit-details-marker {
+  display: none;
+}
+.observatory .case-proof-record > summary strong {
+  display: block;
+  color: var(--ve-text);
+  font-size: 17px;
+}
+.observatory .case-proof-record > summary small {
+  display: block;
+  color: var(--ve-muted);
+  font-size: 14px;
+  margin-top: 5px;
+}
+.observatory .case-proof-record[open] > summary > svg {
+  rotate: 90deg;
+}
+.observatory .case-proof-content {
+  padding: 0 18px 18px;
+}
+.observatory .case-proof-content p,
+.observatory .case-cited-guides p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #c1d0df;
+}
+.observatory .case-proof-content time {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--ve-muted);
+}
+.observatory .case-proof-content dl {
+  margin: 17px 0;
+}
+.observatory .case-proof-content dl > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.38fr) minmax(0, 1fr);
+  gap: 12px;
+  border-top: 1px solid var(--ve-line);
+  padding: 12px 0;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.observatory .case-proof-content dt {
+  color: var(--ve-muted);
+}
+.observatory .case-proof-content dd {
+  margin: 0;
+  color: var(--ve-text);
+}
+.observatory .case-proof-raw > summary {
+  color: var(--ve-cyan);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 10px 0;
+}
+.observatory .case-proof-content pre,
+.observatory .case-cited-guides pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 360px;
+  overflow: auto;
+  color: #c6d9e9;
+  background: #111e2d;
+  border: 1px solid var(--ve-line);
+  border-radius: 7px;
+  padding: 16px;
+  font:
+    13px/1.8 ui-monospace,
+    monospace;
+  margin: 14px 0 0;
+}
+.observatory .case-cited-guides {
+  border-top: 1px solid var(--ve-line);
+  margin-top: 24px;
+  padding-top: 22px;
+}
+.observatory .case-cited-guides h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  color: var(--ve-text);
+}
+.observatory .case-cited-guides article {
+  margin-top: 14px;
+  padding: 17px;
+  background: #1b2e42;
+  border: 1px solid #3d5875;
+  border-radius: 8px;
+}
+.observatory .case-cited-guides code {
+  color: var(--ve-blue);
+  font-size: 13px;
+}
+.observatory .case-cited-guides h4 {
+  margin: 9px 0;
+  font-size: 17px;
+  color: var(--ve-text);
+}
+.observatory .case-cited-guides summary {
+  color: var(--ve-cyan);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 12px 0 5px;
+}
+.observatory .case-cited-guides .case-source-boundary {
+  border-left: 2px solid var(--ve-amber);
+  padding-left: 12px;
+  margin-top: 12px;
+  color: #d7c9b3;
+  font-size: 14px;
+}
+.observatory .obs-proof-return {
+  margin-top: 12px;
+  color: var(--ve-cyan);
+  background: var(--ve-raised);
+  border: 1px solid var(--ve-line);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 15px;
+  min-height: 44px;
+}
+@media (max-width: 760px) {
+  .observatory .case-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .observatory .case-proof-content dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+}
