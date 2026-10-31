@@ -1,9 +1,10 @@
 import asyncio
 import json
 
-from sqlalchemy import select, update
+from sqlalchemy import case, select, update
 
 from backend import knowledge
+from backend.incidents import utc
 from backend.models import DiagnosisRun, Evidence, Incident, Service, now
 from backend.monitoring import collect
 from backend.schemas import DiagnosisReport, Finding
@@ -17,6 +18,34 @@ def validate_report(report: DiagnosisReport, evidence_ids: set[str], source_ids:
         raise ValueError("Unverifiable evidence reference")
     if not set(report.source_ids) <= source_ids:
         raise ValueError("Unverifiable knowledge reference")
+
+
+def bounded_evidence(session, incident_id: str, current: Evidence | None) -> list[Evidence]:
+    """Keep the original event and this run's collection, then the newest history.
+
+    The current snapshot is reserved by identity rather than its wall-clock timestamp,
+    so a clock adjustment cannot push it out of the provider's bounded context.
+    """
+    query = select(Evidence).where(Evidence.incident_id == incident_id)
+    initial = session.scalar(
+        query.order_by(
+            case((Evidence.source.in_(["collector", "zabbix", "test"]), 0), else_=1),
+            Evidence.collected_at,
+            Evidence.id,
+        ).limit(1)
+    )
+    reserved = {item.id for item in [initial, current] if item is not None}
+    recent = list(
+        session.scalars(
+            query.where(Evidence.id.not_in(reserved))
+            .order_by(Evidence.collected_at.desc(), Evidence.id.desc())
+            .limit(50 - len(reserved))
+        )
+    )
+    evidence = ([initial] if initial else []) + list(reversed(recent))
+    if current is not None and (initial is None or current.id != initial.id):
+        evidence.append(current)
+    return evidence
 
 
 def rules_report(incident, evidence, sources) -> DiagnosisReport:
@@ -35,7 +64,10 @@ def rules_report(incident, evidence, sources) -> DiagnosisReport:
             observed = item.data.get(section, {})
             findings.append(
                 Finding(
-                    statement=f"Current {section} observation: {json.dumps(observed)}",
+                    statement=(
+                        f"Recorded {section} observation at "
+                        f"{utc(item.collected_at).isoformat()}: {json.dumps(observed)}"
+                    ),
                     evidence_ids=[item.id],
                     confidence="high",
                 )
@@ -187,11 +219,13 @@ def process_one(session, settings, incident_id=None) -> bool:
     session.refresh(job)
     incident = session.get(Incident, job.incident_id)
     try:
+        current = None
         # Never mix current real telemetry into a simulated incident.
         if incident.source_kind == "real":
             try:
                 data = collect(settings)
-                session.add(Evidence(incident_id=incident.id, source="lab-telemetry", data=data))
+                current = Evidence(incident_id=incident.id, source="lab-telemetry", data=data)
+                session.add(current)
                 audit(session, "diagnosis-agent", "tool.collect_telemetry", incident.id)
             except Exception as exc:
                 audit(
@@ -202,16 +236,7 @@ def process_one(session, settings, incident_id=None) -> bool:
                     {"error_type": type(exc).__name__},
                 )
         session.flush()
-        evidence = list(
-            session.scalars(
-                select(Evidence)
-                .where(
-                    Evidence.incident_id == incident.id,
-                )
-                .order_by(Evidence.collected_at)
-                .limit(50)
-            )
-        )
+        evidence = bounded_evidence(session, incident.id, current)
         sources = knowledge.search(
             session, f"{incident.service_id} {incident.check}", settings.qdrant_url
         )

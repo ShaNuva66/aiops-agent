@@ -12,6 +12,9 @@ Operator routes accept an authenticated browser session or API_TOKEN; event inge
 INGEST_TOKEN; lab telemetry
 and fault controls require LAB_TOKEN. Machine-local plaintext .env is ignored by Git.
 Secrets are environment-injected into containers. This is not a managed secret vault.
+Bearer comparisons use constant-time byte comparison; malformed non-ASCII header values
+are denied with 401 rather than raising a server error. Regression tests cover API,
+ingestion and lab authorization without exposing header contents in audit records.
 
 The dashboard creates one operator account on first use; a unique bootstrap slot prevents
 concurrent creation of multiple first accounts. Usernames are case-insensitive. Passwords

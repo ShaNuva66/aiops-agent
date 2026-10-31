@@ -74,6 +74,20 @@ Search results reserve a matching runbook and a matching incident when both exis
 repeated incident summaries cannot crowd out all runbooks. Equal scores prefer newer
 resolved incidents. Qdrant also queries the runbook category separately for this purpose.
 
+## Bounded diagnosis and retry concurrency
+
+Provider context contains at most 50 evidence records. It reserves the original event and
+the snapshot collected for that exact run, then fills remaining slots with newest history.
+The fresh snapshot is reserved by identity, so a clock adjustment cannot exclude it.
+Collection failure does not fabricate fresh evidence. Rules findings call telemetry a
+recorded observation and include its UTC collection time.
+
+Manual retry enqueue locks the incident row before checking queued/running jobs and adding
+one new job on PostgreSQL. SQLite uses a short BEGIN IMMEDIATE transaction because it ignores
+FOR UPDATE. Locks cover check/insert/commit, never provider execution. Denials roll back
+before separate audit logging. SQLite concurrency is measured; the new PostgreSQL locking
+path still requires live verification when Docker is available.
+
 ## Restart and scaling
 Queued diagnoses persist. Interrupted running diagnoses become failed; operators can retry.
 Executing approvals become failed/uncertain after restart and are never replayed. No guarantee

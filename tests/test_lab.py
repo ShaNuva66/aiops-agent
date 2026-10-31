@@ -1,6 +1,22 @@
 from threading import Event
 
+from fastapi.testclient import TestClient
+from starlette.requests import Request
+
 from infrastructure.lab import app as lab
+
+
+def test_non_ascii_lab_authorization_is_denied_without_a_server_error(monkeypatch):
+    token = "lab-unit-" + "x" * 32
+    monkeypatch.setenv("LAB_TOKEN", token)
+    with TestClient(lab.app) as client:
+        response = client.get("/telemetry", headers=[(b"authorization", b"Bearer \xff\xfe")])
+    assert response.status_code == 401
+    # A valid token still passes without invoking telemetry or a database probe.
+    request = Request(
+        {"type": "http", "headers": [(b"authorization", ("Bearer " + token).encode())]}
+    )
+    assert lab.authorized(request) is None
 
 
 def test_slow_database_probe_returns_unhealthy_without_unbounded_workers(monkeypatch):

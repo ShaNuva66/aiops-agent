@@ -11,7 +11,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy import func, select, update
+from sqlalchemy import func, select, text, update
 from sqlalchemy.orm import Session
 
 from backend import auth, diagnosis, knowledge, monitoring, resolution
@@ -161,7 +161,9 @@ def create_app(settings: Settings | None = None, factory=None) -> FastAPI:
         )
 
     def authorize(credentials, key):
-        if not credentials or not hmac.compare_digest(credentials.credentials, key):
+        if not credentials or not hmac.compare_digest(
+            credentials.credentials.encode("utf-8"), key.encode("utf-8")
+        ):
             raise HTTPException(401, "Valid bearer token required")
 
     def operator(
@@ -345,21 +347,36 @@ def create_app(settings: Settings | None = None, factory=None) -> FastAPI:
 
     @app.post("/api/incidents/{ident}/diagnoses", dependencies=protected, status_code=202)
     def queue(ident: str, session: Db):
-        required(session, Incident, ident)
-        running = session.scalar(
-            select(DiagnosisRun).where(
-                DiagnosisRun.incident_id == ident,
-                DiagnosisRun.status.in_(["queued", "running"]),
+        try:
+            if session.get_bind().dialect.name == "sqlite":
+                # SQLite ignores FOR UPDATE. Reserve its short write transaction
+                # before reading so competing requests cannot both observe an empty queue.
+                session.execute(text("BEGIN IMMEDIATE"))
+            incident = session.scalar(
+                select(Incident).where(Incident.id == ident).with_for_update()
             )
-        )
-        if running:
-            raise HTTPException(409, "Diagnosis already queued or running")
-        item = DiagnosisRun(incident_id=ident, provider=settings.diagnosis_provider)
-        session.add(item)
-        session.flush()
-        audit(session, "operator", "diagnosis.queued", item.id)
-        session.commit()
-        return record(item)
+            if incident is None:
+                raise HTTPException(404, "Not found")
+            # PostgreSQL holds the existing incident row until commit, serializing
+            # only enqueue attempts for this incident. Provider work runs later.
+            running = session.scalar(
+                select(DiagnosisRun).where(
+                    DiagnosisRun.incident_id == ident,
+                    DiagnosisRun.status.in_(["queued", "running"]),
+                )
+            )
+            if running:
+                raise HTTPException(409, "Diagnosis already queued or running")
+            item = DiagnosisRun(incident_id=ident, provider=settings.diagnosis_provider)
+            session.add(item)
+            session.flush()
+            audit(session, "operator", "diagnosis.queued", item.id)
+            session.commit()
+            return record(item)
+        except Exception:
+            # Release locks before the exception handler records a denied request.
+            session.rollback()
+            raise
 
     @app.post("/api/operations/cycle", dependencies=protected)
     async def run_cycle():

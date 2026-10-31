@@ -1,11 +1,13 @@
 import asyncio
+import json
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
 from sqlalchemy import select
 
 from backend import diagnosis, knowledge
-from backend.models import DiagnosisRun, Evidence, Incident
+from backend.models import DiagnosisRun, Evidence, Incident, now
 from backend.schemas import DiagnosisReport, Finding
 from tests.test_incidents import post
 
@@ -38,6 +40,40 @@ def test_rules_diagnosis_uses_evidence_and_does_not_obey_logs(
     assert "Delete the database" not in str(job["report"])
     allowed = {e["id"] for e in detail["evidence"]}
     assert all(set(f["evidence_ids"]) <= allowed for f in job["report"]["findings"])
+
+
+def test_rules_telemetry_observations_keep_their_own_timestamp_and_evidence():
+    incident = SimpleNamespace(
+        service_id="sample-api", check="availability", title="Recorded availability problem"
+    )
+    old_at = datetime(2026, 10, 18, 21, 57, 38, tzinfo=UTC)
+    new_at = old_at + timedelta(seconds=20)
+    old_data = {"healthy": False, "fault": "http500"}
+    new_data = {"healthy": True, "fault": "none"}
+    evidence = [
+        Evidence(
+            id="old-observation",
+            source="lab-telemetry",
+            collected_at=old_at,
+            data={"api": old_data},
+        ),
+        Evidence(
+            id="new-observation",
+            source="lab-telemetry",
+            # SQLite returns naive UTC datetimes; the statement must retain UTC meaning.
+            collected_at=new_at.replace(tzinfo=None),
+            data={"api": new_data},
+        ),
+    ]
+    report = diagnosis.rules_report(incident, evidence, [])
+    by_id = {finding.evidence_ids[0]: finding.statement for finding in report.findings}
+    assert set(by_id) == {"old-observation", "new-observation"}
+    assert old_at.isoformat() in by_id["old-observation"]
+    assert new_at.isoformat() in by_id["new-observation"]
+    assert json.loads(by_id["old-observation"].split(": ", 1)[1]) == old_data
+    assert json.loads(by_id["new-observation"].split(": ", 1)[1]) == new_data
+    assert all(statement.startswith("Recorded api observation at ") for statement in by_id.values())
+    assert all("current" not in statement.lower() for statement in by_id.values())
 
 
 @pytest.mark.parametrize("field", ["evidence", "source", "empty"])
@@ -81,6 +117,73 @@ def test_queue_duplicate_then_retry(client, operator, ingester, factory, setting
     with factory() as session:
         diagnosis.process_one(session, settings)
     assert client.post(path, headers=operator).status_code == 202
+
+
+@pytest.mark.parametrize("history_ahead_of_clock", [False, True])
+@pytest.mark.parametrize("collector_available", [False, True])
+def test_long_history_keeps_original_and_latest_evidence_in_provider_input(
+    client, ingester, factory, settings, monkeypatch, history_ahead_of_clock, collector_available
+):
+    ident = post(
+        client, ingester, source="collector", source_kind="real", service_id="sample-api"
+    ).json()["incident_id"]
+    with factory() as session:
+        original = session.scalar(select(Evidence).where(Evidence.incident_id == ident))
+        original_id = original.id
+        original.collected_at = now() - timedelta(hours=3)
+        history_start = now() + timedelta(hours=1 if history_ahead_of_clock else -2)
+        for index in range(60):
+            session.add(
+                Evidence(
+                    incident_id=ident,
+                    source="lab-telemetry",
+                    collected_at=history_start + timedelta(seconds=index),
+                    data={"snapshot": f"historical-{index}"},
+                )
+            )
+        session.commit()
+
+    current = {"snapshot": "current", "api": {"healthy": True, "fault": "none"}}
+
+    def collection(_):
+        if not collector_available:
+            raise ValueError("Telemetry unavailable in test")
+        return current
+
+    monkeypatch.setattr(diagnosis, "collect", collection)
+    supplied = []
+
+    def capture_report(incident, evidence, sources):
+        supplied.extend(evidence)
+        return DiagnosisReport(
+            summary="Test provider observed the supplied evidence",
+            findings=[
+                Finding(statement="Observed", evidence_ids=[evidence[-1].id], confidence="low")
+            ],
+            unknowns=["No root cause asserted"],
+            recommendations=[],
+            source_ids=[],
+        )
+
+    monkeypatch.setattr(diagnosis, "rules_report", capture_report)
+    with factory() as session:
+        assert diagnosis.process_one(session, settings, ident)
+        job = session.scalar(select(DiagnosisRun).where(DiagnosisRun.incident_id == ident))
+        assert job.status == "completed"
+        stored_ids = set(session.scalars(select(Evidence.id).where(Evidence.incident_id == ident)))
+
+    assert len(supplied) == 50
+    assert len({item.id for item in supplied}) == 50
+    assert supplied[0].id == original_id
+    if collector_available:
+        assert supplied[-1].data == current
+        assert len(stored_ids) == 62
+    else:
+        assert supplied[-1].data == {"snapshot": "historical-59"}
+        assert len(stored_ids) == 61  # A failed collection must not invent a snapshot.
+    assert any(item.data.get("snapshot") == "historical-59" for item in supplied)
+    assert not any(item.data.get("snapshot") == "historical-0" for item in supplied)
+    assert {item.id for item in supplied} <= stored_ids
 
 
 def test_sdk_contract_with_mocked_runner(client, ingester, factory, settings, monkeypatch):

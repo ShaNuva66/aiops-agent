@@ -143,3 +143,15 @@ def test_login_attempts_are_limited(client):
 def test_short_password_and_extra_fields_rejected(client):
     assert client.post("/api/auth/setup", json={**CREDS, "password": "short"}).status_code == 422
     assert client.post("/api/auth/setup", json={**CREDS, "role": "admin"}).status_code == 422
+
+
+def test_non_ascii_bearer_is_denied_without_a_server_error(client):
+    from tests.test_incidents import event
+
+    malformed = [(b"authorization", b"Bearer \xff\xfe")]
+    response = client.get("/api/overview", headers=malformed)
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == 401
+    response = client.post("/api/monitoring/events", headers=malformed, json=event())
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == 401

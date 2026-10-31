@@ -40,8 +40,8 @@ def log(message: str) -> None:
 def authorized(request: Request) -> None:
     expected = os.environ.get("LAB_TOKEN", "")
     if not expected or not hmac.compare_digest(
-        request.headers.get("Authorization", ""),
-        "Bearer " + expected,
+        request.headers.get("Authorization", "").encode("utf-8"),
+        ("Bearer " + expected).encode("utf-8"),
     ):
         raise HTTPException(401, "Lab authorization required")
 
