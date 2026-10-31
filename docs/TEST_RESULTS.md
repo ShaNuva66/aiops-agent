@@ -328,3 +328,9 @@ concurrency remains unverified. Local concurrency results above are SQLite resul
 
 Reviewed previews: [proof cards](images/proof-ledger.png), [phone proof](images/proof-mobile.png),
 [stale connection](images/connection-stale.png), [portable summary](images/incident-summary.png).
+
+The first GitHub run for this pass passed unit tests, migrations and frontend checks but
+failed the Docker frontend build: its frontend-only build context excluded the shared current
+guide. The frontend image now uses the repository context and copies the exact guide alongside
+frontend sources; Docker context exclusions also cover browser/test artifacts. The follow-up
+GitHub run is the source of container verification, separate from local results above.

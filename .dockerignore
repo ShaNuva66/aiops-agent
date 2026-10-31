@@ -8,3 +8,9 @@ artifacts
 *.db
 .pytest_cache
 .ruff_cache
+.playwright-cli
+output
+.coverage
+htmlcov
+frontend/test-results
+frontend/playwright-report
