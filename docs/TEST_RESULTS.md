@@ -334,3 +334,10 @@ failed the Docker frontend build: its frontend-only build context excluded the s
 guide. The frontend image now uses the repository context and copies the exact guide alongside
 frontend sources; Docker context exclusions also cover browser/test artifacts. The follow-up
 GitHub run is the source of container verification, separate from local results above.
+
+Follow-up [GitHub Actions run 41194131987](https://github.com/ShaNuva66/aiops-agent/actions/runs/41194131987)
+passed for commit 368269b: 61 pytest tests (21.97s, 93.61% coverage), 53 frontend tests,
+lint/format, migration/drift checks, frontend container build and all 27 real Docker
+acceptance checks. These include PostgreSQL outage/recovery, incident correlation,
+approved HTTP recovery, restart persistence and serving the built UI. Local Docker remains
+unavailable; the new manual-retry concurrency regression was measured only on SQLite.

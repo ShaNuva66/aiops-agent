@@ -35,7 +35,7 @@ Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and a
 ## Last test results
 - 61 pytest tests passed on 2026-10-31; measured backend coverage 93.61%.
 - 53 frontend contract tests passed; TypeScript/Vite and formatting passed.
-- 27 real Docker acceptance checks passed historically; Docker was unavailable for the 2026-10-31 session.
+- 27 real Docker acceptance checks passed on GitHub Actions on 2026-10-31; the local Docker engine was unavailable.
 - Actual Qdrant 1.19.1 server storage/query check passed.
 - TypeScript/Vite production build, Prettier, Ruff and Alembic drift checks passed.
 - npm audit reported zero vulnerabilities at the time of the check.
