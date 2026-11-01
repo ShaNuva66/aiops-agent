@@ -1,6 +1,39 @@
 # Verification results
 
-Last verified: 2026-11-01 (Europe/Istanbul). Opening presentation verified; prior backend/Docker results retained.
+Last verified: 2026-11-01 (Europe/Istanbul). Animated project film verified; prior backend/Docker results retained.
+
+## Animated project film — 2026-11-01
+
+71 frontend contract tests passed, including nine new film contracts. Timeline boundaries,
+clamping, malformed/non-finite times and missing/unrelated proof are covered. Production
+TypeScript/Vite build, Prettier and Git whitespace checks passed. No dependency was added.
+
+The opening presentation is now a 102-second story with seven scenes and 28 short captions.
+The same position drives subtitles, progress bars, packet coordinates, reveals and result
+states; playback starts with motion enabled. Playwright's controlled browser clock verified
+advancement, exact pause of both SVG state and clock, frozen decorative animations, replay,
+10-second seeks and a measured 3-second advance during 2 seconds at 1.5x. Seeking while
+playing remains at the selected time and pauses. The full film stops at 102 seconds.
+The caption and visual beat matched at 26 sampled positions, including all scene boundaries.
+
+Built-page checks passed at 1512x982, 1512x768, 929x844, 390x844 touch/reduced-motion and
+320x844. No horizontal overflow was observed; player controls stayed in the viewport.
+Phone captions measured 18px. Reduced-motion had zero running animations and no autoplay.
+Escape/focus return, reopen at zero, Tab wrapping, remembered dismissal, matching story
+navigation, final proof navigation and restored body scrolling passed. Native range arrows
+remain native; player arrows seek five seconds. Visibility was simulated in an isolated
+browser context: an initially hidden film stayed at zero, and becoming hidden during
+playback paused without a resume-time jump. Public checks recorded zero writes/page errors.
+
+Visual review corrected report reveal timing, a colliding HTTP label and clipped duplicate
+footnotes. Short-height layouts shrink the graphic while retaining readable captions and
+controls. The initial pause assertion counted a transient button-background transition;
+the final check measures causal SVG/clock stability and frozen decorative CSS animations.
+No backend, Docker or paid model run was needed for this frontend-only change. Prior results
+are retained below; film time is not incident recovery time or model latency.
+
+Reviewed previews: [fault](images/film-failure.png), [AI report formation](images/film-agent.png),
+[phone player](images/film-mobile.png).
 
 ## Opening presentation — 2026-11-01
 

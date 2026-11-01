@@ -14,13 +14,18 @@ remains unverified. See [test results](docs/TEST_RESULTS.md).
 ## See an actual AI-assisted case
 
 The default homepage is **AIOps Observatory**, a read-only visual operations story.
-On the first visit in a browser tab, a seven-slide introduction explains the purpose,
-technology, controlled fault, detection, AI review, approved intervention and verified
-recovery. Use **Sunumu geç** or Escape to continue, and **Sunumu aç** to replay it.
-Read at your own pace or enable optional 11-second autoplay; arrows, Home and End
-navigate the slides. Motion-off/reduced-motion disables effects and autoplay. Phone
-navigation stays visible at the bottom. Slide links open the matching case stage or
-the proof ledger. This is an animated explanation of the archived case, not a new run.
+On the first visit in a browser tab, a **102-second animated project film** explains the
+purpose, technology, controlled fault, detection, AI review, approved intervention and
+verified recovery. Seven scenes contain 28 short Turkish captions, synchronized request
+packets, evidence/guide transfer, report creation, scoped approval and separate recovery
+checks. With motion enabled, playback starts automatically. Pause freezes the clock and
+scene; the timeline and 10-second controls seek both together. Playback speeds range from
+0.75x to 1.5x. K/Space toggles playback, arrows seek five seconds, Home/End seek the film
+boundaries; native timeline/select keyboard controls remain available. Phone controls stay
+visible. Motion-off/reduced-motion provides manual scene/caption selection. Hidden-tab
+playback pauses. **Filmi geç**/Escape closes it; **Sunumu aç** reopens it. Scene links open
+the matching case stage or proof ledger. Film time is presentation time, and this archived
+case explanation starts no new model call or lab action.
 It combines an animated system map, six-stage incident replay, employee impact,
 separate monitoring/AI/operator responsibilities, the original AI report and evidence.
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
@@ -44,7 +49,7 @@ with light copy; there is no white page canvas.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
 Preview: [desktop](docs/images/spectrum-desktop.png) ·
-[opening presentation](docs/images/intro-desktop.png) ·
+[animated film](docs/images/film-agent.png) ·
 [AI report](docs/images/spectrum-ai.png) · [phone](docs/images/spectrum-mobile.png) ·
 [sign-in](docs/images/spectrum-login.png) · [operations console](docs/images/spectrum-operator.png).
 The console preview uses a separate private test fixture with labelled simulation incidents.
