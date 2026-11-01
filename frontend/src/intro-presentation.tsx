@@ -1,12 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import {
   Activity,
   ArrowLeft,
   ArrowRight,
   AudioLines,
-  Pause,
+  MousePointer2,
   Sparkles,
   X,
 } from "lucide-react";
@@ -41,7 +41,14 @@ export function IntroPresentation({
   const position = useRef(0);
   const animationFrame = useRef(0);
   const focusScene = useRef(false);
-  const wasOpen = useRef(false);
+  const generation = useRef(0);
+  const targetPosition = useRef(0);
+  const gesture = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    at: number;
+  } | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const { motion, setMotion } = useVisualMotion();
@@ -54,36 +61,51 @@ export function IntroPresentation({
     frame.chapterIndex === filmChapters.length - 1 &&
     frame.cueIndex === chapter.cues.length - 1;
 
-  const seek = (seconds: number, focus = false) => {
-    const next = Math.max(0, Math.min(filmDuration, seconds));
+  const stopAnimation = () => {
+    generation.current++;
     cancelAnimationFrame(animationFrame.current);
     setPlaying(false);
-    position.current = next;
-    focusScene.current =
-      focus &&
-      locateFilmTime(filmChapters, next).chapterIndex !== frame.chapterIndex;
-    setElapsed(next);
-    if (focus && !focusScene.current)
-      heading.current?.focus({ preventScroll: true });
   };
   const chooseCue = (chapterIndex: number, cueIndex: number, focus = false) => {
     const target = filmChapters[chapterIndex];
-    // A paused explanation shows the useful state within the selected step.
-    seek(
-      target.start +
-        target.cues[cueIndex].at +
-        (target.duration / target.cues.length) * 0.7,
-      focus,
+    const from = target.start + target.cues[cueIndex].at;
+    const to = Math.min(
+      filmDuration,
+      from + (target.duration / target.cues.length) * 0.96,
     );
+    stopAnimation();
+    targetPosition.current = to;
+    focusScene.current =
+      focus &&
+      chapterIndex !==
+        locateFilmTime(filmChapters, position.current).chapterIndex;
+    position.current = motion && !document.hidden ? from : to;
+    setElapsed(position.current);
+    if (focus && !focusScene.current)
+      heading.current?.focus({ preventScroll: true });
+    if (!motion || document.hidden) return;
+    const revision = generation.current;
+    const startedAt = performance.now();
+    setPlaying(true);
+    const paint = (now: number) => {
+      if (revision !== generation.current) return;
+      const progress = Math.min(1, Math.max(0, (now - startedAt) / 1400));
+      position.current = from + (to - from) * progress;
+      setElapsed(position.current);
+      if (progress < 1) animationFrame.current = requestAnimationFrame(paint);
+      else {
+        animationFrame.current = 0;
+        setPlaying(false);
+      }
+    };
+    animationFrame.current = requestAnimationFrame(paint);
   };
   const nextCue = () => {
-    if (last) {
-      onClose();
-      return;
-    }
-    if (frame.cueIndex < chapter.cues.length - 1)
-      chooseCue(frame.chapterIndex, frame.cueIndex + 1);
-    else chooseCue(frame.chapterIndex + 1, 0, true);
+    const current = locateFilmTime(filmChapters, position.current);
+    if (current.cueIndex < filmChapters[current.chapterIndex].cues.length - 1)
+      chooseCue(current.chapterIndex, current.cueIndex + 1);
+    else if (current.chapterIndex < filmChapters.length - 1)
+      chooseCue(current.chapterIndex + 1, 0, true);
   };
   const previousCue = () => {
     if (frame.cueIndex > 0) chooseCue(frame.chapterIndex, frame.cueIndex - 1);
@@ -94,20 +116,54 @@ export function IntroPresentation({
         true,
       );
   };
-  const toggleAnimation = () => {
-    if (!motion || document.hidden) return;
-    if (playing) cancelAnimationFrame(animationFrame.current);
-    if (elapsed >= filmDuration) {
-      position.current = 0;
-      setElapsed(0);
-    }
-    setPlaying((value) => !value);
+  const isControl = (target: EventTarget | null) =>
+    target instanceof Element &&
+    Boolean(
+      target.closest(
+        "button,a,input,select,textarea,summary,[role='button'],[contenteditable='true'],[data-no-advance]",
+      ),
+    );
+  const selectedText = () => window.getSelection()?.isCollapsed === false;
+  const beginGesture = (event: PointerEvent<HTMLDialogElement>) => {
+    gesture.current = null;
+    if (
+      !event.isPrimary ||
+      event.button !== 0 ||
+      isControl(event.target) ||
+      selectedText()
+    )
+      return;
+    gesture.current = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      at: performance.now(),
+    };
+  };
+  const finishGesture = (event: PointerEvent<HTMLDialogElement>) => {
+    const start = gesture.current;
+    gesture.current = null;
+    if (
+      !start ||
+      start.id !== event.pointerId ||
+      event.button !== 0 ||
+      isControl(event.target) ||
+      selectedText()
+    )
+      return;
+    if (
+      performance.now() - start.at > 700 ||
+      Math.hypot(event.clientX - start.x, event.clientY - start.y) > 8
+    )
+      return;
+    nextCue();
   };
 
   useLayoutEffect(() => {
     const element = dialog.current;
     if (!open) {
       position.current = 0;
+      targetPosition.current = 0;
       setElapsed(0);
       setPlaying(false);
       return;
@@ -117,7 +173,9 @@ export function IntroPresentation({
     document.body.style.overflow = "hidden";
     if (!element.open) element.showModal();
     heading.current?.focus({ preventScroll: true });
+    chooseCue(0, 0);
     return () => {
+      generation.current++;
       cancelAnimationFrame(animationFrame.current);
       element.close();
       document.body.style.overflow = previousOverflow;
@@ -125,10 +183,12 @@ export function IntroPresentation({
   }, [open]);
 
   useEffect(() => {
-    if (open && !wasOpen.current) setPlaying(motion && !document.hidden);
-    if (!open || !motion) setPlaying(false);
-    wasOpen.current = open;
-  }, [open, motion]);
+    if (!motion) {
+      stopAnimation();
+      position.current = targetPosition.current;
+      setElapsed(position.current);
+    }
+  }, [motion]);
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -140,46 +200,38 @@ export function IntroPresentation({
   }, [open, frame.chapterIndex]);
 
   useEffect(() => {
-    if (!open || !playing || !motion || document.hidden) return;
-    const startedAt = performance.now(),
-      startedPosition = position.current;
-    let lastPaint = 0;
-    const paint = (now: number) => {
-      if (now - lastPaint >= 32) {
-        lastPaint = now;
-        const next = Math.min(
-          filmDuration,
-          startedPosition + (now - startedAt) / 1000,
-        );
-        position.current = next;
-        setElapsed(next);
-        if (next >= filmDuration) {
-          setPlaying(false);
-          return;
-        }
-      }
-      animationFrame.current = requestAnimationFrame(paint);
-    };
-    animationFrame.current = requestAnimationFrame(paint);
+    if (!open) return;
     const pauseWhenHidden = () => {
-      if (document.hidden) setPlaying(false);
+      if (document.hidden) {
+        gesture.current = null;
+        stopAnimation();
+      }
     };
     document.addEventListener("visibilitychange", pauseWhenHidden);
     return () => {
-      cancelAnimationFrame(animationFrame.current);
       document.removeEventListener("visibilitychange", pauseWhenHidden);
     };
-  }, [open, playing, motion]);
+  }, [open]);
 
   return createPortal(
     <dialog
       ref={dialog}
       className="intro-dialog"
       aria-labelledby="intro-title"
+      aria-describedby="intro-click-hint"
       data-motion={motion ? "on" : "off"}
       data-playing={playing && motion ? "true" : "false"}
       data-slide={chapter.id}
       data-cue={frame.cueIndex}
+      data-final={last ? "true" : "false"}
+      onPointerDown={beginGesture}
+      onPointerUp={finishGesture}
+      onPointerCancel={() => {
+        gesture.current = null;
+      }}
+      onPointerLeave={() => {
+        gesture.current = null;
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -210,19 +262,20 @@ export function IntroPresentation({
         }
         if (event.key === "ArrowRight") {
           event.preventDefault();
-          if (!last) nextCue();
+          nextCue();
         }
         if (event.key === "ArrowLeft") {
           event.preventDefault();
           previousCue();
         }
         if (
-          event.key.toLowerCase() === "k" ||
-          (event.code === "Space" &&
-            !(event.target as HTMLElement).closest("button"))
+          (event.code === "Space" || event.key === "Enter") &&
+          !(event.target as HTMLElement).closest(
+            "button,a,input,select,textarea,summary",
+          )
         ) {
           event.preventDefault();
-          toggleAnimation();
+          nextCue();
         }
         event.stopPropagation();
       }}
@@ -343,17 +396,22 @@ export function IntroPresentation({
                 <small>Bu açılış, kaydedilmiş süreci anlatır.</small>
               </div>
               <div className="intro-navigation">
-                <button
-                  className="intro-pause"
-                  disabled={!motion}
-                  onClick={toggleAnimation}
-                  aria-label={
-                    playing ? "Animasyonu duraklat" : "Animasyona devam et"
-                  }
-                >
-                  {playing ? <Pause size={17} /> : <Activity size={17} />}
-                  <span>{playing ? "Duraklat" : "Devam ettir"}</span>
-                </button>
+                <span className="intro-click-hint" id="intro-click-hint">
+                  <MousePointer2 size={18} />
+                  <span>
+                    <b className="intro-mouse-label">
+                      {last
+                        ? "Anlatım tamamlandı"
+                        : "Sol tıkla, adımlar canlansın"}
+                    </b>
+                    <b className="intro-touch-label">
+                      {last ? "Anlatım tamamlandı" : "Dokun, adımlar canlansın"}
+                    </b>
+                    {!last && (
+                      <small>Boşluk / sağ ok ile de ilerleyebilirsin</small>
+                    )}
+                  </span>
+                </span>
                 <button
                   className="intro-back"
                   aria-label="Önceki açıklama"
@@ -362,18 +420,16 @@ export function IntroPresentation({
                 >
                   <ArrowLeft size={19} />
                 </button>
-                <button className="intro-next" onClick={nextCue}>
-                  {last ? "Platformu keşfet" : "Sonraki adım"}
-                  <ArrowRight size={19} />
-                </button>
+                {last && (
+                  <button className="intro-next" onClick={onClose}>
+                    Platformu keşfet
+                    <ArrowRight size={19} />
+                  </button>
+                )}
               </div>
             </div>
           </div>
-          <span
-            className="intro-announcement"
-            role="status"
-            aria-live={playing ? "off" : "polite"}
-          >
+          <span className="intro-announcement" role="status" aria-live="polite">
             {chapter.title} {cue.text}
           </span>
         </div>

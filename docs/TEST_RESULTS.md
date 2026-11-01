@@ -2,6 +2,29 @@
 
 Last verified: 2026-11-01 (Europe/Istanbul). Full-viewport animated introduction verified; prior backend/Docker results retained.
 
+## Click-driven animated steps — 2026-11-01
+
+The next-step button has been replaced by a short primary-pointer gesture on non-control
+content. Each click/tap animates one explanation from its start to a stable in-step result
+over 1.4 seconds, then waits. The opening plays the first explanation only. A generation
+counter and synchronous RAF cancellation prevent old animations from overwriting rapid
+clicks. Controls are excluded by ancestry; selection, drag, long hold and cancellation
+guards preserve normal reading and touch behavior. Reduced-motion selects the result
+immediately. The final blank gesture leaves the completed explanation open.
+
+Playwright verified real left-click progression and changing SVG geometry during the step,
+followed by a stable result during an additional four seconds. Real long-hold and text-drag
+gestures did not advance; synthetic middle/right pointer pairs were ignored. Rapid clicks
+advanced exactly twice and settled without a stale frame. Chapter, cue, back, motion and
+exit controls did not bubble into another advance. Space/right arrow and native button
+Space worked once each. Both 390px and 320px touch/reduced-motion views traversed all 28
+explanations through actual taps without overflow or duplicate synthetic-click advancement;
+the last tap stayed open and the final exit remained visible. No page errors or writes were
+observed. Tap highlight was disabled on the canvas after visual review found a full-screen
+native blue overlay in the phone screenshot. Narration source data and backend are unchanged.
+
+The existing 71 frontend contract tests, TypeScript/Vite and formatting checks passed.
+
 ## Full-viewport introduction — 2026-11-01
 
 The current public opening is an automatic, full-viewport animation with large diagrams,

@@ -20,9 +20,13 @@ AI review, approved intervention and verified recovery. Seven sections contain 2
 explanations; colored request packets, evidence/guide transfer, report creation and recovery
 states share one animation clock. Cyan monitoring, periwinkle AI, coral faults, amber approval
 and green recovery use larger colored surfaces and soft light across the viewport.
-With motion enabled the sequence starts automatically. **Sonraki adım**, the previous button,
-arrow keys and the four explanation selectors provide manual reading, including motion-off
-and reduced-motion use. **Duraklat**/K/Space pauses or resumes; hidden-tab animation pauses.
+The first explanation animates on opening, then waits. A short **left click on the open
+canvas**, touch tap, Space/Enter or right arrow animates one next explanation and stops.
+The previous button and the four explanation selectors also replay one bounded step.
+Controls keep their own action without an extra advance; right/middle presses, long holds,
+selection drags and cancelled gestures are ignored. Rapid clicks cancel the previous frame
+loop before advancing. Motion-off/reduced-motion shows the selected result immediately;
+hidden-tab animation stops. The last step waits for the explicit exit button.
 **Siteye geç**/Escape closes it, **Açılışı izle** reopens it, and **Platformu keşfet** exits
 the completed sequence. Reloading opens the introduction again. Section links open the exact
 recorded case stage. This archived-case explanation starts no new model call or lab action;
