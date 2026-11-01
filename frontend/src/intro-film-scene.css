@@ -1,57 +1,31 @@
 .intro-film-scene {
-  --film-cyan: #8fd4d5;
-  --film-blue: #a4c5ff;
-  --film-amber: #edc991;
-  --film-green: #a0e2c5;
-  --film-coral: #f3ac9b;
-  width: 100%;
-  min-width: 0;
-  overflow: clip;
+  --film-cyan: #63dce7;
+  --film-blue: #91a7ff;
+  --film-amber: #ffd08a;
+  --film-green: #81e1b0;
+  --film-coral: #ff9b86;
   position: relative;
   isolation: isolate;
-  border: 1px solid #405774;
-  border-radius: 22px;
-  background:
-    radial-gradient(ellipse at 70% 20%, #253a5438, transparent 65%),
-    linear-gradient(150deg, #17293be6, #101d2c);
-  box-shadow:
-    0 28px 80px #070d182e,
-    inset 0 1px #adcce80c;
-}
-.intro-film-scene .film-scene-topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 20px 24px 0;
-  font-size: 10px;
-  letter-spacing: 0.13em;
-  line-height: 1.7;
-  color: #8faac3;
-}
-.intro-film-scene .film-scene-topline > span:first-child {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.intro-film-scene .film-scene-topline i {
-  width: 5px;
-  height: 5px;
-  background: #8fd4d5;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
 }
 .intro-film-scene .film-scene-canvas {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 360px;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
   overflow: visible;
 }
 .intro-film-scene .film-scene-canvas text {
   font-family: "DM Sans", system-ui, sans-serif;
   text-anchor: middle;
   dominant-baseline: auto;
-  fill: #d7e5f4;
+  fill: #edf5ff;
 }
 .intro-film-scene .film-cyan {
   color: var(--film-cyan);
@@ -69,35 +43,36 @@
   color: var(--film-coral);
 }
 .intro-film-scene .film-floor {
-  stroke: #6a8dac1c;
+  stroke: #8bc7e42c;
   stroke-width: 1;
 }
 .intro-film-scene .film-horizon {
-  stroke: #6084a31c;
+  stroke: #8fb7d12b;
   stroke-width: 1;
 }
 .intro-film-scene .film-decorative-orbit ellipse {
-  stroke: #739cbd24;
+  stroke: #9cbdde48;
   stroke-width: 1;
 }
 .intro-film-scene .film-wire-track {
-  stroke: #4d6a845c;
-  stroke-width: 2;
+  stroke: currentColor;
+  stroke-opacity: 0.16;
+  stroke-width: 3;
 }
 .intro-film-scene .film-wire-fill {
   stroke: currentColor;
-  stroke-width: 2;
-  filter: drop-shadow(0 0 5px currentColor);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 7px currentColor);
 }
 .intro-film-scene .film-packet-halo {
   fill: currentColor;
-  opacity: 0.1;
+  opacity: 0.2;
 }
 .intro-film-scene .film-packet {
   fill: currentColor;
 }
 .intro-film-scene .film-packet-center {
-  fill: #f0fcff;
+  fill: #f6ffff;
 }
 .intro-film-scene .film-node {
   color: var(--film-cyan);
@@ -114,192 +89,172 @@
 .intro-film-scene .film-node.film-coral {
   color: var(--film-coral);
 }
+.intro-film-scene .film-node-aura {
+  fill: currentColor;
+  opacity: 0.055;
+}
+.intro-film-scene .film-node.is-active .film-node-aura {
+  opacity: 0.16;
+}
 .intro-film-scene .film-node-shadow {
-  fill: #060f1e;
+  fill: #050c17;
   opacity: 0.4;
 }
 .intro-film-scene .film-node-base {
-  fill: #182c40;
-  stroke: #455e7870;
+  fill: color-mix(in srgb, currentColor 17%, #152b40);
+  stroke: currentColor;
+  stroke-opacity: 0.3;
 }
 .intro-film-scene .film-node-box {
-  fill: #1b2e42;
-  stroke: #536f89;
-  stroke-width: 1.2;
+  fill: color-mix(in srgb, currentColor 19%, #14273d);
+  stroke: currentColor;
+  stroke-opacity: 0.6;
+  stroke-width: 1.3;
 }
 .intro-film-scene .film-node-top {
   stroke: currentColor;
-  opacity: 0.5;
-  stroke-width: 2;
+  stroke-width: 3;
+  opacity: 0.7;
 }
 .intro-film-scene .film-node svg {
   color: inherit;
 }
 .intro-film-scene .film-node-title {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
 }
 .intro-film-scene .film-node-detail {
   font-size: 18px;
-  fill: #adc1d5 !important;
+  fill: #c1d4e8 !important;
 }
 .intro-film-scene .film-node-indicator {
   fill: currentColor;
-  opacity: 0.35;
+  opacity: 0.5;
 }
 .intro-film-scene .film-node.is-active .film-node-box {
-  fill: #233e56;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  filter: drop-shadow(0 0 12px #6eabe922);
+  fill: color-mix(in srgb, currentColor 32%, #14273d);
+  stroke-opacity: 1;
+  stroke-width: 1.8;
+  filter: drop-shadow(
+    0 0 14px color-mix(in srgb, currentColor 35%, transparent)
+  );
 }
 .intro-film-scene .film-node.is-active .film-node-indicator {
   opacity: 1;
 }
 .intro-film-scene .film-rack-side {
-  fill: #152536;
-  stroke: #4c6783;
+  fill: color-mix(in srgb, currentColor 14%, #152536);
+  stroke: currentColor;
+  stroke-opacity: 0.45;
 }
 .intro-film-scene .film-rack-roof {
-  fill: #2b435b;
-  stroke: #526f8c;
+  fill: color-mix(in srgb, currentColor 28%, #253d57);
+  stroke: currentColor;
+  stroke-opacity: 0.6;
 }
 .intro-film-scene .film-rack-body {
-  fill: #1c3046;
-  stroke: #6886a0;
-  stroke-width: 1.4;
+  fill: color-mix(in srgb, currentColor 18%, #1b3048);
+  stroke: currentColor;
+  stroke-opacity: 0.8;
+  stroke-width: 1.5;
 }
 .intro-film-scene .film-rack-slot {
-  fill: #142638;
-  stroke: #486580;
+  fill: color-mix(in srgb, currentColor 9%, #102238);
+  stroke: currentColor;
+  stroke-opacity: 0.45;
 }
 .intro-film-scene .film-rack-vent {
-  stroke: #6c889f;
+  stroke: #aac7dc;
   stroke-width: 2;
   stroke-linecap: round;
 }
 .intro-film-scene .film-rack-led {
   fill: currentColor;
-  filter: drop-shadow(0 0 5px currentColor);
+  filter: drop-shadow(0 0 6px currentColor);
 }
 .intro-film-scene .film-rack-name {
-  font-size: 16px;
-  fill: #abc3da !important;
-  letter-spacing: 0.06em;
+  font-size: 17px;
+  fill: #d1e1f1 !important;
+  letter-spacing: 0.05em;
 }
 .intro-film-scene .film-clear-sweep {
-  stroke: #9ee3c3;
+  stroke: #81e1b0;
   stroke-width: 9;
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
-  filter: drop-shadow(0 0 12px #70d5af60);
+  filter: drop-shadow(0 0 14px #81e1b080);
 }
 .intro-film-scene .film-chip rect {
-  fill: #1a2e40;
+  fill: color-mix(in srgb, currentColor 17%, #13273b);
   stroke: currentColor;
-  stroke-opacity: 0.5;
+  stroke-opacity: 0.7;
 }
 .intro-film-scene .film-chip text {
   fill: currentColor;
   font-size: 21px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .intro-film-scene .film-document-back {
-  fill: #22394c;
-  stroke: #4d6f8b;
+  fill: color-mix(in srgb, currentColor 18%, #1c3149);
+  stroke: currentColor;
+  stroke-opacity: 0.45;
 }
 .intro-film-scene .film-document-front {
-  fill: #1d3349;
+  fill: color-mix(in srgb, currentColor 24%, #193049);
   stroke: currentColor;
-  stroke-opacity: 0.8;
+  stroke-opacity: 0.85;
 }
 .intro-film-scene .film-document-line {
-  stroke: #819db4;
+  stroke: #c0d2e6;
   stroke-width: 5;
   stroke-linecap: round;
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .intro-film-scene .film-document-line.is-emphasized {
   stroke: currentColor;
-  opacity: 0.9;
+  opacity: 1;
 }
 .intro-film-scene .film-browser-frame {
-  fill: #1a2e42;
+  fill: color-mix(in srgb, currentColor 17%, #182b42);
   stroke: currentColor;
-  stroke-opacity: 0.6;
+  stroke-opacity: 0.85;
   stroke-width: 1.5;
 }
 .intro-film-scene .film-browser-rule {
-  stroke: #56728e;
-  stroke-opacity: 0.5;
+  stroke: currentColor;
+  stroke-opacity: 0.3;
 }
 .intro-film-scene .film-browser > circle {
-  fill: #6e879f;
+  fill: currentColor;
+  opacity: 0.65;
 }
 .intro-film-scene .film-browser-url {
-  font-size: 16px;
+  font-size: 17px;
   text-anchor: start !important;
-  fill: #9eb9d1 !important;
+  fill: #d3e2ee !important;
 }
-.intro-film-scene .film-response-big {
+.intro-film-scene .film-scene-canvas .film-response-big {
   fill: currentColor;
   font-family: "Manrope", system-ui, sans-serif;
-  font-size: 77px;
+  font-size: 80px;
   letter-spacing: -0.06em;
-  font-weight: 500;
+  font-weight: 600;
 }
 .intro-film-scene .film-scan-line {
-  fill: #9edfdc;
-  filter: drop-shadow(0 0 8px #b5f5ee);
+  fill: #92f4ed;
+  filter: drop-shadow(0 0 10px #9efbf3);
 }
 .intro-film-scene .film-ai-orbit circle {
-  stroke: #83afef42;
-  stroke-width: 1.2;
+  stroke: #91a7ff66;
+  stroke-width: 1.4;
 }
 .intro-film-scene .film-ai-orbit circle:first-child {
-  fill: #719fe509;
+  fill: #91a7ff12;
 }
 .intro-film-scene .film-ai-orbit circle:last-child {
-  stroke: #a4c5ff99;
-  stroke-width: 2;
-}
-.intro-film-scene .film-scene-status {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 17px 22px;
-  color: #c5d9eb;
-  background: #20364b9c;
-  border-top: 1px solid #3c58724f;
-  font-size: clamp(14px, 1.2vw, 18px);
-  line-height: 1.5;
-  min-height: 63px;
-}
-.intro-film-scene .film-scene-status > svg {
-  color: #8fd4d5;
-  flex-shrink: 0;
-}
-.intro-film-scene .film-scene-status.is-verified {
-  color: #a0e2c5;
-}
-.intro-film-scene .film-scene-status.is-verified > svg {
-  color: inherit;
-}
-.intro-film-scene .film-beat-markers {
-  display: flex;
-  gap: 5px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-.intro-film-scene .film-beat-markers > i {
-  width: 5px;
-  height: 5px;
-  background: #57718a;
-  border-radius: 50%;
-}
-.intro-film-scene .film-beat-markers > i[data-reached="true"] {
-  background: #b0d6e5;
+  stroke: #b1c0ff;
+  stroke-width: 2.5;
 }
 .intro-film-scene[data-motion="on"] .film-rack-led {
   animation: film-led-breathe 3.5s ease-in-out infinite;
@@ -332,37 +287,14 @@
   }
 }
 @media (max-width: 760px) {
-  .intro-film-scene .film-scene-canvas {
-    max-height: 230px;
+  .intro-film-scene .film-node-title {
+    font-size: 24px;
   }
-  .intro-film-scene {
-    border-radius: 16px;
+  .intro-film-scene .film-node-detail {
+    font-size: 21px;
   }
-  .intro-film-scene .film-scene-topline {
-    padding: 13px 14px 0;
-    font-size: 8px;
-    letter-spacing: 0.06em;
-    gap: 8px;
-  }
-  .intro-film-scene .film-scene-topline > span:last-child {
-    white-space: nowrap;
-  }
-  .intro-film-scene .film-scene-status {
-    padding: 13px 14px;
-    gap: 8px;
-    min-height: 57px;
-    font-size: 14px;
-  }
-  .intro-film-scene .film-scene-status > svg {
-    width: 18px;
-    height: 18px;
-  }
-  .intro-film-scene .film-beat-markers {
-    gap: 4px;
-  }
-  .intro-film-scene .film-beat-markers > i {
-    width: 4px;
-    height: 4px;
+  .intro-film-scene .film-rack-name {
+    font-size: 19px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

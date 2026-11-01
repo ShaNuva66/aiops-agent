@@ -1,8 +1,39 @@
 # Verification results
 
-Last verified: 2026-11-01 (Europe/Istanbul). Animated project film verified; prior backend/Docker results retained.
+Last verified: 2026-11-01 (Europe/Istanbul). Full-viewport animated introduction verified; prior backend/Docker results retained.
 
-## Animated project film — 2026-11-01
+## Full-viewport introduction — 2026-11-01
+
+The current public opening is an automatic, full-viewport animation with large diagrams,
+short explanations and stronger role/status color fields. The media-player timeline,
+timestamps, speed selector, framed canvas and duplicate scene bars have been removed.
+Every public reload opens it; the operator route does not mount an introduction. Scene
+timing and proof derivation are retained internally, with no lab/model request attached.
+
+71 frontend contract tests, production TypeScript/Vite build and formatting passed.
+Playwright verified automatic motion, exact SVG pause, all 28 explanations in order,
+matching visual/narrative beats, completion remaining open, exit/reopen/reload, Tab wrapping,
+Escape/focus/scroll restoration and an exact failure-stage link. The introduction contains
+zero video/audio elements, range inputs or speed selectors. Public interactions recorded
+zero writes and JavaScript page errors. A separate operator-route check confirmed no intro.
+
+The dialog covered the viewport at 1512x982, 1512x768, 929x844, 390x844 touch and 320x844
+touch. Motion-off/reduced-motion left zero running animations. Separate exhaustive checks
+at 929/390/320px traversed all 28 explanations without horizontal overflow or vertical
+scrolling, with controls inside the viewport. Phone explanation text measured 18px.
+Initial phone controls extended below the viewport; smaller unused illustration space and
+removing a repeated role caption fixed this. A small tablet overflow was also corrected.
+The illustration keeps its proportions and the text remains stationary.
+
+The background light now pauses at its current animation position rather than resetting.
+The OS/browser fullscreen API is not needed: the native modal occupies the page viewport
+and restores the underlying page on exit. Backend and infrastructure were unchanged;
+no new backend, Docker or paid model experiment was run for this UI correction.
+
+Reviewed previews: [desktop](images/immersive-desktop.png), [fault](images/immersive-fault.png),
+[phone](images/immersive-mobile.png).
+
+## Earlier animated project film — 2026-11-01
 
 71 frontend contract tests passed, including nine new film contracts. Timeline boundaries,
 clamping, malformed/non-finite times and missing/unrelated proof are covered. Production

@@ -1,55 +1,32 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import {
   Activity,
+  ArrowLeft,
   ArrowRight,
   AudioLines,
-  ChevronLeft,
-  ChevronRight,
   Pause,
-  Play,
-  RotateCcw,
-  RotateCw,
+  Sparkles,
   X,
 } from "lucide-react";
 import { introSlides } from "./intro-slides";
-import {
-  filmChapters,
-  filmDuration,
-  formatFilmTime,
-  locateFilmTime,
-} from "./intro-film";
+import { filmChapters, filmDuration, locateFilmTime } from "./intro-film";
 import { IntroFilmScene } from "./intro-film-scene";
 import { useVisualMotion } from "./visual-experience";
 import "./intro-presentation.css";
 
-export const introSeenKey = "aiops-intro-seen-v2";
 const chapterLabels = [
   "Amaç",
-  "Teknoloji",
+  "Sistemin parçaları",
   "Hata",
   "Tespit",
   "AI incelemesi",
-  "Müdahale",
-  "Doğrulama",
+  "Onaylı işlem",
+  "Sonuç",
 ];
 
-export function shouldShowIntro() {
-  try {
-    return sessionStorage.getItem(introSeenKey) !== "1";
-  } catch {
-    return true;
-  }
-}
-export function rememberIntro() {
-  try {
-    sessionStorage.setItem(introSeenKey, "1");
-  } catch {
-    /* Presentation works without optional browser storage. */
-  }
-}
-
-/** One clock controls subtitles, causal scene state and seeking; no lab request. */
+/** Full-viewport introduction: the site opens into a read-only animated explanation. */
 export function IntroPresentation({
   open,
   onClose,
@@ -67,37 +44,60 @@ export function IntroPresentation({
   const wasOpen = useRef(false);
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
   const { motion, setMotion } = useVisualMotion();
   const frame = locateFilmTime(filmChapters, elapsed);
   const chapter = filmChapters[frame.chapterIndex];
   const cue = chapter.cues[frame.cueIndex];
   const slide = introSlides[frame.chapterIndex];
-  const finished = elapsed >= filmDuration;
-  const last = frame.chapterIndex === filmChapters.length - 1;
+  const first = frame.chapterIndex === 0 && frame.cueIndex === 0;
+  const last =
+    frame.chapterIndex === filmChapters.length - 1 &&
+    frame.cueIndex === chapter.cues.length - 1;
 
   const seek = (seconds: number, focus = false) => {
     const next = Math.max(0, Math.min(filmDuration, seconds));
     cancelAnimationFrame(animationFrame.current);
     setPlaying(false);
     position.current = next;
-    setElapsed(next);
     focusScene.current =
       focus &&
       locateFilmTime(filmChapters, next).chapterIndex !== frame.chapterIndex;
+    setElapsed(next);
     if (focus && !focusScene.current)
       heading.current?.focus({ preventScroll: true });
   };
-  const selectChapter = (index: number) => {
+  const chooseCue = (chapterIndex: number, cueIndex: number, focus = false) => {
+    const target = filmChapters[chapterIndex];
+    // A paused explanation shows the useful state within the selected step.
     seek(
-      filmChapters[Math.max(0, Math.min(index, filmChapters.length - 1))].start,
-      true,
+      target.start +
+        target.cues[cueIndex].at +
+        (target.duration / target.cues.length) * 0.7,
+      focus,
     );
   };
-  const togglePlay = () => {
+  const nextCue = () => {
+    if (last) {
+      onClose();
+      return;
+    }
+    if (frame.cueIndex < chapter.cues.length - 1)
+      chooseCue(frame.chapterIndex, frame.cueIndex + 1);
+    else chooseCue(frame.chapterIndex + 1, 0, true);
+  };
+  const previousCue = () => {
+    if (frame.cueIndex > 0) chooseCue(frame.chapterIndex, frame.cueIndex - 1);
+    else if (frame.chapterIndex > 0)
+      chooseCue(
+        frame.chapterIndex - 1,
+        filmChapters[frame.chapterIndex - 1].cues.length - 1,
+        true,
+      );
+  };
+  const toggleAnimation = () => {
     if (!motion || document.hidden) return;
     if (playing) cancelAnimationFrame(animationFrame.current);
-    if (finished) {
+    if (elapsed >= filmDuration) {
       position.current = 0;
       setElapsed(0);
     }
@@ -141,15 +141,15 @@ export function IntroPresentation({
 
   useEffect(() => {
     if (!open || !playing || !motion || document.hidden) return;
-    const startedAt = performance.now();
-    const startedPosition = position.current;
+    const startedAt = performance.now(),
+      startedPosition = position.current;
     let lastPaint = 0;
     const paint = (now: number) => {
       if (now - lastPaint >= 32) {
         lastPaint = now;
         const next = Math.min(
           filmDuration,
-          startedPosition + ((now - startedAt) / 1000) * speed,
+          startedPosition + (now - startedAt) / 1000,
         );
         position.current = next;
         setElapsed(next);
@@ -169,7 +169,7 @@ export function IntroPresentation({
       cancelAnimationFrame(animationFrame.current);
       document.removeEventListener("visibilitychange", pauseWhenHidden);
     };
-  }, [open, playing, motion, speed]);
+  }, [open, playing, motion]);
 
   return createPortal(
     <dialog
@@ -187,269 +187,195 @@ export function IntroPresentation({
       onKeyDown={(event) => {
         if (event.key === "Tab") {
           const controls = Array.from(
-            dialog.current?.querySelectorAll<HTMLElement>(
-              "button:not(:disabled),input:not(:disabled),select:not(:disabled),summary",
+            dialog.current?.querySelectorAll<HTMLButtonElement>(
+              "button:not(:disabled)",
             ) ?? [],
           );
-          const first = controls[0];
-          const last = controls[controls.length - 1];
+          const firstControl = controls[0],
+            lastControl = controls[controls.length - 1];
           if (
             event.shiftKey &&
-            (document.activeElement === first ||
+            (document.activeElement === firstControl ||
               document.activeElement === heading.current)
           ) {
             event.preventDefault();
-            last?.focus();
-          } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault();
-            first?.focus();
-          }
-        }
-        const editing = (event.target as HTMLElement).matches(
-          "input,select,summary",
-        );
-        if (!editing) {
-          if (event.key === "ArrowRight") {
-            event.preventDefault();
-            seek(position.current + 5);
-          }
-          if (event.key === "ArrowLeft") {
-            event.preventDefault();
-            seek(position.current - 5);
-          }
-          if (event.key === "Home") {
-            event.preventDefault();
-            seek(0, true);
-          }
-          if (event.key === "End") {
-            event.preventDefault();
-            seek(filmDuration, true);
-          }
-          if (
-            event.key.toLowerCase() === "k" ||
-            (event.code === "Space" &&
-              !(event.target as HTMLElement).closest("button"))
+            lastControl?.focus();
+          } else if (
+            !event.shiftKey &&
+            document.activeElement === lastControl
           ) {
             event.preventDefault();
-            togglePlay();
+            firstControl?.focus();
           }
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          if (!last) nextCue();
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          previousCue();
+        }
+        if (
+          event.key.toLowerCase() === "k" ||
+          (event.code === "Space" &&
+            !(event.target as HTMLElement).closest("button"))
+        ) {
+          event.preventDefault();
+          toggleAnimation();
         }
         event.stopPropagation();
       }}
     >
       {open && (
-        <div className="intro-deck">
+        <div className="intro-experience">
+          <div className="intro-ambient" aria-hidden="true">
+            <span />
+            <span />
+            <i />
+          </div>
           <div className="intro-header">
             <span className="intro-brand">
-              <AudioLines size={25} />
+              <AudioLines size={29} />
               <strong>AIOPS</strong>
-              <span>PROJE FİLMİ</span>
+              <span>OPERASYONU BİRLİKTE GÖRELİM</span>
             </span>
             <div className="intro-header-actions">
-              <span className="intro-film-badge">
-                <i /> Kayıtlı vaka · Görsel anlatım
-              </span>
+              <button
+                className="intro-motion"
+                aria-label={`Hareket ${motion ? "açık" : "kapalı"}`}
+                aria-pressed={motion}
+                onClick={() => setMotion(!motion)}
+              >
+                <Activity size={17} />
+                <span>Hareket {motion ? "açık" : "kapalı"}</span>
+              </button>
               <button className="intro-skip" onClick={onClose}>
-                Filmi geç <X size={19} />
+                Siteye geç <X size={18} />
               </button>
             </div>
           </div>
-          <nav className="intro-chapters" aria-label="Film sahneleri">
-            {filmChapters.map((item, index) => (
-              <button
-                key={item.id}
-                aria-label={`${index + 1}. ${chapterLabels[index]}`}
-                aria-current={index === frame.chapterIndex ? "step" : undefined}
-                onClick={() => selectChapter(index)}
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <span>{chapterLabels[index]}</span>
-                <i
-                  style={
-                    {
-                      "--chapter-progress": `${index < frame.chapterIndex ? 100 : index === frame.chapterIndex ? frame.progress * 100 : 0}%`,
-                    } as React.CSSProperties
-                  }
-                />
-              </button>
-            ))}
-          </nav>
-          <div className="intro-scene-heading">
-            <div>
+          <div className="intro-stage">
+            <div className="intro-copy">
               <span className="intro-eyebrow">
-                SAHNE {frame.chapterIndex + 1} / {filmChapters.length} <span />{" "}
+                <i /> {String(frame.chapterIndex + 1).padStart(2, "0")} /{" "}
                 {chapterLabels[frame.chapterIndex]}
               </span>
               <h1 id="intro-title" ref={heading} tabIndex={-1}>
                 {chapter.title}
               </h1>
-            </div>
-            <span className="intro-actor">{slide.actor}</span>
-          </div>
-          <div className="intro-screen">
-            <IntroFilmScene
-              id={chapter.id}
-              progress={frame.progress}
-              playing={playing}
-              motion={motion}
-            />
-          </div>
-          <div
-            className="intro-caption"
-            role="group"
-            aria-label="Sahnenin açıklaması"
-          >
-            <div className="intro-caption-label">
-              <span>{String(frame.cueIndex + 1).padStart(2, "0")}</span>
-              <strong>{cue.label}</strong>
-            </div>
-            <p>{cue.text}</p>
-            <div className="intro-cue-steps" aria-label="Bu sahnenin adımları">
-              {chapter.cues.map((item, index) => (
-                <button
-                  key={item.at}
-                  aria-label={`${index + 1}. anlatım: ${item.label}`}
-                  aria-current={index === frame.cueIndex ? "step" : undefined}
-                  onClick={() => seek(chapter.start + item.at)}
+              <div className="intro-explanation">
+                <div className="intro-explanation-heading">
+                  <span>{cue.label}</span>
+                  <small>
+                    {frame.cueIndex + 1} / {chapter.cues.length}
+                  </small>
+                </div>
+                <p>{cue.text}</p>
+                <div
+                  className="intro-cue-steps"
+                  aria-label="Bu bölümün açıklamaları"
                 >
-                  <span />
+                  {chapter.cues.map((item, index) => (
+                    <button
+                      key={item.at}
+                      aria-label={`${index + 1}. açıklama: ${item.label}`}
+                      aria-current={
+                        frame.cueIndex === index ? "step" : undefined
+                      }
+                      onClick={() => chooseCue(frame.chapterIndex, index)}
+                    >
+                      <i />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <span className="intro-role">
+                <Sparkles size={16} /> {slide.actor}
+              </span>
+              {slide.phaseId && (
+                <button
+                  className="intro-proof-link"
+                  onClick={() => onExplore(slide.phaseId)}
+                >
+                  Bu adımın kaydını incele <ArrowRight size={15} />
+                </button>
+              )}
+            </div>
+            <div className="intro-scene">
+              <IntroFilmScene
+                id={chapter.id}
+                progress={frame.progress}
+                playing={playing}
+                motion={motion}
+              />
+            </div>
+          </div>
+          <div className="intro-bottom">
+            <nav className="intro-chapters" aria-label="Anlatım bölümleri">
+              {filmChapters.map((item, index) => (
+                <button
+                  key={item.id}
+                  aria-label={`${index + 1}. ${chapterLabels[index]}`}
+                  aria-current={
+                    index === frame.chapterIndex ? "step" : undefined
+                  }
+                  data-complete={index < frame.chapterIndex}
+                  onClick={() => chooseCue(index, 0, true)}
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{chapterLabels[index]}</strong>
+                  <i
+                    style={
+                      {
+                        "--chapter-progress": `${index < frame.chapterIndex ? 100 : index === frame.chapterIndex ? frame.progress * 100 : 0}%`,
+                      } as CSSProperties
+                    }
+                  />
                 </button>
               ))}
-            </div>
-          </div>
-          <div className="intro-player">
-            <div className="intro-timeline">
-              <output aria-label="Geçen anlatım süresi" aria-live="off">
-                {formatFilmTime(elapsed)}
-              </output>
-              <input
-                type="range"
-                aria-label="Film zaman çizelgesi"
-                aria-valuetext={`${formatFilmTime(elapsed)} / ${formatFilmTime(filmDuration)} · ${chapterLabels[frame.chapterIndex]} · ${cue.label}`}
-                min={0}
-                max={filmDuration}
-                step={0.1}
-                value={elapsed}
-                onChange={(event) => seek(Number(event.currentTarget.value))}
-                style={
-                  {
-                    "--film-progress": `${(elapsed / filmDuration) * 100}%`,
-                  } as React.CSSProperties
-                }
-              />
-              <span>{formatFilmTime(filmDuration)}</span>
-            </div>
-            <div className="intro-transport">
-              <div className="intro-video-controls">
+            </nav>
+            <div className="intro-bottom-row">
+              <div className="intro-context">
+                <span>
+                  <i /> Kayıtlı gerçek vaka
+                </span>
+                <small>Bu açılış, kaydedilmiş süreci anlatır.</small>
+              </div>
+              <div className="intro-navigation">
                 <button
-                  className="intro-icon-button"
-                  aria-label="10 saniye geri sar"
-                  title="10 saniye geri sar"
-                  onClick={() => seek(position.current - 10)}
-                  disabled={elapsed === 0}
-                >
-                  <RotateCcw size={19} />
-                  <small>10</small>
-                </button>
-                <button
-                  className="intro-play"
+                  className="intro-pause"
                   disabled={!motion}
+                  onClick={toggleAnimation}
                   aria-label={
-                    playing
-                      ? "Filmi duraklat"
-                      : finished
-                        ? "Filmi baştan oynat"
-                        : "Filmi oynat"
+                    playing ? "Animasyonu duraklat" : "Animasyona devam et"
                   }
-                  onClick={togglePlay}
                 >
-                  {playing ? (
-                    <Pause size={23} fill="currentColor" />
-                  ) : (
-                    <Play size={23} fill="currentColor" />
-                  )}
+                  {playing ? <Pause size={17} /> : <Activity size={17} />}
+                  <span>{playing ? "Duraklat" : "Devam ettir"}</span>
                 </button>
                 <button
-                  className="intro-icon-button"
-                  aria-label="10 saniye ileri sar"
-                  title="10 saniye ileri sar"
-                  onClick={() => seek(position.current + 10)}
-                  disabled={finished}
+                  className="intro-back"
+                  aria-label="Önceki açıklama"
+                  disabled={first}
+                  onClick={previousCue}
                 >
-                  <RotateCw size={19} />
-                  <small>10</small>
+                  <ArrowLeft size={19} />
                 </button>
-                <label className="intro-speed">
-                  <span>Hız</span>
-                  <select
-                    aria-label="Oynatma hızı"
-                    value={speed}
-                    onChange={(event) =>
-                      setSpeed(Number(event.currentTarget.value))
-                    }
-                  >
-                    {[0.75, 1, 1.25, 1.5].map((value) => (
-                      <option value={value} key={value}>
-                        {value}×
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  className="intro-motion"
-                  aria-label={`Hareket ${motion ? "açık" : "kapalı"}`}
-                  aria-pressed={motion}
-                  onClick={() => setMotion(!motion)}
-                >
-                  <Activity size={17} />
-                  <span>Hareket {motion ? "açık" : "kapalı"}</span>
+                <button className="intro-next" onClick={nextCue}>
+                  {last ? "Platformu keşfet" : "Sonraki adım"}
+                  <ArrowRight size={19} />
                 </button>
-              </div>
-              <div className="intro-paging">
-                <button
-                  className="intro-icon-button"
-                  aria-label="Önceki sahne"
-                  title="Önceki sahne"
-                  disabled={frame.chapterIndex === 0}
-                  onClick={() => selectChapter(frame.chapterIndex - 1)}
-                >
-                  <ChevronLeft size={21} />
-                </button>
-                {last ? (
-                  <button className="intro-next" onClick={() => onExplore()}>
-                    Kanıtları incele <ArrowRight size={18} />
-                  </button>
-                ) : (
-                  <button
-                    className="intro-next"
-                    onClick={() => selectChapter(frame.chapterIndex + 1)}
-                  >
-                    Sonraki sahne <ChevronRight size={19} />
-                  </button>
-                )}
               </div>
             </div>
           </div>
-          <div className="intro-provenance">
-            <span>
-              {motion
-                ? "Süre anlatıma aittir"
-                : "Hareket kapalı · Anlatım adımlarını seçebilirsin"}{" "}
-              · Canlı işlem başlatmaz.
-            </span>
-            {slide.phaseId && (
-              <button onClick={() => onExplore(slide.phaseId)}>
-                Sitede bu adımı incele <ArrowRight size={14} />
-              </button>
-            )}
-            <span
-              className="intro-announcement"
-              role="status"
-              aria-live={playing ? "off" : "polite"}
-            >
-              {chapter.title} {cue.text}
-            </span>
-          </div>
+          <span
+            className="intro-announcement"
+            role="status"
+            aria-live={playing ? "off" : "polite"}
+          >
+            {chapter.title} {cue.text}
+          </span>
         </div>
       )}
     </dialog>,

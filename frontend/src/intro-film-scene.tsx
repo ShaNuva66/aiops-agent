@@ -4,7 +4,6 @@ import {
   Bot,
   BookOpen,
   CheckCircle2,
-  CircleHelp,
   Database,
   FileSearch,
   FileText,
@@ -120,6 +119,7 @@ function Node({
       transform={`translate(${x} ${y})`}
       className={`film-node film-${tone} ${active ? "is-active" : ""}`}
     >
+      <ellipse className="film-node-aura" cy="8" rx="100" ry="92" />
       <ellipse className="film-node-shadow" cy="68" rx="78" ry="12" />
       <path className="film-node-base" d="M-70 45L0 65L70 45V54L0 75L-70 54Z" />
       <rect
@@ -788,77 +788,7 @@ function RecoveryScene({ t }: { t: number }) {
   );
 }
 
-function sceneStatus(id: IntroSlide["id"], beat: number) {
-  const labels: Record<IntroSlide["id"], string[]> = {
-    purpose: [
-      "Uygulamayı kullan",
-      "Sorunu fark et",
-      "Kanıtı incele",
-      "Yetkiyle müdahale et",
-    ],
-    stack: [
-      "Arayüz",
-      "Kontrol servisi",
-      "Bu vakanın kayıtları",
-      "AI incelemesi",
-    ],
-    failure: [
-      "İstek gönderiliyor",
-      outcome.beforeStatus === 500 ? "Test hatası açık" : "Hata bilinmiyor",
-      outcome.beforeStatus === 500 ? "HTTP 500 döndü" : "Yanıt doğrulanamadı",
-      outcome.beforeStatus === 500
-        ? "Kullanıcı isteği tamamlanamadı"
-        : "İsteğin sonucu bilinmiyor",
-    ],
-    detection: [
-      "İzleme kontrol ediyor",
-      introProof.detectionRecorded
-        ? "Arıza kaydı açıldı"
-        : "Açılış kanıtı eksik",
-      introProof.detectionRecorded
-        ? "İlk kanıt saklandı"
-        : "İlk kanıt bilinmiyor",
-      "Sonraki aşama: inceleme",
-    ],
-    agent: [
-      introProof.hasEvidenceTool
-        ? "Hata kanıtları okunuyor"
-        : "Kanıt aracı doğrulanamadı",
-      introProof.hasGuideTool
-        ? "Çözüm rehberi okunuyor"
-        : "Rehber aracı doğrulanamadı",
-      introProof.hasReport
-        ? "AI bulguları açıklıyor"
-        : "AI raporu doğrulanamadı",
-      introProof.hasReport ? "Kaynaklı rapor hazır" : "Rapor bulunamadı",
-    ],
-    action: [
-      "Yetki ayrı mekanizmada",
-      outcome.hasSuccessfulApproval
-        ? "Onay kaydı doğrulandı"
-        : "Onay doğrulanamadı",
-      "Yalnızca sabit işlem",
-      outcome.hasSuccessfulApproval
-        ? "İşlem sonrası HTTP 200"
-        : "İşlem sonucu bilinmiyor",
-    ],
-    recovery: [
-      "Sonuç yeniden kontrol ediliyor",
-      outcome.hasSuccessfulApproval
-        ? "HTTP 200 doğrulandı"
-        : "HTTP kanıtı eksik",
-      outcome.hasVerifiedRecovery
-        ? "İzleme sağlıklı gördü"
-        : "Toparlanma kanıtı eksik",
-      outcome.hasVerifiedRecovery
-        ? "Arıza toparlanma ile kapandı"
-        : "Sonuç doğrulanamadı",
-    ],
-  };
-  return labels[id][beat];
-}
-
-/** All causal positions and results follow the seekable film clock, not CSS timers. */
+/** Causal positions follow the recorded-story progress; the illustration has no player chrome. */
 export function IntroFilmScene({
   id,
   progress,
@@ -883,8 +813,15 @@ export function IntroFilmScene({
     recovery: RecoveryScene,
   };
   const Scene = scenes[id];
-  const success =
-    id === "recovery" && beat === 3 && outcome.hasVerifiedRecovery;
+  const glow = {
+    purpose: "#63dce7",
+    stack: "#91a7ff",
+    failure: "#ff9b86",
+    detection: "#63dce7",
+    agent: "#91a7ff",
+    action: "#ffd08a",
+    recovery: "#81e1b0",
+  }[id];
   return (
     <div
       className="intro-film-scene"
@@ -894,31 +831,17 @@ export function IntroFilmScene({
       data-playing={playing ? "true" : "false"}
       aria-hidden="true"
     >
-      <div className="film-scene-topline">
-        <span>
-          <i /> KAYITLI VAKANIN GÖRSEL ANLATIMI
-        </span>
-        <span>ADIM {beat + 1} / 4</span>
-      </div>
       <svg
         className="film-scene-canvas"
         viewBox="0 0 800 510"
         fill="none"
         focusable="false"
+        preserveAspectRatio="xMidYMid meet"
       >
         <defs>
           <radialGradient id={gradient}>
-            <stop
-              stopColor={
-                id === "failure"
-                  ? "#ad6d6c"
-                  : id === "action"
-                    ? "#9a805a"
-                    : "#376b8f"
-              }
-              stopOpacity=".26"
-            />
-            <stop offset="1" stopColor="#152438" stopOpacity="0" />
+            <stop stopColor={glow} stopOpacity=".23" />
+            <stop offset="1" stopColor={glow} stopOpacity="0" />
           </radialGradient>
           <pattern
             id={`${gradient}-grid`}
@@ -927,7 +850,7 @@ export function IntroFilmScene({
             patternUnits="userSpaceOnUse"
             patternTransform="skewX(-25)"
           >
-            <path d="M40 0H0V24" stroke="#8fb5d3" strokeOpacity=".055" />
+            <path d="M40 0H0V24" stroke={glow} strokeOpacity=".085" />
           </pattern>
         </defs>
         <ellipse
@@ -951,21 +874,6 @@ export function IntroFilmScene({
         </g>
         <Scene t={t} />
       </svg>
-      <div className={`film-scene-status ${success ? "is-verified" : ""}`}>
-        {success ? (
-          <CheckCircle2 size={21} />
-        ) : id === "failure" && beat >= 1 ? (
-          <CircleHelp size={21} />
-        ) : (
-          <Activity size={21} />
-        )}
-        <span>{sceneStatus(id, beat)}</span>
-        <span className="film-beat-markers">
-          {[0, 1, 2, 3].map((value) => (
-            <i key={value} data-reached={value <= beat} />
-          ))}
-        </span>
-      </div>
     </div>
   );
 }

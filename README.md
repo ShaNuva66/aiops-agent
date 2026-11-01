@@ -14,18 +14,19 @@ remains unverified. See [test results](docs/TEST_RESULTS.md).
 ## See an actual AI-assisted case
 
 The default homepage is **AIOps Observatory**, a read-only visual operations story.
-On the first visit in a browser tab, a **102-second animated project film** explains the
-purpose, technology, controlled fault, detection, AI review, approved intervention and
-verified recovery. Seven scenes contain 28 short Turkish captions, synchronized request
-packets, evidence/guide transfer, report creation, scoped approval and separate recovery
-checks. With motion enabled, playback starts automatically. Pause freezes the clock and
-scene; the timeline and 10-second controls seek both together. Playback speeds range from
-0.75x to 1.5x. K/Space toggles playback, arrows seek five seconds, Home/End seek the film
-boundaries; native timeline/select keyboard controls remain available. Phone controls stay
-visible. Motion-off/reduced-motion provides manual scene/caption selection. Hidden-tab
-playback pauses. **Filmi geç**/Escape closes it; **Sunumu aç** reopens it. Scene links open
-the matching case stage or proof ledger. Film time is presentation time, and this archived
-case explanation starts no new model call or lab action.
+Every public page opening starts a **full-viewport animated introduction**. Large diagrams
+and short Turkish explanations show the purpose, technology, controlled fault, detection,
+AI review, approved intervention and verified recovery. Seven sections contain 28 reachable
+explanations; colored request packets, evidence/guide transfer, report creation and recovery
+states share one animation clock. Cyan monitoring, periwinkle AI, coral faults, amber approval
+and green recovery use larger colored surfaces and soft light across the viewport.
+With motion enabled the sequence starts automatically. **Sonraki adım**, the previous button,
+arrow keys and the four explanation selectors provide manual reading, including motion-off
+and reduced-motion use. **Duraklat**/K/Space pauses or resumes; hidden-tab animation pauses.
+**Siteye geç**/Escape closes it, **Açılışı izle** reopens it, and **Platformu keşfet** exits
+the completed sequence. Reloading opens the introduction again. Section links open the exact
+recorded case stage. This archived-case explanation starts no new model call or lab action;
+the authenticated dashboard remains a separate route.
 It combines an animated system map, six-stage incident replay, employee impact,
 separate monitoring/AI/operator responsibilities, the original AI report and evidence.
 Use **Sade anlatım / Teknik görünüm** to switch detail levels, **Hareket açık/kapalı**
@@ -49,7 +50,7 @@ with light copy; there is no white page canvas.
 
 The authenticated operations console remains at **http://127.0.0.1:8080/?dashboard=1**.
 Preview: [desktop](docs/images/spectrum-desktop.png) ·
-[animated film](docs/images/film-agent.png) ·
+[animated introduction](docs/images/immersive-desktop.png) ·
 [AI report](docs/images/spectrum-ai.png) · [phone](docs/images/spectrum-mobile.png) ·
 [sign-in](docs/images/spectrum-login.png) · [operations console](docs/images/spectrum-operator.png).
 The console preview uses a separate private test fixture with labelled simulation incidents.

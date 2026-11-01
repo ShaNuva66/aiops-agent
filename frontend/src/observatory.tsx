@@ -57,11 +57,7 @@ import "./observatory-spectrum.css";
 import { CaseProofLedger, CitedGuides } from "./case-proof";
 import type { RecordProofKey } from "./case-proof";
 import { downloadRecordedSummary } from "./incident-export";
-import {
-  IntroPresentation,
-  rememberIntro,
-  shouldShowIntro,
-} from "./intro-presentation";
+import { IntroPresentation } from "./intro-presentation";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -190,7 +186,7 @@ function SystemNode({
 }
 
 export function Observatory() {
-  const [introOpen, setIntroOpen] = useState(shouldShowIntro);
+  const [introOpen, setIntroOpen] = useState(true);
   const introTrigger = useRef<HTMLButtonElement>(null);
   const [active, setActive] = useState("overview");
   const [step, setStep] = useState(0);
@@ -306,14 +302,12 @@ export function Observatory() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   const closeIntro = () => {
-    rememberIntro();
     setIntroOpen(false);
     requestAnimationFrame(() =>
       introTrigger.current?.focus({ preventScroll: true }),
     );
   };
   const exploreIntro = (phaseId?: string) => {
-    rememberIntro();
     setIntroOpen(false);
     setPlaying(false);
     const index = casePhases.findIndex((item) => item.id === phaseId);
@@ -445,7 +439,7 @@ export function Observatory() {
                 setIntroOpen(true);
               }}
             >
-              <Play size={15} /> Sunumu aç
+              <Play size={15} /> Açılışı izle
             </button>
             <span className="obs-recorded-pill">
               <span /> KAYITLI GERÇEK VAKA
