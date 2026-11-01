@@ -57,6 +57,11 @@ import "./observatory-spectrum.css";
 import { CaseProofLedger, CitedGuides } from "./case-proof";
 import type { RecordProofKey } from "./case-proof";
 import { downloadRecordedSummary } from "./incident-export";
+import {
+  IntroPresentation,
+  rememberIntro,
+  shouldShowIntro,
+} from "./intro-presentation";
 
 const navigation = [
   { id: "overview", text: "Operasyon merkezi", icon: LayoutDashboard },
@@ -185,6 +190,8 @@ function SystemNode({
 }
 
 export function Observatory() {
+  const [introOpen, setIntroOpen] = useState(shouldShowIntro);
+  const introTrigger = useRef<HTMLButtonElement>(null);
   const [active, setActive] = useState("overview");
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -192,7 +199,7 @@ export function Observatory() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const { motion, setMotion } = useVisualMotion();
   const surfaceRef = useRef<HTMLDivElement>(null);
-  useGentleMotion(surfaceRef, motion);
+  useGentleMotion(surfaceRef, motion && !introOpen);
   const [focusEvidence, setFocusEvidence] = useState<string | null>(null);
   const [openedProof, setOpenedProof] = useState<RecordProofKey | null>(null);
   const proofOrigin = useRef<HTMLElement | null>(null);
@@ -298,11 +305,32 @@ export function Observatory() {
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
+  const closeIntro = () => {
+    rememberIntro();
+    setIntroOpen(false);
+    requestAnimationFrame(() =>
+      introTrigger.current?.focus({ preventScroll: true }),
+    );
+  };
+  const exploreIntro = (phaseId?: string) => {
+    rememberIntro();
+    setIntroOpen(false);
+    setPlaying(false);
+    const index = casePhases.findIndex((item) => item.id === phaseId);
+    if (index >= 0) setStep(index);
+    const section = index >= 0 ? "story" : "evidence";
+    navigate(section);
+    requestAnimationFrame(() =>
+      document
+        .getElementById(`obs-${section}-title`)
+        ?.focus({ preventScroll: true }),
+    );
+  };
   return (
     <div
       ref={surfaceRef}
       className="observatory"
-      data-motion={motion ? "on" : "off"}
+      data-motion={motion && !introOpen ? "on" : "off"}
       onFocusCapture={(event) => {
         (event.target as HTMLElement)
           .closest<HTMLElement>("[data-reveal]")
@@ -408,6 +436,17 @@ export function Observatory() {
             <strong>Operasyon merkezi</strong>
           </div>
           <div className="obs-topbar-right">
+            <button
+              className="intro-launch-button"
+              ref={introTrigger}
+              onClick={() => {
+                setPlaying(false);
+                setMobileMenu(false);
+                setIntroOpen(true);
+              }}
+            >
+              <Play size={15} /> Sunumu aç
+            </button>
             <span className="obs-recorded-pill">
               <span /> KAYITLI GERÇEK VAKA
             </span>
@@ -474,7 +513,7 @@ export function Observatory() {
                 <span>OPERASYONUN GÖRÜNMEYEN TARAFI</span>
                 <span>01 / 01</span>
               </div>
-              <OrbitalSystem motion={motion} />
+              <OrbitalSystem motion={motion && !introOpen} />
               <div className="obs-hero-outcome">
                 <div>
                   <CheckCheck size={20} />
@@ -563,7 +602,9 @@ export function Observatory() {
             <div className="obs-section-heading">
               <div>
                 <span className="obs-section-kicker">01 / OLAYIN HİKÂYESİ</span>
-                <h2 id="obs-story-title">Bir arıza. Baştan sona, açıkça.</h2>
+                <h2 id="obs-story-title" tabIndex={-1}>
+                  Bir arıza. Baştan sona, açıkça.
+                </h2>
                 <p>
                   Bir uygulama hatasının nasıl fark edildiğini ve nasıl
                   çözüldüğünü izle.
@@ -996,7 +1037,9 @@ export function Observatory() {
             <div className="obs-section-heading">
               <div>
                 <span className="obs-section-kicker">03 / ŞEFFAF KAYIT</span>
-                <h2 id="obs-evidence-title">Sözümüzün arkasında veri var.</h2>
+                <h2 id="obs-evidence-title" tabIndex={-1}>
+                  Sözümüzün arkasında veri var.
+                </h2>
                 <p>
                   Her iddiayı kaynağına kadar takip et. Teknik ayrıntılar,
                   ihtiyaç duyduğunda burada.
@@ -1176,6 +1219,11 @@ export function Observatory() {
           </footer>
         </main>
       </div>
+      <IntroPresentation
+        open={introOpen}
+        onClose={closeIntro}
+        onExplore={exploreIntro}
+      />
     </div>
   );
 }

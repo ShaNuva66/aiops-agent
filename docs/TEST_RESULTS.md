@@ -1,6 +1,36 @@
 # Verification results
 
-Last verified: 2026-10-25 (Europe/Istanbul). Frontend replay verified; prior host/Docker results retained.
+Last verified: 2026-11-01 (Europe/Istanbul). Opening presentation verified; prior backend/Docker results retained.
+
+## Opening presentation — 2026-11-01
+
+62 frontend contract tests passed, including nine new introduction contracts. TypeScript/Vite
+production build and Prettier passed. Missing or unrelated approvals, recovery, model tools,
+reports, environment and detection evidence do not become successful claims. Shared proof
+derivation supplies both the narrative and visual indicators. No dependency was added.
+
+Playwright checked all seven slides at 1512x982 and 390x844 touch/reduced-motion. Main copy
+measured 21px and 17px respectively; neither layout overflowed horizontally. Phone paging
+stayed inside the viewport. Additional 929px and 320px checks passed all seven slides;
+a narrow-screen approval seal/entrance overflow was corrected. Reduced-motion had zero running slide animations and disabled
+autoplay. First-visit opening, skip/Escape, dismissal across reloads, reset/reopen, arrow/
+Home/End navigation, Tab wrapping, focus return and scroll restoration passed. Optional
+11-second autoplay advanced a slide under a browser test clock; switching motion off stopped
+it. Full autoplay stopped at the final slide with the presentation still open. A slide link selected the matching failure stage, and the final button opened/focused
+the evidence ledger. Public interactions produced zero write requests and page errors.
+
+Visual verification found global legacy header/aside/main styles leaking into the first
+draft; presentation containers are now isolated from those rules. Reopen and rapid keyboard
+navigation exposed focus timing issues; focus now follows the committed slide before paint.
+These failures were corrected before the final passing browser run. Backend behavior and
+infrastructure were unchanged, so no new backend, Docker or paid model run was made for this
+presentation change. The previous measured results below remain separate.
+
+Reviewed previews: [opening slide](images/intro-desktop.png), [AI slide](images/intro-ai.png),
+[phone with persistent controls](images/intro-mobile.png).
+
+## Earlier frontend and integration verification
+
 Latest rollback: restored the pre-3D Observatory presentation (3275644 equivalent frontend).
 TypeScript/Vite build passed; Prettier passed after whitespace formatting. Backend unchanged.
 Subsequent typography-only update passed the frontend build and Prettier. Browser measurements

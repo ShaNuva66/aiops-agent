@@ -2,12 +2,13 @@
 
 ## Current milestone
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
-Last implementation session: 2026-10-31, Europe/Istanbul.
+Last implementation session: 2026-11-01, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
 Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
 Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and amber action accents across the presentation, sign-in and operations console. White page/card backgrounds removed at the user's request, including expanded technical data and native dark controls. Shared decorative mouse halo/card spotlight, persistent motion preference, slow ambient light, card entrances and button feedback. The readable layout and typography are retained.
 
 ## Completed
+- 2026-11-01: seven-slide opening presentation explains purpose, stack and the recorded fault-to-recovery process. Native modal, session dismissal/reopen, manual/optional automatic playback, keyboard focus, phone controls and reduced-motion support. Slide links select the matching existing case stage or evidence ledger; the public explanation makes no model or lab request.
 - Architecture, data model, API/tool contracts, security boundaries and roadmap.
 - Frozen uv/npm dependencies, Alembic initial migration and local secret generation.
 - Separate control PostgreSQL and fault-target PostgreSQL; authenticated lab telemetry.
@@ -34,7 +35,7 @@ Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and a
 
 ## Last test results
 - 61 pytest tests passed on 2026-10-31; measured backend coverage 93.61%.
-- 53 frontend contract tests passed; TypeScript/Vite and formatting passed.
+- 62 frontend contract tests passed on 2026-11-01; TypeScript/Vite and formatting passed. Nine new intro contracts cover missing/unrelated proof and keep visual indicators consistent with the narrative.
 - 27 real Docker acceptance checks passed on GitHub Actions on 2026-10-31; the local Docker engine was unavailable.
 - Actual Qdrant 1.19.1 server storage/query check passed.
 - TypeScript/Vite production build, Prettier, Ruff and Alembic drift checks passed.
