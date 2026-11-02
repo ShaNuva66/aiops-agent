@@ -33,7 +33,7 @@ export function buildIntroFilm(record: RecordedCase): FilmChapter[] {
   const chapters: ChapterScript[] = [
     {
       id: "purpose",
-      title: "Bir arızadan, anlaşılır bir sonuca.",
+      title: "Sorunu fark et. Çözümü doğrula.",
       duration: 12,
       cues: [
         { label: "Çalışan", text: "Bir çalışan uygulamadan yanıt bekler." },

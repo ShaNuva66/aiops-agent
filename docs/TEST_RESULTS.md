@@ -1,6 +1,46 @@
 # Verification results
 
-Last verified: 2026-11-01 (Europe/Istanbul). Full-viewport animated introduction verified; prior backend/Docker results retained.
+Last verified: 2026-11-02 (Europe/Istanbul). Click-driven introduction polish verified; prior backend/Docker results retained.
+
+## Introduction clarity and visual polish — 2026-11-02
+
+The opening retains one short click/tap per bounded animation. Clearer section questions,
+explicit actor labels, record-derived fact summaries and numbered explanation selectors
+improve orientation. Directional paths and active-stage outlines accompany short caption
+fades and a decorative click ring. The ring is cleared on reopen. No source record or
+backend behavior changed; no dependency was added.
+
+71 frontend contract tests, TypeScript/Vite production build, Prettier, Ruff check/format
+and Git whitespace checks passed. Browser verification covered:
+
+- All 28 explanations at 1512x982, 1512x768, 929x844, 390x844 and 320x844, without horizontal
+  overflow or vertical scrolling. Explanation selectors measured at least 44px in each
+  dimension; phone explanation copy remained 18px. An initial 7px phone overflow on the
+  controlled-fault explanation was corrected by tightening surrounding spacing.
+- Real left clicks animate one explanation and then wait; rapid clicks settle without stale
+  RAF updates. Text selection, long holds and synthetic non-primary button pairs do not
+  advance. Controls and native button keyboard activation do not double-advance.
+- Actual 390/320px touch taps traverse all explanations, with reduced-motion leaving zero
+  running animations. The final result waits for its explicit exit.
+- Shift+Tab/Tab wrapping, Escape, restored body scrolling/focus, reopening at the first
+  explanation without a stale click ring, and the exact fault-record link all passed.
+- After each normal-motion step settled, action explanation 3 showed HTTP 200, recovery
+  explanation 2 showed the healthy observation and explanation 3 showed closure. Fault
+  explanation 4 displayed the independently recorded healthy database. AI summary facts
+  matched gpt-4o-mini and its two correlated tool calls.
+- No JavaScript page errors or POST/PUT/PATCH/DELETE requests were observed in the checked
+  public flows. A reused browser initially retained motion-off from earlier tests; the
+  motion-on interaction checks passed in a fresh context.
+
+The initial formatting command was run from the repository root, which has no package.json;
+it was rerun successfully from frontend. Backend pytest, Docker acceptance and paid model
+experiments were not rerun for this presentation-only change. Their earlier results below
+remain historical and are not new production-readiness evidence.
+
+Reviewed previews: [purpose](images/professional-intro-purpose.png),
+[AI review](images/professional-intro-desktop.png),
+[fault boundary](images/professional-intro-fault.png),
+[phone](images/professional-intro-mobile.png).
 
 ## Click-driven animated steps — 2026-11-01
 

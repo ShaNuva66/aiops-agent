@@ -17,7 +17,12 @@ import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import type { IntroSlide } from "./intro-slides";
 import { introProof } from "./intro-slides";
-import { caseReport, modelTools, outcome } from "./observatory-data";
+import {
+  casePhases,
+  caseReport,
+  modelTools,
+  outcome,
+} from "./observatory-data";
 import "./intro-film-scene.css";
 
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
@@ -72,6 +77,9 @@ function Wire({
   const d = bend
     ? `M${from.join(" ")} Q${bend.join(" ")} ${to.join(" ")}`
     : `M${from.join(" ")} L${to.join(" ")}`;
+  const direction =
+    (Math.atan2(to[1] - (bend ?? from)[1], to[0] - (bend ?? from)[0]) * 180) /
+    Math.PI;
   return (
     <g className={`film-wire film-${tone}`}>
       <path className="film-wire-track" d={d} />
@@ -83,6 +91,12 @@ function Wire({
             pathLength="1"
             strokeDasharray="1"
             strokeDashoffset={1 - t}
+          />
+          <path
+            className="film-wire-arrow"
+            d="M-8-5L0 0L-8 5"
+            transform={`translate(${to.join(" ")}) rotate(${direction})`}
+            opacity={segment(t, 0.86, 1)}
           />
           {t > 0 && t < 1 && (
             <g transform={`translate(${x} ${y})`}>
@@ -123,6 +137,14 @@ function Node({
       <ellipse className="film-node-shadow" cy="68" rx="78" ry="12" />
       <path className="film-node-base" d="M-70 45L0 65L70 45V54L0 75L-70 54Z" />
       <rect
+        className="film-node-focus"
+        x="-77"
+        y="-65"
+        width="154"
+        height="121"
+        rx="26"
+      />
+      <rect
         className="film-node-box"
         x="-68"
         y="-56"
@@ -130,7 +152,8 @@ function Node({
         height="103"
         rx="18"
       />
-      <path className="film-node-top" d="M-50-56H50" />
+      <path className="film-node-top" d="M-50-55H50" />
+      <path className="film-node-edge" d="M-67-28V23Q-67 46-44 46H25" />
       <Icon x={-25} y={-36} width={50} height={50} strokeWidth={1.4} />
       <text className="film-node-title" y="33">
         {title}
@@ -141,6 +164,7 @@ function Node({
         </text>
       )}
       <circle className="film-node-indicator" cx="49" cy="-37" r="3" />
+      <circle className="film-node-indicator-ring" cx="49" cy="-37" r="7" />
     </g>
   );
 }
@@ -262,6 +286,7 @@ function Document({
         height="169"
         rx="12"
       />
+      <path className="film-document-fold" d="M35-87V-57H66" />
       {report ? (
         <FileText x={-57} y={-68} width={32} height={32} strokeWidth={1.4} />
       ) : (
@@ -284,46 +309,46 @@ function Document({
 function PurposeScene({ t }: { t: number }) {
   return (
     <>
-      <Wire from={[160, 240]} to={[320, 240]} amount={segment(t, 0, 0.22)} />
+      <Wire from={[160, 240]} to={[320, 240]} amount={segment(t, 0, 0.24)} />
       <Wire
         from={[451, 205]}
         to={[595, 122]}
         bend={[535, 120]}
-        amount={segment(t, 0.2, 0.44)}
+        amount={segment(t, 0.25, 0.48)}
       />
       <Wire
         from={[620, 172]}
         to={[620, 235]}
-        amount={segment(t, 0.43, 0.64)}
+        amount={segment(t, 0.5, 0.62)}
         tone="blue"
       />
       <Wire
         from={[620, 315]}
         to={[620, 366]}
-        amount={segment(t, 0.64, 0.85)}
+        amount={segment(t, 0.62, 0.74)}
         tone="amber"
       />
       <Wire
         from={[560, 390]}
         to={[390, 290]}
         bend={[390, 400]}
-        amount={segment(t, 0.84, 1)}
+        amount={segment(t, 0.75, 0.96)}
         tone="green"
       />
-      <Node x={90} y={240} icon={UserRound} title="Çalışan" active={t < 0.2} />
+      <Node x={90} y={240} icon={UserRound} title="Çalışan" active={t < 0.25} />
       <Node
         x={385}
         y={240}
         icon={Server}
         title="Uygulama"
-        active={t < 0.3 || t > 0.84}
+        active={t < 0.25 || t >= 0.75}
       />
       <Node
         x={620}
         y={110}
         icon={Activity}
         title="İzleme"
-        active={t >= 0.2 && t < 0.44}
+        active={t >= 0.25 && t < 0.5}
       />
       <Node
         x={620}
@@ -331,7 +356,7 @@ function PurposeScene({ t }: { t: number }) {
         icon={Bot}
         title="AI agent"
         tone="blue"
-        active={t >= 0.44 && t < 0.64}
+        active={t >= 0.5 && t < 0.75}
       />
       <Node
         x={620}
@@ -339,7 +364,7 @@ function PurposeScene({ t }: { t: number }) {
         icon={ShieldCheck}
         title="Yetkili"
         tone="amber"
-        active={t >= 0.64 && t < 0.85}
+        active={t >= 0.5 && t < 0.75}
       />
       <Reveal time={t} at={0.79}>
         <Chip x={270} y={405} text="Kontrol insanda" tone="amber" width={208} />
@@ -356,7 +381,7 @@ function StackScene({ t }: { t: number }) {
       <Wire
         from={[400, 217]}
         to={[400, 339]}
-        amount={segment(t, 0.6, 0.83)}
+        amount={segment(t, 0.75, 0.96)}
         tone="blue"
       />
       <Node
@@ -415,6 +440,9 @@ function StackScene({ t }: { t: number }) {
 
 function FailureScene({ t }: { t: number }) {
   const failed = outcome.beforeStatus === 500 && t >= 0.25;
+  const databaseHealthy =
+    casePhases.find((phase) => phase.id === "failure")?.database === "healthy";
+  const showBoundary = failed && databaseHealthy && t >= 0.75;
   return (
     <>
       <g
@@ -460,7 +488,7 @@ function FailureScene({ t }: { t: number }) {
       />
       <Reveal time={t} at={0.51}>
         <Chip
-          x={438}
+          x={databaseHealthy ? 240 : 438}
           y={450}
           text={
             outcome.beforeStatus === 500
@@ -471,6 +499,17 @@ function FailureScene({ t }: { t: number }) {
           width={267}
         />
       </Reveal>
+      {showBoundary && (
+        <Reveal time={t} at={0.75}>
+          <Chip
+            x={615}
+            y={450}
+            text="Veritabanı sağlıklı"
+            tone="green"
+            width={260}
+          />
+        </Reveal>
+      )}
     </>
   );
 }
@@ -629,7 +668,7 @@ function AgentScene({ t }: { t: number }) {
 
 function ActionScene({ t }: { t: number }) {
   const approved = outcome.hasSuccessfulApproval;
-  const done = approved && t >= 0.75;
+  const done = approved && t >= 0.66;
   return (
     <>
       <Node
@@ -668,7 +707,7 @@ function ActionScene({ t }: { t: number }) {
       <Wire
         from={[455, 225]}
         to={[565, 225]}
-        amount={segment(t, 0.5, 0.75)}
+        amount={segment(t, 0.5, 0.66)}
         tone="amber"
         enabled={approved}
       />
@@ -717,17 +756,17 @@ function RecoveryScene({ t }: { t: number }) {
         icon={Activity}
         title="Ayrı izleme"
         detail={
-          outcome.hasVerifiedRecovery && t >= 0.5
+          outcome.hasVerifiedRecovery && t >= 0.4
             ? "Sağlıklı gözlem"
             : "Sonuç kontrolü"
         }
-        tone={outcome.hasVerifiedRecovery && t >= 0.5 ? "green" : "cyan"}
-        active={t >= 0.25 && t < 0.7}
+        tone={outcome.hasVerifiedRecovery && t >= 0.4 ? "green" : "cyan"}
+        active={t >= 0.25 && t < 0.5}
       />
       <Wire
         from={[473, 225]}
         to={[604, 225]}
-        amount={segment(t, 0.5, 0.77)}
+        amount={segment(t, 0.5, 0.66)}
         tone="green"
         enabled={outcome.hasVerifiedRecovery}
       />
@@ -735,15 +774,15 @@ function RecoveryScene({ t }: { t: number }) {
         x={672}
         y={225}
         icon={
-          outcome.hasVerifiedRecovery && t >= 0.75 ? CheckCircle2 : FileText
+          outcome.hasVerifiedRecovery && t >= 0.66 ? CheckCircle2 : FileText
         }
         title={
-          outcome.hasVerifiedRecovery && t >= 0.75
+          outcome.hasVerifiedRecovery && t >= 0.66
             ? "Arıza kapandı"
             : "Arıza kaydı"
         }
-        tone={outcome.hasVerifiedRecovery && t >= 0.75 ? "green" : "cyan"}
-        active={t >= 0.75}
+        tone={outcome.hasVerifiedRecovery && t >= 0.66 ? "green" : "cyan"}
+        active={t >= 0.5}
       />
       <Reveal time={t} at={0.25}>
         <Chip
@@ -758,7 +797,7 @@ function RecoveryScene({ t }: { t: number }) {
           width={233}
         />
       </Reveal>
-      <Reveal time={t} at={0.55}>
+      <Reveal time={t} at={0.35}>
         <Chip
           x={545}
           y={365}
@@ -868,6 +907,10 @@ export function IntroFilmScene({
         <path
           className="film-horizon"
           d="M70 345L405 177L742 345M70 345L405 479L742 345"
+        />
+        <path
+          className="film-stage-guides"
+          d="M33 345H56M405 489V505M754 345H778M405 147V164"
         />
         <g className="film-decorative-orbit">
           <ellipse cx="408" cy="315" rx="290" ry="140" strokeDasharray="2 15" />

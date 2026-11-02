@@ -27,6 +27,12 @@ Controls keep their own action without an extra advance; right/middle presses, l
 selection drags and cancelled gestures are ignored. Rapid clicks cancel the previous frame
 loop before advancing. Motion-off/reduced-motion shows the selected result immediately;
 hidden-tab animation stops. The last step waits for the explicit exit button.
+The introduction pairs each section's question with its responsible actor and a compact
+record summary. Numbered explanation selectors have at least 44px touch targets; desktop
+labels and check marks distinguish previous explanations. Directed paths, stage focus,
+subtle click feedback and short caption fades support the narrative. The fault scene also
+separates the recorded healthy database from the failed application response. Recorded
+action/recovery results now settle within the explanation that describes them.
 **Siteye geç**/Escape closes it, **Açılışı izle** reopens it, and **Platformu keşfet** exits
 the completed sequence. Reloading opens the introduction again. Section links open the exact
 recorded case stage. This archived-case explanation starts no new model call or lab action;

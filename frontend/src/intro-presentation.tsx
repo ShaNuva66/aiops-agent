@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowRight,
   AudioLines,
+  Check,
   MousePointer2,
   Sparkles,
   X,
@@ -51,12 +52,23 @@ export function IntroPresentation({
   } | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [gestureCount, setGestureCount] = useState(0);
   const { motion, setMotion } = useVisualMotion();
   const frame = locateFilmTime(filmChapters, elapsed);
   const chapter = filmChapters[frame.chapterIndex];
   const cue = chapter.cues[frame.cueIndex];
   const slide = introSlides[frame.chapterIndex];
   const first = frame.chapterIndex === 0 && frame.cueIndex === 0;
+  const stepNumber =
+    filmChapters
+      .slice(0, frame.chapterIndex)
+      .reduce((count, item) => count + item.cues.length, 0) +
+    frame.cueIndex +
+    1;
+  const stepCount = filmChapters.reduce(
+    (count, item) => count + item.cues.length,
+    0,
+  );
   const last =
     frame.chapterIndex === filmChapters.length - 1 &&
     frame.cueIndex === chapter.cues.length - 1;
@@ -156,12 +168,19 @@ export function IntroPresentation({
       Math.hypot(event.clientX - start.x, event.clientY - start.y) > 8
     )
       return;
-    nextCue();
+    if (!last) {
+      dialog.current?.style.setProperty("--tap-x", `${event.clientX}px`);
+      dialog.current?.style.setProperty("--tap-y", `${event.clientY}px`);
+      setGestureCount((count) => count + 1);
+      nextCue();
+    }
   };
 
   useLayoutEffect(() => {
     const element = dialog.current;
     if (!open) {
+      gesture.current = null;
+      setGestureCount(0);
       position.current = 0;
       targetPosition.current = 0;
       setElapsed(0);
@@ -291,7 +310,7 @@ export function IntroPresentation({
             <span className="intro-brand">
               <AudioLines size={29} />
               <strong>AIOPS</strong>
-              <span>OPERASYONU BİRLİKTE GÖRELİM</span>
+              <span>BİR ARIZANIN HİKÂYESİ</span>
             </span>
             <div className="intro-header-actions">
               <button
@@ -311,8 +330,7 @@ export function IntroPresentation({
           <div className="intro-stage">
             <div className="intro-copy">
               <span className="intro-eyebrow">
-                <i /> {String(frame.chapterIndex + 1).padStart(2, "0")} /{" "}
-                {chapterLabels[frame.chapterIndex]}
+                <i /> {slide.eyebrow}
               </span>
               <h1 id="intro-title" ref={heading} tabIndex={-1}>
                 {chapter.title}
@@ -324,7 +342,7 @@ export function IntroPresentation({
                     {frame.cueIndex + 1} / {chapter.cues.length}
                   </small>
                 </div>
-                <p>{cue.text}</p>
+                <p key={`${chapter.id}-${frame.cueIndex}`}>{cue.text}</p>
                 <div
                   className="intro-cue-steps"
                   aria-label="Bu bölümün açıklamaları"
@@ -336,15 +354,28 @@ export function IntroPresentation({
                       aria-current={
                         frame.cueIndex === index ? "step" : undefined
                       }
+                      data-complete={index < frame.cueIndex}
+                      title={item.label}
                       onClick={() => chooseCue(frame.chapterIndex, index)}
                     >
-                      <i />
+                      <span className="intro-cue-number" aria-hidden="true">
+                        {index < frame.cueIndex ? (
+                          <Check size={12} />
+                        ) : (
+                          index + 1
+                        )}
+                      </span>
+                      <span className="intro-cue-label">{item.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
               <span className="intro-role">
-                <Sparkles size={16} /> {slide.actor}
+                <Sparkles size={16} />
+                <span>
+                  <small>Bu bölümün sorumlusu</small>
+                  {slide.actor}
+                </span>
               </span>
               {slide.phaseId && (
                 <button
@@ -356,12 +387,32 @@ export function IntroPresentation({
               )}
             </div>
             <div className="intro-scene">
+              <div className="intro-scene-heading">
+                <span>
+                  <i /> Sürecin görseli
+                </span>
+                <span>
+                  ADIM <b>{String(stepNumber).padStart(2, "0")}</b> /{" "}
+                  {stepCount}
+                </span>
+              </div>
               <IntroFilmScene
                 id={chapter.id}
                 progress={frame.progress}
                 playing={playing}
                 motion={motion}
               />
+              <dl
+                className="intro-scene-facts"
+                aria-label="Bu bölümün kayıt özeti"
+              >
+                {slide.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt>{fact.label}</dt>
+                    <dd>{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
           <div className="intro-bottom">
@@ -374,9 +425,16 @@ export function IntroPresentation({
                     index === frame.chapterIndex ? "step" : undefined
                   }
                   data-complete={index < frame.chapterIndex}
+                  title={`${chapterLabels[index]}${index < frame.chapterIndex ? " · Önceki bölüm" : index === frame.chapterIndex ? " · Geçerli bölüm" : ""}`}
                   onClick={() => chooseCue(index, 0, true)}
                 >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span aria-hidden="true">
+                    {index < frame.chapterIndex ? (
+                      <Check size={14} />
+                    ) : (
+                      String(index + 1).padStart(2, "0")
+                    )}
+                  </span>
                   <strong>{chapterLabels[index]}</strong>
                   <i
                     style={
@@ -391,9 +449,9 @@ export function IntroPresentation({
             <div className="intro-bottom-row">
               <div className="intro-context">
                 <span>
-                  <i /> Kayıtlı gerçek vaka
+                  <i /> Kayıtlı laboratuvar vakası
                 </span>
-                <small>Bu açılış, kaydedilmiş süreci anlatır.</small>
+                <small>Hata → inceleme → onay → doğrulama</small>
               </div>
               <div className="intro-navigation">
                 <span className="intro-click-hint" id="intro-click-hint">
@@ -429,6 +487,13 @@ export function IntroPresentation({
               </div>
             </div>
           </div>
+          {motion && gestureCount > 0 && (
+            <span
+              key={gestureCount}
+              className="intro-click-feedback"
+              aria-hidden="true"
+            />
+          )}
           <span className="intro-announcement" role="status" aria-live="polite">
             {chapter.title} {cue.text}
           </span>

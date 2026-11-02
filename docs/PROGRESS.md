@@ -2,12 +2,13 @@
 
 ## Current milestone
 Working local MVP delivered and verified on Windows 11 / Docker Desktop Linux engine.
-Last implementation session: 2026-11-01, Europe/Istanbul.
+Last implementation session: 2026-11-02, Europe/Istanbul.
 Presentation restored to the pre-3D Observatory version at the user's request.
 Typography-only readability pass: 18px desktop/17px phone main copy, larger labels and controls, with existing layout and animations preserved.
 Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and amber action accents across the presentation, sign-in and operations console. White page/card backgrounds removed at the user's request, including expanded technical data and native dark controls. Shared decorative mouse halo/card spotlight, persistent motion preference, slow ambient light, card entrances and button feedback. The readable layout and typography are retained.
 
 ## Completed
+- 2026-11-02: polished the click-driven introduction with clearer section questions, actor labels, proof-derived record summaries, numbered/labeled explanation controls and a calmer background. Directed illustration paths and active-stage outlines clarify the causal sequence. Action/recovery visuals settle within their matching explanation; the fault boundary distinguishes the recorded healthy database. Click feedback resets on reopen. All 28 explanations fit five checked desktop/tablet/phone layouts; touch selectors retain at least 44px targets and 18px phone body copy.
 - 2026-11-01: opening now advances on a short left click/touch tap rather than a next-step button. Each gesture plays one 1.4-second bounded illustration step and waits. Opening animates only the first explanation. Controls, text selection, long holds and non-primary/cancelled pointers do not double-advance; rapid clicks replace the previous RAF. Space/Enter/right arrow and reduced-motion alternatives remain available. The final result requires an explicit exit.
 - 2026-11-01: replaced the media-player opening with an automatic full-viewport animated introduction. Large illustrations, short explanations and stronger cyan/AI-blue/coral/amber/green surfaces fill the viewport. All 28 explanations remain reachable through next/previous, section and cue controls. Every public reload opens it; the authenticated dashboard does not. Video timeline, time/speed controls and framed scene panels were removed. Escape/skip, focus return, hidden-tab pause and reduced-motion are retained.
 - 2026-11-01: opening presentation extended into a 102-second film with seven scenes and 28 synchronized captions. Progress drives request/response packets, evidence and guide reading, report formation, scoped approval and recovery. Video controls include pause, scrub, +/-10 seconds, 0.75x–1.5x speed and exact scene/caption selection. Hidden-tab pause, motion-off, reduced-motion and phone controls are verified; no lab or model action is connected.
@@ -38,7 +39,7 @@ Whole-site visual pass: deep navy/slate surfaces, cyan monitoring, blue AI and a
 
 ## Last test results
 - 61 pytest tests passed on 2026-10-31; measured backend coverage 93.61%.
-- 71 frontend contract tests passed on 2026-11-01; TypeScript/Vite and formatting passed. Narrative contracts cover missing/unrelated proof and exact animation boundaries. Current browser checks include automatic full-viewport opening, all 28 manual explanations, pause, dashboard isolation, focus restoration and 320/390/929px layouts without scrolling or overflow.
+- 71 frontend contract tests passed on 2026-11-02; TypeScript/Vite, Prettier and Ruff passed. Narrative contracts cover missing/unrelated proof and exact animation boundaries. Current browser checks include one-click bounded animation, all 28 explanations at five viewport sizes, touch/keyboard behavior, focus restoration, proof navigation and matching action/recovery results. No backend or model call was needed for this frontend pass.
 - 27 real Docker acceptance checks passed on GitHub Actions on 2026-10-31; the local Docker engine was unavailable.
 - Actual Qdrant 1.19.1 server storage/query check passed.
 - TypeScript/Vite production build, Prettier, Ruff and Alembic drift checks passed.
